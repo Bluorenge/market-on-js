@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Data-maker</title>
+</head>
+
+<body>
+  <section class="data-maker">
+    <form action="#" method="post" class="data-maker__wrap">
+      <div class="data-maker__global-setting">
+        <label>
+          <h3 class="data-maker__name-field">ID пользователя</h3>
+          <input class="data-maker__input data-maker__input--user-id" type="text" name="user-id" placeholder="ID пользователя" required />
+        </label>
+        <label>
+          <h3 class="data-maker__name-field">Валюта магазина</h3>
+          <input class="data-maker__input data-maker__input--currency" type="text" name="currency" placeholder="Например: руб." required />
+        </label>
+      </div>
+      <div class="data-maker__entry-point">
+        <div class="data-maker__add data-maker__add--product" tabindex="0">
+          + Добавить товар
+        </div>
+        <div class="data-maker__add data-maker__add--category" tabindex="0">
+          + Добавить категорию
+        </div>
+        <input class="data-maker__btn" type="submit" name="submit-btn" value="Сгенерировать список товаров" />
+      </div>
+    </form>
+    <div class="data-maker__block-info" style="display: none;">
+      <div id="info" class="data-maker__block-info-text"></div>
+      <button class="data-maker__block-info-btn-copy" data-clipboard-target="#info">
+        Скопировать информацию
+      </button>
+    </div>
+  </section>
+</body>
+
+</html>

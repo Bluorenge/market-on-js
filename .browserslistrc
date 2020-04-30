@@ -1,0 +1,9 @@
+[production]
+last 3 versions
+> 1%
+ie 9-11
+
+[development]
+last 1 chrome version
+last 1 firefox version
+last 1 edge version

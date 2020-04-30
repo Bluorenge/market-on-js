@@ -1,0 +1,120 @@
+.market {
+  height: 515px;
+  max-width: 960px;
+  padding: 20px 15px;
+  margin: auto;
+  line-height: 1.25;
+
+  & *,
+  & *:before,
+  & *:after {
+    box-sizing: border-box;
+  }
+
+  & ul,
+  & li {
+    padding: 0;
+    margin: 0;
+  }
+
+  & li {
+    list-style: none;
+  }
+
+  & p {
+    margin: 0;
+  }
+
+  & img {
+    max-width: 100%;
+    height: auto;
+    max-height: 100%;
+  }
+
+  & svg {
+    max-width: 100%;
+  }
+
+  @include respond-to(tablet) {
+    padding: 20px;
+  }
+}
+
+.market-content {
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+
+  position: relative;
+
+  &--fade-in {
+    animation: fade-in .5s ease-out;
+  }
+
+  &__empty {
+    margin-top: 10%;
+    text-align: center;
+    font-size: 1.5em;
+  }
+
+  &--shadow {
+    &::before {
+      content: "";
+      position: absolute;
+      z-index: 2;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 5%;
+      height: 95%;
+      background: linear-gradient(90deg, transparent 0, rgba($color: #ffffff, $alpha: .7) 100%);
+    }
+  }
+}
+
+.market-btn {
+  padding: 5px 10px;
+  border: 1px solid #2d9094;
+  background-color: transparent;
+  border-radius: 5px;
+  color: #2d9094;
+  cursor: pointer;
+  font-size: 12px;
+
+  &:hover {
+    border-color: #42bcc0;
+  }
+
+  @include respond-to(tablet) {
+    padding: 7px 12px;
+    font-size: 16px;
+  }
+}
+
+.market-btn--prev-step {
+  display: block;
+  margin-top: 10px;
+  margin-left: auto;
+  padding: 5px 10px;
+  border: 1px solid #2d9094;
+  background-color: transparent;
+  border-radius: 5px;
+  color: #2d9094;
+  cursor: pointer;
+  font-size: 12px;
+
+  &:hover {
+    border-color: #42bcc0;
+  }
+
+  @include respond-to(tablet) {
+    padding: 7px 12px;
+    font-size: 16px;
+  }
+}
