@@ -9,7 +9,8 @@ const devMode = process.env.NODE_ENV !== 'production'
 module.exports = {
   entry: {
     market: paths.src + '/market.js',
-    ['data-maker']: paths.src + '/data-maker.js'
+    ['data-maker']: paths.src + '/data-maker.js',
+    ['market-mvp']: paths.src + '/market-mvp.js'
   },
 
   optimization: {
@@ -113,6 +114,17 @@ module.exports = {
         viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no'
       },
       chunks: ['data-maker']
+    }),
+    new HTMLWebpackPlugin({
+      filename: 'market-mvp.html',
+      template: paths.src + '/views/market-mvp.html',
+      meta: {
+        charset: {
+          charset: 'utf-8'
+        },
+        viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no'
+      },
+      chunks: ['market-mvp']
     })
   ]
 }

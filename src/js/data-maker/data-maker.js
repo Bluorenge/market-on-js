@@ -51,7 +51,7 @@ let globalSetting = {
   currency: '',
 }
 let productList = []
-let id = 0
+let id = 1
 
 const submitBtn = formWrap.querySelector('.data-maker__btn')
 

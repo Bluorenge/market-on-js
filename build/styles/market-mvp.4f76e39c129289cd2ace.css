@@ -196,6 +196,19 @@
   height: 5px;
 }
 
+.market-header__nav-item:nth-child(n + 2) {
+  position: relative;
+}
+
+.market-header__nav-item:nth-child(n + 2)::before {
+  content: "→";
+  position: absolute;
+  top: 0;
+  left: -15.5px;
+  width: 5px;
+  height: 5px;
+}
+
 .market-products__list {
   display: -webkit-box;
   display: -ms-flexbox;
