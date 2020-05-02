@@ -47,10 +47,13 @@ export default class ProductListController {
     // Показанные КОНТРОЛЛЕРЫ (бизнем логика) задач
     this._showedProductControllers = []
 
-    this._onDataChange = this._onDataChange.bind(this)
+    // При клике на пункт
     this._onViewChange = this._onViewChange.bind(this)
 
-    this._tasksModel.setDataChangeHandler()
+    // При клике на пункт меню
+    this._onDataChange = this._onDataChange.bind(this)
+
+    this._productsModel.setDataChangeHandler(this._onDataChange)
   }
 
   render() {
@@ -92,15 +95,24 @@ export default class ProductListController {
     this._showedProductControllers = []
   }
 
-  _onDataChange(productController) {}
-
-  _onViewChange(id, name) {
-    this._productsModel.setMenuItem({id, name})
-
+  _onDataChange() {
+    // Удаляем отрисованные компоненты компоненты
     this._removeTasks()
     // Создаём новый список продуктов по имени продукта
-    const openList = this._productsModel.getOpenProduct(id, name)
+    const openList = this._productsModel.getCurrentState()
+    // console.log('openList :', openList);
     // Отрисовываем его
-    this._renderProducts(this._settings, openList, id)
+    this._renderProducts(this._settings, openList, 'id')
+  }
+
+  _onViewChange(id, name) {    
+    // Удаляем отрисованные компоненты компоненты
+    // this._removeTasks()
+    // Создаём новый список продуктов по имени продукта
+    this._productsModel.setCurrentState(id, name)
+    
+    // const openList = this._productsModel.getCurrentState()
+    // Отрисовываем его
+    // this._renderProducts(this._settings, openList, id)
   }
 }

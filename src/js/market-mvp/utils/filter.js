@@ -69,3 +69,52 @@ export const findByName = (arr, id, name) =>
     if (item.hasOwnProperty('productsInCategory'))
       return findByName(item.productsInCategory, id, name)
   }, null)
+
+// Путь к элементу (для меню из поиска)
+export const menuPath = (arr, id, name) => {
+  let items = []
+  let continueFind = true
+  const pushData = (arr, id, name) => {
+    arr.push({
+      id,
+      name,
+    })
+  }
+
+  const find = (arr, findId, findName) => {
+    arr.find((item) => {
+      if (item.id === findId && item.name === findName) {
+        // Добавлять или нет айди и имя найденного элемента
+        pushData(items, item.id, item.name)
+        continueFind = false
+      } else if (continueFind) {
+        if (item.hasOwnProperty('subCategory')) {
+          // Если в этой ветке содержится нужный элемент
+          const there = (newItem) =>
+            newItem.some((product) => {
+              if (product.id === findId && product.name === findName) {
+                pushData(items, item.id, item.name)
+              } else if (product.hasOwnProperty('subCategory')) {
+                there(product.subCategory)
+              } else if (product.hasOwnProperty('productsInCategory')) {
+                there(product.productsInCategory)
+              }
+            })
+          there(item.subCategory)
+          return find(item.subCategory, findId, findName)
+        } else if (item.hasOwnProperty('productsInCategory')) {
+          // Если в этой категории содержится нужный элемент
+          const there = item.productsInCategory.some(
+            (product) => product.id === findId && product.name === findName
+          )
+          if (there) {
+            pushData(items, item.id, item.name)
+          }
+          return find(item.productsInCategory, findId, findName)
+        }
+      }
+    })
+  }
+  find(arr, id, name)
+  return items
+}

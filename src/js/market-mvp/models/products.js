@@ -1,16 +1,19 @@
-import { inputFindProduct, findByName } from '../utils/filter'
+import { inputFindProduct, menuPath, findByName } from '../utils/filter'
+
+const entryMenu = [{ id: 0, name: 'Главная' }]
 
 export default class Products {
   constructor(setting, products) {
     this._globalSetting = JSON.parse(setting)
     this._productList = JSON.parse(products)
 
-    this._searchHandler = []
-    this._currentStat
+    this._currentState = []
+    this._searchResult = []
 
     this._dataChangeHandlers = []
+    this._dataChangeIntoMenuHandlers = []
 
-    this._menu = [{ id: 0, name: 'Главная' }]
+    this._menu = [...entryMenu]
   }
 
   // setProducts(setting, products) {
@@ -30,24 +33,57 @@ export default class Products {
     return this._menu
   }
 
-  getOpenProduct(id, name) {
-    this._currentStat = findByName(this._productList, id, name)
-    return this._currentStat
+  getCurrentState() {
+    return this._currentState
   }
 
-  getSearchProducts(name) {
-    this._searchHandler = inputFindProduct(this._productList)
-    return this._searchHandler
+  getSearchResult() {
+    return this._searchResult
   }
+
+  setCurrentState(id, name) {
+    // Добавляем пункт меню
+    this._menu.push({ id, name })
+    // Обновляем текущее состояние
+    this._currentState = findByName(this._productList, id, name)
+    // Вызываем слушатель
+    this._callHandlers(this._dataChangeHandlers)
+  }
+
+  setCurrentStateIntoMenu(id, name) {
+    this._currentState = findByName(this._productList, id, name)
+
+    if (this._currentState !== undefined) {
+      this._menu = [...entryMenu].concat(menuPath(this._productList, id, name))
+    } else {
+      this._menu = [...entryMenu]
+      this._currentState = this._productList
+    }
+
+    this._callHandlers(this._dataChangeHandlers)
+  }
+
+  // setSearchProducts(name) {
+  //   this._searchResult = inputFindProduct(this._productList)
+  //   this._callHandlers(this._dataChangeIntoInputHandlers)
+  // }
 
   setMenuItem(name) {
     this._menu.push(name)
-    this._dataChangeHandlers.push(handler)
     this._callHandlers(this._dataChangeHandlers)
+  }
+
+  setDataChangeHandler(handler) {
+    this._dataChangeHandlers.push(handler)
+  }
+
+  setDataIntoMenuHandler(handler) {
+    this._dataChangeIntoMenuHandlers.push(handler)
   }
 
   // Колбек слушателей - подписка на обновление модели
   _callHandlers(handlers) {
+    console.log('handlers :', handlers)
     handlers.forEach((handler) => handler())
   }
 }
