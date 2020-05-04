@@ -82,7 +82,7 @@ export default class ProductListController {
     this._onDataChange = this._onDataChange.bind(this)
     this._productsModel.setDataChangeHandler(this._onDataChange)
 
-    // При клике по иконке корзины очищаем контент
+    // При клике на пункт меню
     this._removeProduct = this._removeProduct.bind(this)
     this._productsModel.setOpenCartHandler(this._removeProduct)
   }

@@ -2,9 +2,8 @@ import { render, replace, remove, RenderPosition } from '../utils/render.js'
 import ProductItemComponent from '../components/product'
 
 export default class ProductController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, onViewChange) {
     this._container = container
-    this._onDataChange = onDataChange
     this._onViewChange = onViewChange
     this._productComponent = null
   }
@@ -14,6 +13,7 @@ export default class ProductController {
     this._productComponent = new ProductItemComponent(setting, product)
     // Отрисовываем КОМПОНЕНТ в родительском контейнере
     render(this._container, this._productComponent, RenderPosition.BEFOREEND)
+    // Получаем дом-элемент элемента списка
     const productElement = this._productComponent.getElement()
 
     // Вешаем обработчик на КОМПОНЕНТ
@@ -24,6 +24,7 @@ export default class ProductController {
 
       const itemId = Number(productElement.id.replace(/[^+\d]/g, ''))
 
+      // Вызываем метод в родительском контроллере
       this._onViewChange(itemId, itemName)
     })
   }

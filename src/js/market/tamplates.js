@@ -1,7 +1,5 @@
 // Обёртка меню
 const marketMenuWrap = document.querySelector('.market-header__nav')
-// Иконка корзины
-const iconCart = document.querySelector('.market-cart-link__icon-wrap')
 // Обёртка контента страницы
 const marketContentWrap = document.querySelector('.market-content')
 
@@ -258,6 +256,8 @@ const createCartPage = (productObject, globalSetting) => {
 */
 const createCartBlock = (productObject, globalSetting) => {
   let cartBlock
+  // Иконка корзины
+  const iconCart = document.querySelector('.market-cart-link__icon-wrap')
 
   if (productObject.length > 0) {
     iconCart.classList.add('market-cart-link__icon-wrap--filled')

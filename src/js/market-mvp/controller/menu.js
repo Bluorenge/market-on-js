@@ -26,7 +26,6 @@ export default class MenuController {
   _renderItem() {
     const menuWrap = this._menuComponent.getElement()
     const menuList = this._productsModel.getMenu()
-    console.log('menuList :', menuList);
 
     const renderMenuItems = () => {
       return menuList.map((element) => {
@@ -41,13 +40,12 @@ export default class MenuController {
       element.setOpenButtonClickHandler(() => {
         const itemId = Number(element.getElement().id.replace(/[^+\d]/g, ''))
         const nameItem = element.getElement().textContent
-        this._productsModel.setCurrentStateIntoMenu(itemId, nameItem)
+        this._productsModel.setCurrentState(itemId, nameItem, true)
       })
     })
   }
 
   _onViewChange() {
-    console.log('object');
     // Удаляем все компоненты меню
     this._menuItemComponent.forEach(element => remove(element))
     // Очищаем массив компонентов
