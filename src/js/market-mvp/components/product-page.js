@@ -34,8 +34,8 @@ const createProductPageTemplate = (globalSetting, productObject) => {
     <h2 class="market-product__title">${productObject.name}</h2>
     <div class="market-product__img-wrap">
       <img src="https://media.lpgenerator.ru/images/${globalSetting.userId}/${
-      productObject.img
-    }" alt="product-img">
+    productObject.img
+  }" alt="product-img">
     </div>
     <div class="market-product__content-wrap">
       ${
@@ -83,9 +83,21 @@ export default class ProductPageComponent extends AbstractComponent {
     return createProductPageTemplate(this._setting, this._product)
   }
 
+  getOptionWrap() {
+    return this.getElement().querySelector(`.market-product__option-list`)
+  }
+
   setOrderButtonClickHandler(handler) {
     this.getElement()
       .querySelector(`.market-btn--add-to-cart`)
       .addEventListener(`click`, handler)
+  }
+
+  setOptionWrapClickHandler(handler) {
+    this.getOptionWrap()
+      .querySelectorAll(
+        '.market-product__option-item:not(.market-product__option-item--disabled)'
+      )
+      .forEach((item) => item.addEventListener(`click`, handler))
   }
 }

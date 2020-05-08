@@ -1,7 +1,7 @@
 import AbstractComponent from './abstract-component.js'
 
 const createCartIconTemplate = (data, setting) => {
-  const dataExist = data !== undefined
+  const dataExist = data.length > 0
   const iconClass = dataExist ? ` market-cart-link__icon-wrap--filled` : ''
   const text = dataExist
     ? `<div class="market-cart-link__text-row">
@@ -30,7 +30,7 @@ export default class CartIconComponent extends AbstractComponent {
   constructor(cart, setting) {
     // Если нужно переопределить конструктор, то вызываем супер
     super()
-
+    
     this._cart = cart
     this._setting = setting
   }

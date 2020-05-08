@@ -1,81 +1,110 @@
 import { render, replace, remove, RenderPosition } from '../utils/render.js'
 import CartIconComponent from '../components/cart-icon'
 import CartPageComponent from '../components/cart-page'
+import CartItemController from '../controller/cart-item'
+
+import {
+  setting,
+  $cart,
+  createCartMenu,
+  openCartPage,
+  closeCartPage,
+  $productList,
+  removeMenuItemsTo,
+  deleteProductInCart
+} from '../models/products'
+
+const renderProducts = (container, setting, products) => {
+  return products.map((item) => {
+    const productController = new CartItemController(container)
+    productController.render(setting, item)
+    return productController
+  })
+}
 
 export default class CartController {
-  constructor(header, container, productsModel) {
+  constructor(header, container) {
     this._header = header
     this._container = container
-    this._productsModel = productsModel
-
-    this._settings = this._productsModel.getSettings()
 
     this._cartIconComponent = null
     this._cartPageComponent = null
 
-    this._openCart = this._openCart.bind(this)
-    this._renderCartPage = this._renderCartPage.bind(this)
-    this._backToMain = this._backToMain.bind(this)
+    this._showedCartProductsComponent = []
 
-    // При добавлении товара в коризину, обновляем корзину
-    this._onAddToCart = this._onAddToCart.bind(this)
-    this._productsModel.setDataCartChangeHandler(this._onAddToCart)
-
-    // Удаляем обёртку при изменении состояния
-    // this._removeCartPage = this._removeCartPage.bind(this)
-    // this._productsModel.setDataChangeHandler(this._removeCartPage)
+    this._removeProduct = this._removeProduct.bind(this)
   }
 
-  renderCartIcon() {
-    this._cartIconComponent = new CartIconComponent()
+  render() {
+    // Обновляем иконку корзины
+    $cart.watch((store) => this._updateIcon(store))
+    // Обновляем страницу корзины при удалении товара
+    $cart.watch(deleteProductInCart, (store) => this._renderCartPage(store))
+    // Удаляем страницу корзины при её закрытии
+    $productList.watch(closeCartPage, () => this._removeCartPage())
+  }
+
+  _updateIcon(cartData) {
+    if (this._cartIconComponent !== null) {
+      remove(this._cartIconComponent)
+    }
+
+    this._cartIconComponent = new CartIconComponent(cartData, setting)
     render(
       this._header.getElement(),
       this._cartIconComponent,
       RenderPosition.BEFOREEND
     )
-    this._cartIconComponent.setOpenCartClickHandler(this._openCart)
-    this._cartIconComponent.setOpenCartClickHandler(this._renderCartPage)
-  }
-
-  _updateIcon() {
-    remove(this._cartIconComponent)
-
-    const cartData = this._productsModel.getCart()
-    this._cartIconComponent = new CartIconComponent(cartData, this._settings)
     this._cartIconComponent.setProductCount()
-    render(
-      this._header.getElement(),
-      this._cartIconComponent,
-      RenderPosition.BEFOREEND
-    )
-    this._cartIconComponent.setOpenCartClickHandler(this._openCart)
-    this._cartIconComponent.setOpenCartClickHandler(this._renderCartPage)
+
+    this._cartIconComponent.setOpenCartClickHandler(() => {
+      // Вызываем обработчик создания меню
+      createCartMenu()
+      openCartPage()
+      this._renderCartPage(cartData)
+    })
   }
 
-  _onAddToCart() {
-    this._updateIcon()
-  }
-
-  _renderCartPage() {
-    const cartData = this._productsModel.getCart()
-    this._cartPageComponent = new CartPageComponent(cartData, this._settings)
+  _renderCartPage(cartData) {
+    if (this._cartPageComponent !== null) {
+      remove(this._cartPageComponent)
+    }
+    // Создаём компонент страницы корзины
+    this._cartPageComponent = new CartPageComponent(cartData, setting)
     render(
       this._container.getElement(),
       this._cartPageComponent,
       RenderPosition.BEFOREEND
     )
-    this._cartPageComponent.setToMainBtnOnClickHandler(this._backToMain)
+
+    this._cartPageComponent.setToMainBtnOnClickHandler(() => {
+      removeMenuItemsTo({ id: 0 })
+      closeCartPage()
+    })
+
+    if (cartData.length > 0) {
+      const newProducts = renderProducts(
+        this._cartPageComponent.getElement(),
+        setting,
+        cartData
+      )
+
+      this._showedCartProductsComponent = this._showedCartProductsComponent.concat(
+        newProducts
+      )
+    }
+  }
+
+  _removeProduct() {
+    // Удаляем все отображаемые задачи
+    this._showedCartProductsComponent.forEach((productController) =>
+      productController.destroy()
+    )
+    // Очищаем массив с показанными задачами
+    this._showedCartProductsComponent = []
   }
 
   _removeCartPage() {
     remove(this._cartPageComponent)
-  }
-
-  _openCart() {
-    this._productsModel.setOpenCart()
-  }
-
-  _backToMain() {
-    this._productsModel.setCurrentState()
   }
 }

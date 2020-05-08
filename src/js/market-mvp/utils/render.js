@@ -1,6 +1,7 @@
 export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
+  BEFOREBEGIN: `beforebegin`
 }
 
 // Создаём элемент
@@ -24,6 +25,9 @@ export const render = (container, component, place) => {
       break
     case RenderPosition.BEFOREEND:
       container.append(component.getElement())
+      break
+    case RenderPosition.BEFOREBEGIN:
+      container.before(component.getElement())
       break
   }
 }

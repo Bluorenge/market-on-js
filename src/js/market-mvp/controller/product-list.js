@@ -1,22 +1,29 @@
-import { render, remove, RenderPosition } from '../utils/render.js'
+import {
+  createElement,
+  render,
+  remove,
+  RenderPosition,
+} from '../utils/render.js'
 
 import ProductController from '../controller/product'
 import ProductPageController from '../controller/product-page'
 
 import ProductListComponent from '../components/product-list'
 
-const renderProducts = (
-  productListElement,
+import {
   setting,
-  products,
-  onViewChange
-) => {
+  $search,
+  $productList,
+  openCartPage,
+  closeCartPage,
+  changeProductListStateFromInput,
+  // search
+} from '../models/products'
+
+const renderProducts = (productListElement, setting, products) => {
   const createArrayOfProductControllers = (arr) => {
     return arr.map((item) => {
-      const productController = new ProductController(
-        productListElement,
-        onViewChange
-      )
+      const productController = new ProductController(productListElement)
       productController.render(setting, item)
       return productController
     })
@@ -32,8 +39,9 @@ const renderProducts = (
   }
 }
 
-const setTypeView = (state) => {
+const getContentViewType = (state) => {
   const typeView = {
+    EMPTY_PAGE: false,
     MAIN_PAGE: false,
     CATEGORIES_LIST: false,
     PRODUCT_LIST: false,
@@ -41,6 +49,9 @@ const setTypeView = (state) => {
   }
 
   switch (true) {
+    case Array.isArray(state) && state.length == 0:
+      typeView.EMPTY_PAGE = true
+      return typeView
     case Array.isArray(state):
       typeView.MAIN_PAGE = true
       return typeView
@@ -57,41 +68,35 @@ const setTypeView = (state) => {
 }
 
 export default class ProductListController {
-  constructor(container, productsModel) {
+  constructor(container) {
     this._container = container
-    this._productsModel = productsModel
-    // Получаем объект с настройками
-    this._settings = this._productsModel.getSettings()
 
     // Обёртка контента
     this._wrap = null
-
     // Тип отображаемого контетна
-    this._typeView = null
-
+    this._contentViewType = null
     // Корневой элемент контента
     this._containerElement = this._container.getElement()
 
-    // Показанные КОНТРОЛЛЕРЫ (бизнем логика) задач
-    this._showedProductControllers = []
+    this._productControllers = []
 
-    // При клике на пункт
-    this._onViewChange = this._onViewChange.bind(this)
-
-    // При клике на пункт меню
     this._onDataChange = this._onDataChange.bind(this)
-    this._productsModel.setDataChangeHandler(this._onDataChange)
-
-    // При клике по иконке корзины очищаем контент
     this._removeProduct = this._removeProduct.bind(this)
-    this._productsModel.setOpenCartHandler(this._removeProduct)
+    this._renderEmptyPage = this._renderEmptyPage.bind(this)
   }
 
   render() {
-    // Получаем массив продуктов
-    const products = this._productsModel.getProducts()
-    // Создаём массив с КОНТРОЛЛЕРАМИ
-    this._renderProduct(this._settings, products)
+    $productList.watch((state) => this._onDataChange(state))
+    $productList.watch(openCartPage, () => this._removeProduct())
+    $productList.watch(closeCartPage, (state) => this._onDataChange(state))
+    $productList.watch(changeProductListStateFromInput, (state) => this._onDataChange(state))
+    $search.updates.watch((state) => {
+    console.log('state :', state);
+      return this._onDataChange(state)
+    })
+    // $search.watch((state) => console.log('store changed: ', state))
+    // $search.watch(search, (state) => console.log('store changed: ', state))
+    // searchList.watch((state) => this._onDataChange(state))
   }
 
   _renderProduct(settings, products, id = 0) {
@@ -102,63 +107,63 @@ export default class ProductListController {
     const productListElement = this._wrap.getElement()
     productListElement.id = id
 
-    const newTasks = renderProducts(
-      productListElement,
-      settings,
-      products,
-      this._onViewChange
-    )
+    const newProducts = renderProducts(productListElement, settings, products)
 
-    this._showedProductControllers = this._showedProductControllers.concat(
-      newTasks
-    )
+    this._productControllers = this._productControllers.concat(newProducts)
   }
 
   _renderProductPage(settings, product) {
-    remove(this._wrap)
-
     const productPageController = new ProductPageController(
-      this._containerElement,
-      this._productsModel
+      this._containerElement
     )
     productPageController.render(settings, product)
-    this._showedProductControllers = this._showedProductControllers.concat(
+    this._productControllers = this._productControllers.concat(
       productPageController
     )
+  }
+
+  _renderEmptyPage() {
+    render(this._containerElement, this._wrap, RenderPosition.BEFOREEND)
+    const productListElement = this._wrap.getElement()
+
+    const emptyMessage = createElement(
+      `<div class="market-content--fade-in market-content__empty">Ничего не найдено</div>`
+    )
+    const message = productListElement.querySelector('.market-content__empty')
+
+    if (message === null) {
+      productListElement.prepend(emptyMessage)
+    }
   }
 
   _removeProduct() {
     remove(this._wrap)
 
-    // Удаляем все отображаемые задачи
-    this._showedProductControllers.forEach((productController) =>
+    this._productControllers.forEach((productController) =>
       productController.destroy()
     )
-    // Очищаем массив с показанными задачами
-    this._showedProductControllers = []
+    this._productControllers = []
   }
 
-  _onDataChange() {
-    // Удаляем отрисованные компоненты компоненты
-    this._removeProduct()
-    // Создаём новый список продуктов по имени продукта
-    const currentState = this._productsModel.getCurrentState()
+  _onDataChange(state) {
+  // console.log('state :', state);
+    if (this._productControllers.length !== 0) {
+      this._removeProduct()
+    }
 
-    // Проверяем у состояния тип контента
-    this._typeView = setTypeView(currentState)
+    // Проверяем тип контента состояния
+    this._contentViewType = getContentViewType(state)
 
     if (
-      this._typeView.MAIN_PAGE ||
-      this._typeView.CATEGORIES_LIST ||
-      this._typeView.PRODUCT_LIST
+      this._contentViewType.MAIN_PAGE ||
+      this._contentViewType.CATEGORIES_LIST ||
+      this._contentViewType.PRODUCT_LIST
     ) {
-      this._renderProduct(this._settings, currentState, currentState.id)
+      this._renderProduct(setting, state, state.id)
+    } else if (this._contentViewType.PRODUCT_PAGE) {
+      this._renderProductPage(setting, state)
     } else {
-      this._renderProductPage(this._settings, currentState)
+      this._renderEmptyPage()
     }
-  }
-
-  _onViewChange(id, name) {
-    this._productsModel.setCurrentState(id, name)
   }
 }

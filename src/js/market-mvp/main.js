@@ -1,14 +1,12 @@
 import { globalSetting, productList } from './mocks/data'
 import { render, RenderPosition } from './utils/render'
 
-import ProductsModel from './models/products'
-
-import InputSearchComponent from './components/input-search'
 import HeaderComponent from './components/header'
 import MainContentComponent from './components/content-wrap'
 
-import ProductListController from './controller/product-list'
 import MenuController from './controller/menu'
+import SearchInputController from './controller/search-input'
+import ProductListController from './controller/product-list'
 import CartController from './controller/cart'
 
 // Корневой элемент магазина
@@ -19,15 +17,12 @@ const header = new HeaderComponent()
 render(marketMainElement, header, RenderPosition.BEFOREEND)
 
 // ---Поиск
-const inputSearch = new InputSearchComponent()
+const inputSearch = new SearchInputController(header)
 // Создаём поиск внутри шапки
-render(header.getElement(), inputSearch, RenderPosition.BEFOREEND)
-
-// --Модуль (данные)
-const productsModel = new ProductsModel(globalSetting, productList)
+inputSearch.render()
 
 // --Презентер (бизнес-логика) меню
-const menuController = new MenuController(header, productsModel)
+const menuController = new MenuController(header)
 menuController.render()
 
 // ---Обёртка контента
@@ -36,10 +31,10 @@ const mainContent = new MainContentComponent()
 render(marketMainElement, mainContent, RenderPosition.BEFOREEND)
 
 // --Презентер списка продуктов
-const productListController = new ProductListController(mainContent, productsModel)
+const productListController = new ProductListController(mainContent)
 productListController.render()
 // --Презентер страницы товара
-// const productListController = new ProductListController(mainContent, productsModel)
+// const productListController = new ProductListController(mainContent)
 // --Презентер корзины
-const cartController = new CartController(header, mainContent, productsModel)
-cartController.renderCartIcon()
+const cartController = new CartController(header, mainContent)
+cartController.render()

@@ -6,8 +6,16 @@ const createInputSearchTemplate = () => {
   </div>`
 }
 
-export default class InputSearch extends AbstractComponent {
+export default class SearchInputComponent extends AbstractComponent {
   getTemplate() {
     return createInputSearchTemplate()
+  }
+
+  getInput() {
+    return this.getElement().querySelector('.market-header__search-input')
+  }
+
+  setInputHandler(handler) {
+    this.getInput().oninput = handler
   }
 }

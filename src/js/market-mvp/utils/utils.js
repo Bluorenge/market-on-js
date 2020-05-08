@@ -1,6 +1,5 @@
 // Создание [] с товарами и их отрисовка в миниатюре
-export const addProductToCart = (
-  cart,
+export const newProductCart = (
   product,
   productPrice,
   optionName,
@@ -11,6 +10,7 @@ export const addProductToCart = (
     name: product.name,
     img: product.img,
     price: productPrice,
+    id: product.id,
     option:
       optionName !== undefined
         ? {
@@ -20,22 +20,51 @@ export const addProductToCart = (
         : undefined,
     quantity: 1,
   }
-
+  return newProductCart
+}
+export const newProductCartArr = (
+  productArr,
+  newProduct,
+  quantityUp = true
+) => {
   // Проверяем существует ли товар {newProductCart} в корзине [cart]
-  const existingProduct = cart.find((item) =>
+  const existingProduct = productArr.find((item) =>
     item.option !== undefined
-      ? item.name === newProductCart.name &&
-        item.option.optionValue === optionValue
-      : item.name === newProductCart.name
+      ? item.name === newProduct.name &&
+        item.id === newProduct.id &&
+        item.option.optionValue === newProduct.option.optionValue
+      : item.name === newProduct.name && item.id === newProduct.id
   )
 
-  // Если товар {newProductCart} существует, то увеличиваем количество quantity этого объекта
+  // Если товар {newProduct} существует, то увеличиваем количество quantity этого объекта
   if (existingProduct) {
-    existingProduct.quantity++
+    quantityUp ? existingProduct.quantity++ : existingProduct.quantity--
+    // Если не присвоить копию оригиналу, то не сработает слушатель изменения корзины
+    productArr = [...productArr]
   }
-  // Иначе присоединяем этот объект к [cart]
+  // Иначе присоединяем этот объект к [productArr]
   else {
-    cart = cart.concat(newProductCart)
+    productArr = productArr.concat(newProduct)
   }
-  return cart
+  return productArr
+}
+
+// Функция задержки выполнения функции
+export const debounce = (func, wait, immediate) => {
+  let timeout
+
+  return function () {
+    let context = this,
+      args = arguments
+    let callNow = immediate && !timeout
+    clearTimeout(timeout)
+    timeout = setTimeout(function () {
+      timeout = null
+      if (!immediate) {
+        func.apply(context, args)
+      }
+    }, wait)
+
+    if (callNow) func.apply(context, args)
+  }
 }
