@@ -4,11 +4,12 @@ import { render, RenderPosition } from './utils/render'
 import HeaderComponent from './components/header'
 import MainContentComponent from './components/content-wrap'
 
-import MenuController from './controller/menu'
-import SearchInputController from './controller/search-input'
-import ProductListController from './controller/product-list'
-import CartController from './controller/cart'
+import MenuController from './menu/controller-menu'
+import SearchInputController from './search-input/controller-search-input'
+import ProductListController from './products/controllers/product-list'
+import CartController from './cart/controllers/cart'
 
+// TODO: при клике на продукт при поиске изменять меню
 // Корневой элемент магазина
 const marketMainElement = document.querySelector('.market')
 

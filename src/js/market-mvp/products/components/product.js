@@ -1,4 +1,4 @@
-import AbstractComponent from './abstract-component.js'
+import AbstractComponent from '../../utils/abstract-component'
 
 const createProductTemplate = (globalSetting, item) => {
   // Проверяем, существует ли цена
@@ -35,6 +35,10 @@ export default class ProductItemComponent extends AbstractComponent {
 
   getTemplate() {
     return createProductTemplate(this._setting, this._product)
+  }
+
+  getProductNameElement() {
+    return this.getElement().querySelector('.market-products__product-title')
   }
 
   setOpenButtonClickHandler(handler) {

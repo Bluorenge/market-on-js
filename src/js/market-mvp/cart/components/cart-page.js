@@ -1,6 +1,6 @@
-import AbstractComponent from './abstract-component.js'
-// Шаблон описания товара и его добавление на страницу
-const cartPageTemplate = (productObject, globalSetting) => {
+import AbstractComponent from '../../utils/abstract-component.js'
+
+const createCartPageTemplate = (productObject, globalSetting) => {
   const dataExist = productObject.length > 0
 
   // Если переданный аргумент содержит элементы, то отрисовываем корзину с этими элементами, ...
@@ -31,7 +31,6 @@ const cartPageTemplate = (productObject, globalSetting) => {
 
 export default class CartPageComponent extends AbstractComponent {
   constructor(cart, setting) {
-    // Если нужно переопределить конструктор, то вызываем супер
     super()
 
     this._cart = cart
@@ -39,7 +38,11 @@ export default class CartPageComponent extends AbstractComponent {
   }
 
   getTemplate() {
-    return cartPageTemplate(this._cart, this._setting)
+    return createCartPageTemplate(this._cart, this._setting)
+  }
+
+  getTotalPriceElement() {
+    return this.getElement().querySelector('.market-cart__total-price')
   }
 
   setToMainBtnOnClickHandler(handler) {

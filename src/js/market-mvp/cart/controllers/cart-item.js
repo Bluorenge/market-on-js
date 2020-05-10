@@ -1,35 +1,49 @@
-import { render, replace, remove, RenderPosition } from '../utils/render.js'
+import { render, remove, RenderPosition } from '../../utils/render.js'
 import CartItemComponent from '../components/cart-item'
 
-import { cart, updateQuantityOfProductInCart, deleteProductInCart } from '../models/products'
+import {
+  updateQuantityOfProductInCart,
+  deleteProductInCart,
+} from '../model-cart'
+
+import {
+  findStateInDefaultState,
+  closeCartPage,
+} from '../../products/model-products'
 
 export default class CartItemController {
   constructor(container) {
     this._container = container
 
     this._CartItemComponent = null
-    // this._changeInput = this._changeInput.bind(this)
   }
 
   render(setting, product) {
-    // Присваиваем переменной в конструктуре экземляр КОМПОНЕНТА (представления)
     this._CartItemComponent = new CartItemComponent(setting, product)
-    // Отрисовываем КОМПОНЕНТ в родительском контейнере
     render(this._container, this._CartItemComponent, RenderPosition.AFTERBEGIN)
+
     const productElement = this._CartItemComponent.getElement()
-    productElement.id = product.id
 
-    const quantityInput = productElement.querySelector('.market-cart__quantity-input')
-    const price = productElement.querySelector('.market-cart__product-total-price')
-    const quantityText = productElement.querySelector('.market-cart__price-quantity')
+    const id = product.id
+    const name = product.name
 
-    // Вешаем обработчик клика на КОМПОНЕНТ
+    productElement.id = id
+
+    const quantityInput = this._CartItemComponent.getQuantityInputElement()
+    const price = this._CartItemComponent.getTotalPriceElement()
+    const quantityText = this._CartItemComponent.getPriceQuantity()
+
+    this._CartItemComponent.setOpenProductHandler(() => {
+      closeCartPage()
+      findStateInDefaultState({ id, name })
+    })
+
     this._CartItemComponent.setQuantityDownHandler(() => {
       // Изначальное значение инпута
       const initialValue = quantityInput.value
       // Уменьшаем его
       quantityInput.value--
-      // Проверяем изменение
+      // Проверяем допустимость изменения
       this._checkInputValue(quantityInput)
       // Если изменилось
       if (initialValue !== quantityInput.value) {
@@ -39,7 +53,9 @@ export default class CartItemController {
       }
     })
 
-    this._CartItemComponent.setQuantityInputHandler(() => this._checkInputValue(quantityInput))
+    this._CartItemComponent.setQuantityInputHandler(() =>
+      this._checkInputValue(quantityInput)
+    )
 
     this._CartItemComponent.setQuantityUpHandler(() => {
       quantityInput.value++
@@ -47,14 +63,13 @@ export default class CartItemController {
       price.textContent = product.price * quantityInput.value
       updateQuantityOfProductInCart({ product })
     })
-    
+
     this._CartItemComponent.setDeleteProductHandler(() => {
       deleteProductInCart(product)
     })
   }
 
   destroy() {
-    // Удаляем компонент
     remove(this._CartItemComponent)
   }
 
@@ -71,7 +86,6 @@ export default class CartItemController {
     if (input.value < '0' || input.value > '9') {
       input.value = 1
     }
-
     // Запрещаем ввод букв
     input.value = input.value.replace(/\D/g, '')
   }

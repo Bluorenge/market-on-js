@@ -1,16 +1,16 @@
-import AbstractComponent from './abstract-component.js'
+import AbstractComponent from '../../utils/abstract-component'
 
 const cartProductTemplate = (globalSetting, item) => {
   return `<div class="market-cart__product-content">  
     <div class="market-cart__img-wrap">
       <img src="https://media.lpgenerator.ru/images/${globalSetting.userId}/${
-      item.img
-    }" alt="">
+    item.img
+  }" alt="">
     </div>
     <div class="market-cart__info-wrap">
       <h2 class="market-cart__title">${item.name}</h2>
       ${
-        item.option !== undefined
+        item.option
           ? `            
         <div class="market-cart__option-wrap">
           <span class="market-cart__option-title">${item.option.optionName}</span>
@@ -60,6 +60,28 @@ export default class CartItemComponent extends AbstractComponent {
 
   getTemplate() {
     return cartProductTemplate(this._setting, this._product)
+  }
+
+  getQuantityInputElement() {
+    return this.getElement().querySelector('.market-cart__quantity-input')
+  }
+
+  getTotalPriceElement() {
+    return this.getElement().querySelector('.market-cart__product-total-price')
+  }
+
+  getPriceQuantity() {
+    return this.getElement().querySelector('.market-cart__price-quantity')
+  }
+
+  setOpenProductHandler(handler) {
+    this.getElement()
+      .querySelector('.market-cart__title')
+      .addEventListener('click', handler)
+
+    this.getElement()
+      .querySelector('.market-cart__img-wrap')
+      .addEventListener('click', handler)
   }
 
   setQuantityDownHandler(handler) {

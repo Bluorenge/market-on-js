@@ -13,7 +13,7 @@ export const inputFindProduct = (arr, nameFromInput) => {
    * @param {string} searchName - имя поиска
    */
   const findProduct = (arr, searchName) => {
-    if (arr !== undefined) {
+    if (arr) {
       // Проходим по каждому элементу массива
       arr.map((item) => {
         if (item.name.toLowerCase().includes(searchName)) {

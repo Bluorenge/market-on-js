@@ -1,7 +1,7 @@
-import { render, remove, RenderPosition } from '../utils/render.js'
+import { render, remove, RenderPosition } from '../../utils/render.js'
 import ProductPageComponent from '../components/product-page'
 
-import { addToCart } from '../models/products'
+import { addToCart } from '../../cart/model-cart'
 
 export default class ProductPageController {
   constructor(container) {
@@ -26,7 +26,7 @@ export default class ProductPageController {
     let productPrice = productElement.querySelector('.market-product__price')
 
     this._productPageComponent.setOrderButtonClickHandler(() => {
-      if (optionWrap !== null) {
+      if (optionWrap) {
         const optionName = productElement.querySelector(
           '.market-product__option-title'
         ).textContent
@@ -46,7 +46,7 @@ export default class ProductPageController {
       this._animationForAddProductToCart(productElement)
     })
 
-    if (optionWrap !== null) {
+    if (optionWrap) {
       const optionBtns = optionWrap.querySelectorAll(
         '.market-product__option-item:not(.market-product__option-item--disabled)'
       )

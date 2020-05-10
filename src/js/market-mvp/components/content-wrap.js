@@ -1,11 +1,9 @@
-import AbstractComponent from './abstract-component.js'
+import AbstractComponent from '../utils/abstract-component'
 
-const createMarketContentTemplate = () => {
-  return `<section class="market-content"></section>`
-}
+const createMarketContentTemplate = `<section class="market-content"></section>`
 
 export default class MarketMainContent extends AbstractComponent {
   getTemplate() {
-    return createMarketContentTemplate()
+    return createMarketContentTemplate
   }
 }

@@ -1,18 +1,22 @@
-import { render, replace, remove, RenderPosition } from '../utils/render.js'
+import { render, remove, RenderPosition } from '../../utils/render.js'
+
 import CartIconComponent from '../components/cart-icon'
 import CartPageComponent from '../components/cart-page'
-import CartItemController from '../controller/cart-item'
 
+import CartItemController from '../controllers/cart-item'
+
+import { removeMenuItemsTo, createCartMenu } from '../../menu/model-menu'
+import {
+  $cart,
+  updateQuantityOfProductInCart,
+  deleteProductInCart,
+} from '../model-cart'
 import {
   setting,
-  $cart,
-  createCartMenu,
   openCartPage,
   closeCartPage,
   $productList,
-  removeMenuItemsTo,
-  deleteProductInCart
-} from '../models/products'
+} from '../../products/model-products'
 
 const renderProducts = (container, setting, products) => {
   return products.map((item) => {
@@ -33,19 +37,23 @@ export default class CartController {
     this._showedCartProductsComponent = []
 
     this._removeProduct = this._removeProduct.bind(this)
+    this._changeTotalPrice = this._changeTotalPrice.bind(this)
   }
 
   render() {
     // Обновляем иконку корзины
-    $cart.watch((store) => this._updateIcon(store))
+    $cart.watch((state) => this._updateIcon(state))
     // Обновляем страницу корзины при удалении товара
-    $cart.watch(deleteProductInCart, (store) => this._renderCartPage(store))
+    $cart.watch(deleteProductInCart, (state) => this._renderCartPage(state))
+    $cart.watch(updateQuantityOfProductInCart, (state) =>
+      this._changeTotalPrice(state)
+    )
     // Удаляем страницу корзины при её закрытии
     $productList.watch(closeCartPage, () => this._removeCartPage())
   }
 
   _updateIcon(cartData) {
-    if (this._cartIconComponent !== null) {
+    if (this._cartIconComponent) {
       remove(this._cartIconComponent)
     }
 
@@ -58,7 +66,6 @@ export default class CartController {
     this._cartIconComponent.setProductCount()
 
     this._cartIconComponent.setOpenCartClickHandler(() => {
-      // Вызываем обработчик создания меню
       createCartMenu()
       openCartPage()
       this._renderCartPage(cartData)
@@ -66,10 +73,10 @@ export default class CartController {
   }
 
   _renderCartPage(cartData) {
-    if (this._cartPageComponent !== null) {
+    if (this._cartPageComponent) {
       remove(this._cartPageComponent)
     }
-    // Создаём компонент страницы корзины
+
     this._cartPageComponent = new CartPageComponent(cartData, setting)
     render(
       this._container.getElement(),
@@ -93,6 +100,13 @@ export default class CartController {
         newProducts
       )
     }
+  }
+
+  _changeTotalPrice(cart) {
+    const totalPrice = cart
+      .reduce((total, item) => total + item.price * item.quantity, 0)
+      .toLocaleString('ru-RU')
+    this._cartPageComponent.getTotalPriceElement().textContent = totalPrice
   }
 
   _removeProduct() {

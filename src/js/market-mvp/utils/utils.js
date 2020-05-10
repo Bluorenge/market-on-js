@@ -11,13 +11,12 @@ export const newProductCart = (
     img: product.img,
     price: productPrice,
     id: product.id,
-    option:
-      optionName !== undefined
-        ? {
-            optionName: optionName,
-            optionValue: optionValue,
-          }
-        : undefined,
+    option: optionName
+      ? {
+          optionName: optionName,
+          optionValue: optionValue,
+        }
+      : undefined,
     quantity: 1,
   }
   return newProductCart
@@ -29,7 +28,7 @@ export const newProductCartArr = (
 ) => {
   // Проверяем существует ли товар {newProductCart} в корзине [cart]
   const existingProduct = productArr.find((item) =>
-    item.option !== undefined
+    item.option
       ? item.name === newProduct.name &&
         item.id === newProduct.id &&
         item.option.optionValue === newProduct.option.optionValue

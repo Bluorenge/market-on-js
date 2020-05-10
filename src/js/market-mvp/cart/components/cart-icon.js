@@ -1,6 +1,6 @@
-import AbstractComponent from './abstract-component.js'
+import AbstractComponent from '../../utils/abstract-component.js'
 
-const createCartIconTemplate = (data, setting) => {
+const cartIconTemplate = (data, setting) => {
   const dataExist = data.length > 0
   const iconClass = dataExist ? ` market-cart-link__icon-wrap--filled` : ''
   const text = dataExist
@@ -28,15 +28,14 @@ const createCartIconTemplate = (data, setting) => {
 
 export default class CartIconComponent extends AbstractComponent {
   constructor(cart, setting) {
-    // Если нужно переопределить конструктор, то вызываем супер
     super()
-    
+
     this._cart = cart
     this._setting = setting
   }
 
   getTemplate() {
-    return createCartIconTemplate(this._cart, this._setting)
+    return cartIconTemplate(this._cart, this._setting)
   }
 
   setProductCount() {

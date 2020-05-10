@@ -32,25 +32,6 @@ export const render = (container, component, place) => {
   }
 }
 
-// Замена старого элемента на новый
-export const replace = (newComponent, oldComponent) => {
-  // Старый Родитель дом-элемент КОМПОНЕНТА (представления)
-  const parentElement = oldComponent.getElement().parentElement
-  // Новый дом-элемент КОМПОНЕНТА (представления)
-  const newElement = newComponent.getElement()
-  // Старый дом-элемент КОМПОНЕНТА (представления)
-  const oldElement = oldComponent.getElement()
-
-  // Это существующий элемент?
-  const isExistElements = !!(parentElement && newElement && oldElement)
-
-  // Если существующий и Родитель содержит старый элемент
-  if (isExistElements && parentElement.contains(oldElement)) {
-    // Заменяет дочерний элемент - старый, на выбранный - новый
-    parentElement.replaceChild(newElement, oldElement)
-  }
-}
-
 // Удаление КОМПОНЕНТА (представления)
 export const remove = (component) => {
   // Удаляем КОМПОНЕНТ (представления), т.е. сам дом-элемент

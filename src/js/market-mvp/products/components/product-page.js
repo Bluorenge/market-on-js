@@ -1,4 +1,4 @@
-import AbstractComponent from './abstract-component.js'
+import AbstractComponent from '../../utils/abstract-component'
 
 const createProductPageTemplate = (globalSetting, productObject) => {
   // Проходимся по массиву опций с установкой активного класса первой активной опции
@@ -39,8 +39,7 @@ const createProductPageTemplate = (globalSetting, productObject) => {
     </div>
     <div class="market-product__content-wrap">
       ${
-        productObject.hasOwnProperty('options') &&
-        productObject.options !== undefined
+        productObject.hasOwnProperty('options') && productObject.options
           ? `<div class="market-product__option-wrap">
               <div class="market-product__option-title">${
                 productObject.options.nameOptionList
@@ -61,7 +60,7 @@ const createProductPageTemplate = (globalSetting, productObject) => {
       <button class="market-product__btn market-btn market-btn--add-to-cart">В корзину</button>
     </div>
     ${
-      productObject.desc !== undefined
+      productObject.desc
         ? `<div class="market-product__desc">
             <span class="market-product__desc-title">Описание:</span>
             <p class="market-product__desc-text">${productObject.desc}</p>

@@ -1,7 +1,8 @@
-import { render, remove, RenderPosition } from '../utils/render.js'
+import { render, remove, RenderPosition } from '../../utils/render.js'
 import ProductItemComponent from '../components/product'
 
-import { addMenuItem, changeProductListState } from '../models/products'
+import { addMenuItem } from '../../menu/model-menu'
+import { changeProductListState } from '../model-products'
 
 export default class ProductController {
   constructor(container) {
@@ -17,8 +18,7 @@ export default class ProductController {
 
     this._productComponent.setOpenButtonClickHandler(() => {
       const id = Number(productWrap.id.replace(/[^+\d]/g, ''))
-      const name = productWrap.querySelector('.market-products__product-title')
-        .textContent
+      const name = getProductNameElement().textContent
 
       addMenuItem({ id, name })
       changeProductListState({ id, name })

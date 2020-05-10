@@ -30,6 +30,11 @@
   &__img-wrap {
     width: 25%;
     margin-right: 20px;
+    cursor: pointer;
+
+    &:hover {
+      opacity: .7;
+    }
 
     @include respond-to(tablet) {
       width: 20%;
@@ -47,7 +52,12 @@
   }
 
   &__title {
+    cursor: pointer;
     font-size: inherit;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   &__desc-wrap {

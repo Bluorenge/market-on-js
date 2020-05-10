@@ -1,24 +1,23 @@
-import {
-  createElement,
-  render,
-  remove,
-  RenderPosition,
-} from '../utils/render.js'
+import { render, remove, RenderPosition } from '../../utils/render.js'
 
-import ProductController from '../controller/product'
-import ProductPageController from '../controller/product-page'
+import ProductController from './product'
+import ProductPageController from './product-page'
 
 import ProductListComponent from '../components/product-list'
+import BtnPrevComponent from '../components/btn-prev'
+import EmptyMessageComponent from '../components/empty-message'
+
+import { $menu, deleteLastMenuItem } from '../../menu/model-menu'
 
 import {
   setting,
-  $search,
   $productList,
   openCartPage,
   closeCartPage,
-  changeProductListStateFromInput,
-  // search
-} from '../models/products'
+  searchList,
+  searchByDefault,
+  findStateInDefaultState,
+} from '../model-products'
 
 const renderProducts = (productListElement, setting, products) => {
   const createArrayOfProductControllers = (arr) => {
@@ -79,6 +78,8 @@ export default class ProductListController {
     this._containerElement = this._container.getElement()
 
     this._productControllers = []
+    this._btnPrevComponent = null
+    this._emptyTextComponent = null
 
     this._onDataChange = this._onDataChange.bind(this)
     this._removeProduct = this._removeProduct.bind(this)
@@ -89,19 +90,12 @@ export default class ProductListController {
     $productList.watch((state) => this._onDataChange(state))
     $productList.watch(openCartPage, () => this._removeProduct())
     $productList.watch(closeCartPage, (state) => this._onDataChange(state))
-    $productList.watch(changeProductListStateFromInput, (state) => this._onDataChange(state))
-    $search.updates.watch((state) => {
-    console.log('state :', state);
-      return this._onDataChange(state)
-    })
-    // $search.watch((state) => console.log('store changed: ', state))
-    // $search.watch(search, (state) => console.log('store changed: ', state))
-    // searchList.watch((state) => this._onDataChange(state))
+    $productList.watch(searchByDefault, (state) => this._onDataChange(state))
+    searchList.watch((state) => (state ? this._onDataChange(state) : false))
   }
 
-  _renderProduct(settings, products, id = 0) {
+  _renderProduct(settings, products, id = 0, isMainPage = true) {
     this._wrap = new ProductListComponent()
-    // Создаём обёртку списка
     render(this._containerElement, this._wrap, RenderPosition.BEFOREEND)
 
     const productListElement = this._wrap.getElement()
@@ -110,6 +104,23 @@ export default class ProductListController {
     const newProducts = renderProducts(productListElement, settings, products)
 
     this._productControllers = this._productControllers.concat(newProducts)
+
+    if (!isMainPage) {
+      this._btnPrevComponent = new BtnPrevComponent()
+      render(
+        this._containerElement,
+        this._btnPrevComponent,
+        RenderPosition.BEFOREEND
+      )
+      this._btnPrevComponent.setPrevBtnHandler(() => {
+        const menu = $menu.getState()
+
+        const id = menu[menu.length - 2].id
+        const name = menu[menu.length - 2].name
+        deleteLastMenuItem()
+        findStateInDefaultState({ id, name })
+      })
+    }
   }
 
   _renderProductPage(settings, product) {
@@ -123,22 +134,22 @@ export default class ProductListController {
   }
 
   _renderEmptyPage() {
-    render(this._containerElement, this._wrap, RenderPosition.BEFOREEND)
-    const productListElement = this._wrap.getElement()
+    this._emptyTextComponent = new EmptyMessageComponent()
 
-    const emptyMessage = createElement(
-      `<div class="market-content--fade-in market-content__empty">Ничего не найдено</div>`
-    )
-    const message = productListElement.querySelector('.market-content__empty')
-
-    if (message === null) {
-      productListElement.prepend(emptyMessage)
+    if (this._emptyTextComponent) {
+      render(
+        this._containerElement,
+        this._emptyTextComponent,
+        RenderPosition.BEFOREEND
+      )
     }
   }
 
   _removeProduct() {
     remove(this._wrap)
-
+    if (this._btnPrevComponent) {
+      remove(this._btnPrevComponent)
+    }
     this._productControllers.forEach((productController) =>
       productController.destroy()
     )
@@ -146,20 +157,23 @@ export default class ProductListController {
   }
 
   _onDataChange(state) {
-  // console.log('state :', state);
-    if (this._productControllers.length !== 0) {
+    if (this._productControllers.length) {
       this._removeProduct()
     }
 
-    // Проверяем тип контента состояния
+    if (this._emptyTextComponent) {
+      remove(this._emptyTextComponent)
+    }
+
     this._contentViewType = getContentViewType(state)
 
-    if (
-      this._contentViewType.MAIN_PAGE ||
+    if (this._contentViewType.MAIN_PAGE) {
+      this._renderProduct(setting, state, state.id)
+    } else if (
       this._contentViewType.CATEGORIES_LIST ||
       this._contentViewType.PRODUCT_LIST
     ) {
-      this._renderProduct(setting, state, state.id)
+      this._renderProduct(setting, state, state.id, false)
     } else if (this._contentViewType.PRODUCT_PAGE) {
       this._renderProductPage(setting, state)
     } else {

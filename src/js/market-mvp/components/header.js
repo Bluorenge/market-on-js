@@ -1,11 +1,9 @@
-import AbstractComponent from './abstract-component.js'
+import AbstractComponent from '../utils/abstract-component'
 
-const createHeaderTemplate = () => {
-  return `<header class="market-header"></header>`
-}
+const headerTemplate = `<header class="market-header"></header>`
 
 export default class Header extends AbstractComponent {
   getTemplate() {
-    return createHeaderTemplate()
+    return headerTemplate
   }
 }

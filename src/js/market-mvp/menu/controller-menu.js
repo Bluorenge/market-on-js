@@ -1,14 +1,14 @@
 import { render, remove, RenderPosition } from '../utils/render.js'
 
-import MenuComponent from '../components/menu'
-import MenuItemComponent from '../components/menu-item'
+import MenuComponent from './components/menu'
+import MenuItemComponent from './components/menu-item'
+
+import { $menu, removeMenuItemsTo } from './model-menu'
 
 import {
-  $menu,
-  changeProductListStateFromMenu,
-  removeMenuItemsTo,
+  findStateInDefaultState,
   closeCartPage,
-} from '../models/products'
+} from '../products/model-products'
 
 export default class MenuController {
   constructor(container) {
@@ -48,25 +48,29 @@ export default class MenuController {
       // Если это единственный элемент
       if (this._menuItemComponent.length == 1) {
         return
-      } else if (isCartMenu && index !== this._menuItemComponent.length - 1) {
+      }
+      // Если это меню корзины и не последний элемент
+      else if (isCartMenu && index !== this._menuItemComponent.length - 1) {
         element.setOpenButtonClickHandler(() => {
           removeMenuItemsTo({ id: 0 })
           closeCartPage()
         })
-      } else if (index !== this._menuItemComponent.length - 1) {
+      }
+      // Если это не последний элемент
+      else if (index !== this._menuItemComponent.length - 1) {
         element.setOpenButtonClickHandler(() => {
           const itemId = Number(element.getElement().id.replace(/[^+\d]/g, ''))
           const itemName = element.getElement().textContent
 
           removeMenuItemsTo({ id: itemId, name: itemName })
-          changeProductListStateFromMenu({ id: itemId, name: itemName })
+          findStateInDefaultState({ id: itemId, name: itemName })
         })
       }
     })
   }
 
   _onViewChange(menu) {
-    if (this._menuItemComponent.length !== 0) {
+    if (this._menuItemComponent.length) {
       // Удаляем все компоненты меню
       this._menuItemComponent.forEach((element) => remove(element))
       // Очищаем массив компонентов
