@@ -11,19 +11,17 @@ export default class ProductPageController {
   }
 
   render(setting, product) {
-    // Присваиваем переменной в конструктуре экземляр КОМПОНЕНТА (представления)
     this._productPageComponent = new ProductPageComponent(setting, product)
-    // Отрисовываем КОМПОНЕНТ в родительском контейнере
     render(
       this._container,
       this._productPageComponent,
       RenderPosition.BEFOREEND
     )
+    
     const productElement = this._productPageComponent.getElement()
-    productElement.id = product.id
 
     const optionWrap = this._productPageComponent.getOptionWrap()
-    let productPrice = productElement.querySelector('.market-product__price')
+    let productPrice = this._productPageComponent.getPriceElement()
 
     this._productPageComponent.setOrderButtonClickHandler(() => {
       if (optionWrap) {
@@ -76,10 +74,8 @@ export default class ProductPageController {
     const productPic = parentElement.querySelector(
       '.market-product__img-wrap img'
     )
-    // Клонируем его
     const cloneProductPic = productPic.cloneNode(true)
     cloneProductPic.classList.add('market-product__animate')
-    // Вставляем копию картинки после картинки
     productPic.after(cloneProductPic)
   }
 }

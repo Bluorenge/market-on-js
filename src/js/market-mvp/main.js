@@ -10,6 +10,13 @@ import ProductListController from './products/controllers/product-list'
 import CartController from './cart/controllers/cart'
 
 // TODO: при клике на продукт при поиске изменять меню
+// TODO: возвращаться к результатам поиска
+// TODO: кнопка быстрой покупки
+// TODO: карусель
+// TODO: скролбар
+// TODO: тень
+// TODO: горизотальный/вертикальный скроллбар
+// TODO: колбек на покупку
 // Корневой элемент магазина
 const marketMainElement = document.querySelector('.market')
 

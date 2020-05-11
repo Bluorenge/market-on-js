@@ -2,7 +2,7 @@ import { render, RenderPosition } from '../utils/render'
 import SearchInputComponent from './component-search-input'
 import { debounce } from '../utils/utils'
 
-import { search } from '../products/model-products'
+import { search, $productList, changeProductListState } from '../products/model-products'
 import { createSearchMenu } from '../menu/model-menu'
 
 export default class SearchInputController {
@@ -18,6 +18,7 @@ export default class SearchInputController {
       RenderPosition.BEFOREEND
     )
     const input = searchInputComponent.getInput()
+    $productList.watch(changeProductListState, () => input.value = '')
 
     searchInputComponent.setInputHandler(
       debounce(() => {

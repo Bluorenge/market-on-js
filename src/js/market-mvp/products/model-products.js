@@ -24,7 +24,7 @@ export const $productList = createStore(productListData)
 export const openCartPage = createEvent()
 
 export const changeProductListState = createEvent()
-export const findStateInDefaultState = createEvent()
+export const findProductsInDefaultProductList = createEvent()
 export const closeCartPage = createEvent()
 
 $productList
@@ -46,11 +46,11 @@ $productList
         return state.defaultState
     }
   })
-  .on(findStateInDefaultState, (state, data) => {
+  .on(findProductsInDefaultProductList, (state, data) => {
     state = findByName($productList.defaultState, data.id, data.name)
     return state ? state : $productList.defaultState
   })
-  .on(closeCartPage, () => $productList.defaultState)
+  .reset(closeCartPage)
 
 export const search = createEvent()
 export const searchByDefault = createEvent()

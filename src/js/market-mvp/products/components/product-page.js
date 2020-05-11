@@ -86,6 +86,10 @@ export default class ProductPageComponent extends AbstractComponent {
     return this.getElement().querySelector(`.market-product__option-list`)
   }
 
+  getPriceElement() {
+    return this.getElement().querySelector('.market-product__price')
+  }
+
   setOrderButtonClickHandler(handler) {
     this.getElement()
       .querySelector(`.market-btn--add-to-cart`)

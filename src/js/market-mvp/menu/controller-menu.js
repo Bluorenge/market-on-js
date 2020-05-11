@@ -6,7 +6,7 @@ import MenuItemComponent from './components/menu-item'
 import { $menu, removeMenuItemsTo } from './model-menu'
 
 import {
-  findStateInDefaultState,
+  findProductsInDefaultProductList,
   closeCartPage,
 } from '../products/model-products'
 
@@ -21,11 +21,9 @@ export default class MenuController {
   }
 
   render() {
-    // Отрисовываем контейнер меню
     const header = this._container.getElement()
     render(header, this._menuComponent, RenderPosition.BEFOREEND)
 
-    // Подписываемся на изменения меню
     $menu.watch((menu) => this._onViewChange(menu))
   }
 
@@ -59,11 +57,11 @@ export default class MenuController {
       // Если это не последний элемент
       else if (index !== this._menuItemComponent.length - 1) {
         element.setOpenButtonClickHandler(() => {
-          const itemId = Number(element.getElement().id.replace(/[^+\d]/g, ''))
-          const itemName = element.getElement().textContent
+          const id = Number(element.getElement().id.replace(/[^+\d]/g, ''))
+          const name = element.getElement().textContent
 
-          removeMenuItemsTo({ id: itemId, name: itemName })
-          findStateInDefaultState({ id: itemId, name: itemName })
+          removeMenuItemsTo({ id, name })
+          findProductsInDefaultProductList({ id, name })
         })
       }
     })
@@ -71,12 +69,9 @@ export default class MenuController {
 
   _onViewChange(menu) {
     if (this._menuItemComponent.length) {
-      // Удаляем все компоненты меню
       this._menuItemComponent.forEach((element) => remove(element))
-      // Очищаем массив компонентов
       this._menuItemComponent = []
     }
-    // Отрисовываем новый список меню
     this._renderItem(menu)
   }
 }

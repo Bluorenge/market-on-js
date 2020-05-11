@@ -4,6 +4,8 @@ import { productListData } from '../products/model-products'
 
 const entryMenu = [{ id: 0, name: 'Главная' }]
 
+export const isSearchMenu = (menu) => menu[menu.length - 1].name === 'Поиск'
+
 export const $menu = createStore(entryMenu)
 
 export const addMenuItem = createEvent()
@@ -22,6 +24,8 @@ $menu
   .on(createMenuPath, (_, data) =>
     [...entryMenu].concat(menuPath(productListData, data.id, data.name))
   )
-  .on(createSearchMenu, (state) => state[state.length - 1].name !== 'Поиск' ? state.concat({ name: 'Поиск' }) : state)
+  .on(createSearchMenu, (state) =>
+    !isSearchMenu(state) ? state.concat({ name: 'Поиск' }) : state
+  )
   .on(createCartMenu, () => [...entryMenu].concat({ name: 'Корзина' }))
   .on(deleteLastMenuItem, (state) => state.splice(0, state.length - 1))

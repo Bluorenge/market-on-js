@@ -16,7 +16,7 @@ import {
   closeCartPage,
   searchList,
   searchByDefault,
-  findStateInDefaultState,
+  findProductsInDefaultProductList,
 } from '../model-products'
 
 const renderProducts = (productListElement, setting, products) => {
@@ -44,26 +44,31 @@ const getContentViewType = (state) => {
     MAIN_PAGE: false,
     CATEGORIES_LIST: false,
     PRODUCT_LIST: false,
+    SEARCH_LIST: false,
     PRODUCT_PAGE: false,
   }
 
   switch (true) {
     case Array.isArray(state) && state.length == 0:
       typeView.EMPTY_PAGE = true
-      return typeView
-    case Array.isArray(state):
+      break
+    case state === $productList.defaultState:
       typeView.MAIN_PAGE = true
-      return typeView
+      break
     case 'subCategory' in state:
       typeView.CATEGORIES_LIST = true
-      return typeView
+      break
     case 'productsInCategory' in state:
       typeView.PRODUCT_LIST = true
-      return typeView
+      break
+    case Array.isArray(state):
+      typeView.SEARCH_LIST = true
+      break
     default:
       typeView.PRODUCT_PAGE = true
-      return typeView
+      break
   }
+  return typeView
 }
 
 export default class ProductListController {
@@ -77,7 +82,7 @@ export default class ProductListController {
     // Корневой элемент контента
     this._containerElement = this._container.getElement()
 
-    this._productControllers = []
+    this._productsControllers = []
     this._btnPrevComponent = null
     this._emptyTextComponent = null
 
@@ -94,32 +99,20 @@ export default class ProductListController {
     searchList.watch((state) => (state ? this._onDataChange(state) : false))
   }
 
-  _renderProduct(settings, products, id = 0, isMainPage = true) {
+  _renderProductList(settings, products, isMainPage = true) {
     this._wrap = new ProductListComponent()
     render(this._containerElement, this._wrap, RenderPosition.BEFOREEND)
 
-    const productListElement = this._wrap.getElement()
-    productListElement.id = id
+    const newProducts = renderProducts(
+      this._wrap.getElement(),
+      settings,
+      products
+    )
 
-    const newProducts = renderProducts(productListElement, settings, products)
-
-    this._productControllers = this._productControllers.concat(newProducts)
+    this._productsControllers = this._productsControllers.concat(newProducts)
 
     if (!isMainPage) {
-      this._btnPrevComponent = new BtnPrevComponent()
-      render(
-        this._containerElement,
-        this._btnPrevComponent,
-        RenderPosition.BEFOREEND
-      )
-      this._btnPrevComponent.setPrevBtnHandler(() => {
-        const menu = $menu.getState()
-
-        const id = menu[menu.length - 2].id
-        const name = menu[menu.length - 2].name
-        deleteLastMenuItem()
-        findStateInDefaultState({ id, name })
-      })
+      this._renderPrevBtn()
     }
   }
 
@@ -128,9 +121,10 @@ export default class ProductListController {
       this._containerElement
     )
     productPageController.render(settings, product)
-    this._productControllers = this._productControllers.concat(
+    this._productsControllers = this._productsControllers.concat(
       productPageController
     )
+    this._renderPrevBtn()
   }
 
   _renderEmptyPage() {
@@ -145,19 +139,35 @@ export default class ProductListController {
     }
   }
 
+  _renderPrevBtn() {
+    this._btnPrevComponent = new BtnPrevComponent()
+    render(
+      this._containerElement,
+      this._btnPrevComponent,
+      RenderPosition.BEFOREEND
+    )
+    this._btnPrevComponent.setPrevBtnHandler(() => {
+      deleteLastMenuItem()
+      const menu = $menu.getState()
+      const id = menu[menu.length - 1].id
+      const name = menu[menu.length - 1].name
+      findProductsInDefaultProductList({ id, name })
+    })
+  }
+
   _removeProduct() {
     remove(this._wrap)
     if (this._btnPrevComponent) {
       remove(this._btnPrevComponent)
     }
-    this._productControllers.forEach((productController) =>
+    this._productsControllers.forEach((productController) =>
       productController.destroy()
     )
-    this._productControllers = []
+    this._productsControllers = []
   }
 
   _onDataChange(state) {
-    if (this._productControllers.length) {
+    if (this._productsControllers.length > 0) {
       this._removeProduct()
     }
 
@@ -168,12 +178,13 @@ export default class ProductListController {
     this._contentViewType = getContentViewType(state)
 
     if (this._contentViewType.MAIN_PAGE) {
-      this._renderProduct(setting, state, state.id)
+      this._renderProductList(setting, state)
     } else if (
       this._contentViewType.CATEGORIES_LIST ||
-      this._contentViewType.PRODUCT_LIST
+      this._contentViewType.PRODUCT_LIST ||
+      this._contentViewType.SEARCH_LIST
     ) {
-      this._renderProduct(setting, state, state.id, false)
+      this._renderProductList(setting, state, false)
     } else if (this._contentViewType.PRODUCT_PAGE) {
       this._renderProductPage(setting, state)
     } else {

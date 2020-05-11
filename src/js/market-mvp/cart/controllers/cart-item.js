@@ -7,7 +7,7 @@ import {
 } from '../model-cart'
 
 import {
-  findStateInDefaultState,
+  findProductsInDefaultProductList,
   closeCartPage,
 } from '../../products/model-products'
 
@@ -35,7 +35,7 @@ export default class CartItemController {
 
     this._CartItemComponent.setOpenProductHandler(() => {
       closeCartPage()
-      findStateInDefaultState({ id, name })
+      findProductsInDefaultProductList({ id, name })
     })
 
     this._CartItemComponent.setQuantityDownHandler(() => {
