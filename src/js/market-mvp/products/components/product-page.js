@@ -1,32 +1,50 @@
 import AbstractComponent from '../../utils/abstract-component'
+import { createPrice, firstActiveOptionIndex } from '../../utils/utils'
 
 const createProductPageTemplate = (globalSetting, productObject) => {
+  const optionItem = (name, state, arr, index) => {
+    return `<li class="market-product__option-item
+    ${
+      state
+        ? firstActiveOptionIndex(arr) === index
+          ? ' market-product__option-item--active'
+          : ''
+        : ' market-product__option-item--disabled'
+    }
+    ">${name}</li>`
+  }
   // Проходимся по массиву опций с установкой активного класса первой активной опции
-  const optionsList = () => {
-    return productObject.options.optionList
-      .map(
-        (item, indexItem) =>
-          // Превращаем каждый объект опции в массив и выбираем первую строчку
-          Object.entries(item).map(
-            ([key, value]) =>
-              `<li class="market-product__option-item
-              ${
-                // Если опция активна
-                value === true
-                  ? // Ищем её индекс, и если он равен индексу родительского элемента
-                    productObject.options.optionList.findIndex((option) =>
-                      Object.keys(option).map(([key]) => key === true)
-                    ) === indexItem
-                    ? // Задаём активный класс
-                      'market-product__option-item--active'
-                    : ''
-                  : // Иначе отключаем опцию
-                    'market-product__option-item--disabled'
-              }
-          ">${key}</li>`
-          )[0]
-      )
+  const optionsList = (product) => {
+    return product.options.optionList
+      .map((item, indexItem) => {
+        // Превращаем каждый объект опции в массив и выбираем первую строчку
+        return Object.entries(item).map(([optionName, optionStatus]) =>
+          optionItem(optionName, optionStatus, product, indexItem)
+        )[0]
+      })
       .join('')
+  }
+
+  const optionWrap = (product) => {
+    return product.hasOwnProperty('options') && product.options
+      ? `<div class="market-product__option-wrap">
+           <div class="market-product__option-title">${
+             product.options.nameOptionList
+           }:</div>
+           <ul class="market-product__option-list"> 
+             ${optionsList(product)}
+           </ul>
+         </div>`
+      : ''
+  }
+
+  const desc = (product) => {
+    return product.desc
+      ? `<div class="market-product__desc">
+          <span class="market-product__desc-title">Описание:</span>
+          <p class="market-product__desc-text">${product.desc}</p>
+        </div>`
+      : ''
   }
 
   // Внутри превращаем productObject.option в массив и отрисовываем каждый элемент опций
@@ -38,35 +56,15 @@ const createProductPageTemplate = (globalSetting, productObject) => {
   }" alt="product-img">
     </div>
     <div class="market-product__content-wrap">
-      ${
-        productObject.hasOwnProperty('options') && productObject.options
-          ? `<div class="market-product__option-wrap">
-              <div class="market-product__option-title">${
-                productObject.options.nameOptionList
-              }:</div>
-              <ul class="market-product__option-list"> 
-                ${optionsList()}
-              </ul>
-            </div>`
-          : ''
-      }
+      ${optionWrap(productObject)}
       <div class="market-product__price-wrap">
         <span>Стоимость: </span>
-        <span class="market-product__price">${productObject.price.toLocaleString(
-          'ru-RU'
-        )}</span>
+        <span class="market-product__price">${createPrice(productObject)}</span>
         <span>${globalSetting.currency}</span>
       </div>
       <button class="market-product__btn market-btn market-btn--add-to-cart">В корзину</button>
     </div>
-    ${
-      productObject.desc
-        ? `<div class="market-product__desc">
-            <span class="market-product__desc-title">Описание:</span>
-            <p class="market-product__desc-text">${productObject.desc}</p>
-          </div>`
-        : ''
-    }
+    ${desc(productObject)}
   </section>`
 }
 

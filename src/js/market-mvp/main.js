@@ -9,14 +9,17 @@ import SearchInputController from './search-input/controller-search-input'
 import ProductListController from './products/controllers/product-list'
 import CartController from './cart/controllers/cart'
 
-// TODO: при клике на продукт при поиске изменять меню
-// TODO: возвращаться к результатам поиска
+// // TODO: при клике на продукт при поиске изменять меню
+// TODO: возвращаться к результатам поиска - пока не получится, потому что сломается поиск, ведь он работает по текущему виду. Плюс инпут очищается при переходе по списку.
 // TODO: кнопка быстрой покупки
 // TODO: карусель
 // TODO: скролбар
 // TODO: тень
 // TODO: горизотальный/вертикальный скроллбар
 // TODO: колбек на покупку
+// TODO: количество доступного товара. В том числе и отдельных опций
+// TODO: сделать навигацию по кнопкам назад, когда мышка над магазином 
+
 // Корневой элемент магазина
 const marketMainElement = document.querySelector('.market')
 

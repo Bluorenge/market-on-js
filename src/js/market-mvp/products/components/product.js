@@ -1,24 +1,24 @@
 import AbstractComponent from '../../utils/abstract-component'
+import { createPrice } from '../../utils/utils'
 
 const createProductTemplate = (globalSetting, item) => {
+console.log('item :', item);
   // Проверяем, существует ли цена
   const priceExisct = 'price' in item
   // Шаблон цены
   const priceTemplate = () => {
-    return `<span class='market-products__product-price'>${item.price.toLocaleString(
-      'ru-RU'
-    )} ${globalSetting.currency}</span>`
+    return `<span class='market-products__product-price'>${createPrice(item)} ${globalSetting.currency}</span>`
   }
 
   // Присваиваем цену переменной
-  const price = priceExisct ? priceTemplate() : ''
+  const getPrice = priceExisct ? priceTemplate() : ''
 
   return `<div id="product-${item.id}" class='market-products__product'>
     <div class="market-products__product-wrap">
       <h2 class='market-products__product-title'>${item.name}</h2>
       <div class='market-products__product-img-wrap'><img src='https://media.lpgenerator.ru/images/${globalSetting.userId}/${item.img}'></div>
       <div class='market-products__product-bottom'>
-        ${price}
+        ${getPrice}
         <button class='market-products__product-btn market-btn market-products__product-btn--open'>Подробнее</button>
       </div>
     </div>

@@ -67,3 +67,21 @@ export const debounce = (func, wait, immediate) => {
     if (callNow) func.apply(context, args)
   }
 }
+
+export const firstActiveOptionIndex = (product) => {
+  return product.options.optionList.findIndex((option) => {
+    return Object.entries(option).map(([, value]) => value)[0]
+  })
+}
+
+export const createPrice = (product) => {
+  return product.hasOwnProperty('options') && product.options
+    ? product.options.optionList
+        .map((item, index) => {
+          if (firstActiveOptionIndex(product) === index) {
+            return item.price.toLocaleString('ru-RU')
+          }
+        })
+        .join('')
+    : product.price.toLocaleString('ru-RU')
+}
