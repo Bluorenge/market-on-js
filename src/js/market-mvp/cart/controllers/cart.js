@@ -5,6 +5,7 @@ import CartPageComponent from '../components/cart-page'
 
 import CartItemController from '../controllers/cart-item'
 
+import {setting} from '../../main'
 import { removeMenuItemsTo, createCartMenu } from '../../menu/model-menu'
 import {
   $cart,
@@ -12,10 +13,10 @@ import {
   deleteProductInCart,
 } from '../model-cart'
 import {
-  setting,
   openCartPage,
-  closeCartPage,
+  toDefaultState,
   $productList,
+  closeCartPage
 } from '../../products/model-products'
 
 const renderProducts = (container, setting, products) => {
@@ -49,6 +50,7 @@ export default class CartController {
       this._changeTotalPrice(state)
     )
     // Удаляем страницу корзины при её закрытии
+    $productList.watch(toDefaultState, () => this._removeCartPage())
     $productList.watch(closeCartPage, () => this._removeCartPage())
   }
 
@@ -86,7 +88,7 @@ export default class CartController {
 
     this._cartPageComponent.setToMainBtnOnClickHandler(() => {
       removeMenuItemsTo({ id: 0 })
-      closeCartPage()
+      toDefaultState()
     })
 
     if (cartData.length > 0) {
@@ -110,11 +112,9 @@ export default class CartController {
   }
 
   _removeProduct() {
-    // Удаляем все отображаемые задачи
     this._showedCartProductsComponent.forEach((productController) =>
       productController.destroy()
     )
-    // Очищаем массив с показанными задачами
     this._showedCartProductsComponent = []
   }
 

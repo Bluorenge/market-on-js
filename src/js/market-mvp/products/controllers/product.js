@@ -37,4 +37,8 @@ export default class ProductController {
   destroy() {
     remove(this._productComponent)
   }
+
+  getComponent() {
+    return this._productComponent.getElement()
+  }
 }

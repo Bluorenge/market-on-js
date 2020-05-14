@@ -1,13 +1,13 @@
-import { render, remove, RenderPosition } from '../utils/render.js'
+import { render, remove, RenderPosition } from '../utils/render'
+import { elementReady, carouselNav } from '../utils/utils'
 
 import MenuComponent from './components/menu'
 import MenuItemComponent from './components/menu-item'
 
 import { $menu, removeMenuItemsTo } from './model-menu'
-
 import {
   findProductsInDefaultProductList,
-  closeCartPage,
+  toDefaultState,
 } from '../products/model-products'
 
 export default class MenuController {
@@ -15,19 +15,18 @@ export default class MenuController {
     this._container = container
 
     this._menuComponent = new MenuComponent()
-    this._menuItemComponent = []
+    this._menuItemComponents = []
 
     this._onViewChange = this._onViewChange.bind(this)
   }
 
   render() {
-    const header = this._container.getElement()
-    render(header, this._menuComponent, RenderPosition.BEFOREEND)
-
     $menu.watch((menu) => this._onViewChange(menu))
   }
 
   _renderItem(menu) {
+    const header = this._container.getElement()
+    render(header, this._menuComponent, RenderPosition.BEFOREEND)
     const menuWrap = this._menuComponent.getElement()
 
     const renderMenuItems = (arr) => {
@@ -37,25 +36,33 @@ export default class MenuController {
         return menuItemComponent
       })
     }
-    this._menuItemComponent = renderMenuItems(menu)
+    this._menuItemComponents = renderMenuItems(menu)
     const isCartMenu =
-      this._menuItemComponent[this._menuItemComponent.length - 1].getElement()
+      this._menuItemComponents[this._menuItemComponents.length - 1].getElement()
         .textContent === 'Корзина'
 
-    this._menuItemComponent.map((element, index) => {
+    elementReady(`.${menuWrap.classList[0]}`).then(() => {
+      const width = this._menuItemComponents.reduce(
+        (acc, item) => acc + item.getElement().offsetWidth,
+        0
+      )
+      carouselNav(menuWrap, width)
+    })
+
+    this._menuItemComponents.map((element, index) => {
       // Если это единственный элемент
-      if (this._menuItemComponent.length == 1) {
+      if (this._menuItemComponents.length == 1) {
         return
       }
       // Если это меню корзины и не последний элемент
-      else if (isCartMenu && index !== this._menuItemComponent.length - 1) {
+      else if (isCartMenu && index !== this._menuItemComponents.length - 1) {
         element.setOpenButtonClickHandler(() => {
           removeMenuItemsTo({ id: 0 })
-          closeCartPage()
+          toDefaultState()
         })
       }
       // Если это не последний элемент
-      else if (index !== this._menuItemComponent.length - 1) {
+      else if (index !== this._menuItemComponents.length - 1) {
         element.setOpenButtonClickHandler(() => {
           const id = Number(element.getElement().id.replace(/[^+\d]/g, ''))
           const name = element.getElement().textContent
@@ -68,10 +75,11 @@ export default class MenuController {
   }
 
   _onViewChange(menu) {
-    if (this._menuItemComponent.length) {
-      this._menuItemComponent.forEach((element) => remove(element))
-      this._menuItemComponent = []
+    if (this._menuItemComponents.length) {
+      this._menuItemComponents.forEach((element) => remove(element))
+      this._menuItemComponents = []
     }
+    remove(this._menuComponent)
     this._renderItem(menu)
   }
 }

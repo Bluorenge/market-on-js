@@ -5,11 +5,8 @@ import {
   updateQuantityOfProductInCart,
   deleteProductInCart,
 } from '../model-cart'
-
-import {
-  findProductsInDefaultProductList,
-  closeCartPage,
-} from '../../products/model-products'
+import { findProductsInDefaultProductList, closeCartPage } from '../../products/model-products'
+import { createMenuPath } from '../../menu/model-menu'
 
 export default class CartItemController {
   constructor(container) {
@@ -36,6 +33,7 @@ export default class CartItemController {
     this._CartItemComponent.setOpenProductHandler(() => {
       closeCartPage()
       findProductsInDefaultProductList({ id, name })
+      createMenuPath({ id, name })
     })
 
     this._CartItemComponent.setQuantityDownHandler(() => {
