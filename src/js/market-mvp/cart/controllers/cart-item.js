@@ -1,16 +1,10 @@
 import { render, remove, RenderPosition } from '../../utils/render.js'
 import CartItemComponent from '../components/cart-item'
 
-import {
-  updateQuantityOfProductInCart,
-  deleteProductInCart,
-} from '../model-cart'
-import { findProductsInDefaultProductList, closeCartPage } from '../../products/model-products'
-import { createMenuPath } from '../../menu/model-menu'
-
 export default class CartItemController {
-  constructor(container) {
+  constructor(container, eventsForStore) {
     this._container = container
+    this._eventsForStore = eventsForStore
 
     this._CartItemComponent = null
   }
@@ -31,9 +25,9 @@ export default class CartItemController {
     const quantityText = this._CartItemComponent.getPriceQuantity()
 
     this._CartItemComponent.setOpenProductHandler(() => {
-      closeCartPage()
-      findProductsInDefaultProductList({ id, name })
-      createMenuPath({ id, name })
+      this._eventsForStore.closeCartPage()
+      this._eventsForStore.findProductsInDefaultProductList({ id, name })
+      this._eventsForStore.createMenuPath({ id, name })
     })
 
     this._CartItemComponent.setQuantityDownHandler(() => {
@@ -47,7 +41,10 @@ export default class CartItemController {
       if (initialValue !== quantityInput.value) {
         quantityText.textContent = quantityInput.value
         price.textContent = product.price * quantityInput.value
-        updateQuantityOfProductInCart({ product, quantityUp: false })
+        this._eventsForStore.updateQuantityOfProductInCart({
+          product,
+          quantityUp: false,
+        })
       }
     })
 
@@ -59,11 +56,11 @@ export default class CartItemController {
       quantityInput.value++
       quantityText.textContent = quantityInput.value
       price.textContent = product.price * quantityInput.value
-      updateQuantityOfProductInCart({ product })
+      this._eventsForStore.updateQuantityOfProductInCart({ product })
     })
 
     this._CartItemComponent.setDeleteProductHandler(() => {
-      deleteProductInCart(product)
+      this._eventsForStore.deleteProductInCart(product)
     })
   }
 

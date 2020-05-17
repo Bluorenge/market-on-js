@@ -217,7 +217,6 @@
       flex-wrap: wrap;
   max-height: 410px;
   padding-bottom: 10px;
-  overflow: auto;
 }
 
 .market-products__product {
@@ -492,6 +491,11 @@
 .market-cart__img-wrap {
   width: 25%;
   margin-right: 20px;
+  cursor: pointer;
+}
+
+.market-cart__img-wrap:hover {
+  opacity: .7;
 }
 
 .market-cart__info-wrap {
@@ -499,7 +503,12 @@
 }
 
 .market-cart__title {
+  cursor: pointer;
   font-size: inherit;
+}
+
+.market-cart__title:hover {
+  text-decoration: underline;
 }
 
 .market-cart__desc-wrap {

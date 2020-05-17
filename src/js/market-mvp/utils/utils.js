@@ -76,7 +76,6 @@ import PerfectScrollbar from 'perfect-scrollbar'
   })
 
   var gliderPrototype = Glider.prototype
-
   gliderPrototype.init = function (refresh, paging) {
     var _ = this
 
@@ -94,7 +93,10 @@ import PerfectScrollbar from 'perfect-scrollbar'
     var breakpointChanged = _.settingsBreakpoint()
     if (!paging) paging = breakpointChanged
 
-    if (_.opt.slidesToShow === 'auto' || _.opt._autoSlide) {
+    if (
+      _.opt.slidesToShow === 'auto' ||
+      typeof _.opt._autoSlide !== 'undefined'
+    ) {
       var slideCount = _.containerWidth / _.opt.itemWidth
 
       _.opt._autoSlide = _.opt.slidesToShow = _.opt.exactWidth
@@ -119,6 +121,8 @@ import PerfectScrollbar from 'perfect-scrollbar'
 
     _.track.style.width = width + 'px'
     _.trackWidth = width
+    _.isDrag = false
+    _.preventClick = false
 
     _.opt.resizeLock && _.scrollTo(_.slide * _.itemWidth, 0)
 
@@ -140,16 +144,29 @@ import PerfectScrollbar from 'perfect-scrollbar'
     var mouseup = function () {
       _.mouseDown = undefined
       _.ele.classList.remove('drag')
+      if (_.isDrag) {
+        _.preventClick = true
+      }
+      _.isDrag = false
     }
 
     var events = {
       mouseup: mouseup,
       mouseleave: mouseup,
       mousedown: function (e) {
+        e.preventDefault()
+        e.stopPropagation()
         _.mouseDown = e.clientX
         _.ele.classList.add('drag')
       },
       mousemove: _.mouse,
+      click: function (e) {
+        if (_.preventClick) {
+          e.preventDefault()
+          e.stopPropagation()
+        }
+        _.preventClick = false
+      },
     }
 
     _.ele.classList.toggle('draggable', _.opt.draggable === true)
@@ -190,9 +207,7 @@ import PerfectScrollbar from 'perfect-scrollbar'
     if (!_.opt.arrows) {
       Object.keys(_.arrows).forEach(function (direction) {
         var element = _.arrows[direction]
-        _.event(element, 'remove', {
-          click: element._func,
-        })
+        _.event(element, 'remove', { click: element._func })
       })
       return
     }
@@ -445,6 +460,7 @@ import PerfectScrollbar from 'perfect-scrollbar'
   gliderPrototype.handleMouse = function (e) {
     var _ = this
     if (_.mouseDown) {
+      _.isDrag = true
       _.ele.scrollLeft +=
         (_.mouseDown - e.clientX) * (_.opt.dragVelocity || 3.3)
       _.mouseDown = e.clientX
@@ -522,7 +538,7 @@ import PerfectScrollbar from 'perfect-scrollbar'
 
   return Glider
 })
-import { option } from '../main'
+
 // Создание [] с товарами и их отрисовка в миниатюре
 export const newProductCart = (
   product,
@@ -631,20 +647,20 @@ const isTouchDevice = () => {
   return mq(query)
 }
 
-export const elementReady = (selector) => {
+export const elementReady = (parent, selector) => {
   return new Promise((resolve) => {
-    let el = document.querySelector(selector)
+    let el = parent.querySelector(selector)
     if (el) {
       resolve(el)
     }
     new MutationObserver((mutationRecords, observer) => {
       // Query for elements matching the specified selector
-      Array.from(document.querySelectorAll(selector)).forEach((element) => {
+      Array.from(parent.querySelectorAll(selector)).forEach((element) => {
         resolve(element)
         //Once we have resolved we don't need the observer anymore.
         observer.disconnect()
       })
-    }).observe(document.documentElement, {
+    }).observe(parent.documentElement, {
       childList: true,
       subtree: true,
     })
@@ -659,8 +675,8 @@ const addScrollBar = (element) => {
 }
 
 // Создание карусели и скролбара
-export const carousel = (wrap, list, width) => {
-  if (!option.horizontalScroll) {
+export const carousel = (options, wrap, list, width) => {
+  if (!options.horizontalScroll) {
     // Добавляем списку вертикальную раскладку
     wrap
       .querySelector('.market-products__list')
@@ -671,7 +687,7 @@ export const carousel = (wrap, list, width) => {
   if (list.offsetWidth < width) {
     wrap.classList.add('market-content--shadow')
 
-    if (option.horizontalScroll) {
+    if (options.horizontalScroll) {
       // Создаём карусель
       new Glider(list, {
         slidesToShow: 'auto',

@@ -1,11 +1,10 @@
 import { render, remove, RenderPosition } from '../../utils/render.js'
 import ProductPageComponent from '../components/product-page'
 
-import { addToCart } from '../../cart/model-cart'
-
 export default class ProductPageController {
-  constructor(container) {
+  constructor(container, addToCart) {
     this._container = container
+    this._addToCart = addToCart
 
     this._productPageComponent = null
   }
@@ -17,45 +16,36 @@ export default class ProductPageController {
       this._productPageComponent,
       RenderPosition.BEFOREEND
     )
-    
-    const productElement = this._productPageComponent.getElement()
 
-    const optionWrap = this._productPageComponent.getOptionWrap()
+    const optionWrap = this._productPageComponent.getOptionWrapElement()
     let productPrice = this._productPageComponent.getPriceElement()
 
     this._productPageComponent.setOrderButtonClickHandler(() => {
       if (optionWrap) {
-        const optionName = productElement.querySelector(
-          '.market-product__option-title'
-        ).textContent
-        const optionValue = productElement.querySelector(
-          '.market-product__option-item--active'
-        ).textContent
+        const optionName = this._productPageComponent.getOptionTitleElement()
+          .textContent
+        const optionValue = this._productPageComponent.getActiveOptionElement()
+          .textContent
 
-        addToCart({
+        this._addToCart({
           product,
           productPrice: productPrice.textContent,
           optionName,
           optionValue,
         })
       } else {
-        addToCart({ product, productPrice: productPrice.textContent })
+        this._addToCart({
+          product,
+          productPrice: productPrice.textContent,
+        })
       }
-      this._animationForAddProductToCart(productElement)
+      this._productPageComponent.animationForAddProductToCart()
     })
 
     if (optionWrap) {
-      const optionBtns = optionWrap.querySelectorAll(
-        '.market-product__option-item:not(.market-product__option-item--disabled)'
-      )
-
-      this._productPageComponent.setOptionWrapClickHandler(() => {
+      this._productPageComponent.setOptionItemClickHandler(() => {
         const target = event.target
-        // Удаляем у всех опций активный класс
-        optionBtns.forEach((item) =>
-          item.classList.remove('market-product__option-item--active')
-        )
-        target.classList.toggle('market-product__option-item--active')
+        this._productPageComponent.deleteActiveClassOption(target)
         const optionName = target.textContent
         // Находим цену опции
         const optionPrice = product.options.optionList.find(
@@ -68,14 +58,5 @@ export default class ProductPageController {
 
   destroy() {
     remove(this._productPageComponent)
-  }
-
-  _animationForAddProductToCart(parentElement) {
-    const productPic = parentElement.querySelector(
-      '.market-product__img-wrap img'
-    )
-    const cloneProductPic = productPic.cloneNode(true)
-    cloneProductPic.classList.add('market-product__animate')
-    productPic.after(cloneProductPic)
   }
 }

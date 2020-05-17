@@ -1,17 +1,10 @@
 import { render, remove, RenderPosition } from '../../utils/render.js'
 import ProductItemComponent from '../components/product'
 
-import {
-  $menu,
-  isSearchMenu,
-  deleteLastMenuItem,
-  addMenuItem,
-} from '../../menu/model-menu'
-import { changeProductListState } from '../model-products'
-
 export default class ProductController {
-  constructor(container) {
+  constructor(container, onDataChange) {
     this._container = container
+    this._onDataChange = onDataChange
 
     this._productComponent = null
   }
@@ -22,15 +15,9 @@ export default class ProductController {
     const productWrap = this._productComponent.getElement()
 
     this._productComponent.setOpenButtonClickHandler(() => {
-      if (isSearchMenu($menu.getState())) {
-        deleteLastMenuItem()
-      }
-
       const id = Number(productWrap.id.replace(/[^+\d]/g, ''))
       const name = this._productComponent.getProductNameElement().textContent
-
-      addMenuItem({ id, name })
-      changeProductListState({ id, name })
+      this._onDataChange({ id, name })
     })
   }
 

@@ -3,12 +3,8 @@ import { elementReady, carouselNav } from '../utils/utils'
 
 import MenuComponent from './components/menu'
 import MenuItemComponent from './components/menu-item'
-
-import { $menu, removeMenuItemsTo } from './model-menu'
-import {
-  findProductsInDefaultProductList,
-  toDefaultState,
-} from '../products/model-products'
+import { eventsForStore } from '../main/eventsForStore'
+import { $menu } from '../menu/model-menu'
 
 export default class MenuController {
   constructor(container) {
@@ -41,7 +37,7 @@ export default class MenuController {
       this._menuItemComponents[this._menuItemComponents.length - 1].getElement()
         .textContent === 'Корзина'
 
-    elementReady(`.${menuWrap.classList[0]}`).then(() => {
+    elementReady(header, `.${menuWrap.classList[0]}`).then(() => {
       const width = this._menuItemComponents.reduce(
         (acc, item) => acc + item.getElement().offsetWidth,
         0
@@ -57,8 +53,8 @@ export default class MenuController {
       // Если это меню корзины и не последний элемент
       else if (isCartMenu && index !== this._menuItemComponents.length - 1) {
         element.setOpenButtonClickHandler(() => {
-          removeMenuItemsTo({ id: 0 })
-          toDefaultState()
+          eventsForStore.removeMenuItemsTo({ id: 0 })
+          eventsForStore.toDefaultState()
         })
       }
       // Если это не последний элемент
@@ -67,8 +63,8 @@ export default class MenuController {
           const id = Number(element.getElement().id.replace(/[^+\d]/g, ''))
           const name = element.getElement().textContent
 
-          removeMenuItemsTo({ id, name })
-          findProductsInDefaultProductList({ id, name })
+          eventsForStore.removeMenuItemsTo({ id, name })
+          eventsForStore.findProductsInDefaultProductList({ id, name })
         })
       }
     })

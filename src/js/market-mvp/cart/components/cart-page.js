@@ -50,4 +50,10 @@ export default class CartPageComponent extends AbstractComponent {
       .querySelector('.market-cart__link-to-main')
       .addEventListener(`click`, handler)
   }
+
+  setMakeOrderBtnOnClickHandler(handler) {
+    this.getElement()
+      .querySelector('.market-cart__btn--order')
+      .addEventListener(`click`, handler)
+  }
 }

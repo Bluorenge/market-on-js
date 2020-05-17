@@ -70,6 +70,7 @@ import {
     let callbacks = {
       order: function () {},
     }
+    console.log('callbacks :', callbacks);
 
     let parameters = {
       horizontalScroll: true,

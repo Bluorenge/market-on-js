@@ -45,7 +45,7 @@
     "@babel/runtime-corejs3": "^7.9.2",
     "clipboard": "^2.0.6",
     "core-js": "^3.6.5",
-    "effector": "^20.14.0",
+    "effector": "^20.15.0",
     "element-closest": "^3.0.2",
     "find-and": "^1.2.0",
     "mdn-polyfills": "^5.20.0",

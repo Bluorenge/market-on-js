@@ -1,7 +1,4 @@
-/* 
-  Возвращает найденные элементы
-  ! функция в функции, потому что привязка к внешней переменной
-*/
+// Возвращает найденные элементы
 export const inputFindProduct = (arr, nameFromInput) => {
   // [] с найденными через input элементами
   let foundItems = []
@@ -48,11 +45,7 @@ export const inputFindProduct = (arr, nameFromInput) => {
   return foundItems
 }
 
-/* Рекурсивный поиск одного элемента по всему массиву
-  Функция, принимающая на вход:
-    arr - сам массив
-    name - имя поиска
-*/
+// Рекурсивный поиск одного элемента по всему массиву
 export const findByName = (arr, id, name) =>
   arr.reduce((a, item) => {
     // При первой итерации этот if пропускается, потому что передаётся null

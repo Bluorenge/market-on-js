@@ -80,8 +80,24 @@ export default class ProductPageComponent extends AbstractComponent {
     return createProductPageTemplate(this._setting, this._product)
   }
 
-  getOptionWrap() {
+  getOptionWrapElement() {
     return this.getElement().querySelector(`.market-product__option-list`)
+  }
+
+  getOptionTitleElement() {
+    return this.getElement().querySelector('.market-product__option-title')
+  }
+
+  getAllActiveOptionElements() {
+    return this.getElement().querySelectorAll(
+      '.market-product__option-item:not(.market-product__option-item--disabled)'
+    )
+  }
+
+  getActiveOptionElement() {
+    return this.getElement().querySelector(
+      '.market-product__option-item--active'
+    )
   }
 
   getPriceElement() {
@@ -94,11 +110,27 @@ export default class ProductPageComponent extends AbstractComponent {
       .addEventListener(`click`, handler)
   }
 
-  setOptionWrapClickHandler(handler) {
-    this.getOptionWrap()
+  setOptionItemClickHandler(handler) {
+    this.getOptionWrapElement()
       .querySelectorAll(
         '.market-product__option-item:not(.market-product__option-item--disabled)'
       )
       .forEach((item) => item.addEventListener(`click`, handler))
+  }
+
+  deleteActiveClassOption(el) {
+    this.getAllActiveOptionElements().forEach((item) =>
+      item.classList.remove('market-product__option-item--active')
+    )
+    el.classList.toggle('market-product__option-item--active')
+  }
+
+  animationForAddProductToCart() {
+    const productPic = this.getElement().querySelector(
+      '.market-product__img-wrap img'
+    )
+    const cloneProductPic = productPic.cloneNode(true)
+    cloneProductPic.classList.add('market-product__animate')
+    productPic.after(cloneProductPic)
   }
 }
