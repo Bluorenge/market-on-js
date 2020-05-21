@@ -1,10 +1,12 @@
 import { render, remove, RenderPosition } from '../utils/render'
-import { elementReady, carouselNav } from '../utils/utils'
+import { elementReady } from '../utils/utils'
+import { carouselNav } from '../utils/carousel&scrollbar'
 
 import MenuComponent from './components/menu'
 import MenuItemComponent from './components/menu-item'
+
 import { eventsForStore } from '../main/eventsForStore'
-import { $menu } from '../menu/model-menu'
+import { $menu, whatMenuIsIt } from '../menu/model-menu'
 
 export default class MenuController {
   constructor(container) {
@@ -18,6 +20,11 @@ export default class MenuController {
 
   render() {
     $menu.watch((menu) => this._onViewChange(menu))
+    eventsForStore.clearSearchInput.watch(() => {
+      if (whatMenuIsIt($menu.getState(), `Поиск`)) {
+        eventsForStore.deleteLastMenuItem()
+      }
+    })
   }
 
   _renderItem(menu) {
@@ -35,7 +42,7 @@ export default class MenuController {
     this._menuItemComponents = renderMenuItems(menu)
     const isCartMenu =
       this._menuItemComponents[this._menuItemComponents.length - 1].getElement()
-        .textContent === 'Корзина'
+        .textContent === `Корзина`
 
     elementReady(header, `.${menuWrap.classList[0]}`).then(() => {
       const width = this._menuItemComponents.reduce(
@@ -53,6 +60,7 @@ export default class MenuController {
       // Если это меню корзины и не последний элемент
       else if (isCartMenu && index !== this._menuItemComponents.length - 1) {
         element.setOpenButtonClickHandler(() => {
+          eventsForStore.clearSearchInput()
           eventsForStore.removeMenuItemsTo({ id: 0 })
           eventsForStore.toDefaultState()
         })
@@ -60,7 +68,8 @@ export default class MenuController {
       // Если это не последний элемент
       else if (index !== this._menuItemComponents.length - 1) {
         element.setOpenButtonClickHandler(() => {
-          const id = Number(element.getElement().id.replace(/[^+\d]/g, ''))
+          eventsForStore.clearSearchInput()
+          const id = Number(element.getElement().id.replace(/[^+\d]/g, ``))
           const name = element.getElement().textContent
 
           eventsForStore.removeMenuItemsTo({ id, name })

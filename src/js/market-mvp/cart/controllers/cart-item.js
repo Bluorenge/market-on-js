@@ -1,10 +1,11 @@
 import { render, remove, RenderPosition } from '../../utils/render.js'
 import CartItemComponent from '../components/cart-item'
 
+import { eventsForStore } from '../../main/eventsForStore'
+
 export default class CartItemController {
-  constructor(container, eventsForStore) {
+  constructor(container) {
     this._container = container
-    this._eventsForStore = eventsForStore
 
     this._CartItemComponent = null
   }
@@ -13,21 +14,17 @@ export default class CartItemController {
     this._CartItemComponent = new CartItemComponent(setting, product)
     render(this._container, this._CartItemComponent, RenderPosition.AFTERBEGIN)
 
-    const productElement = this._CartItemComponent.getElement()
-
     const id = product.id
     const name = product.name
-
-    productElement.id = id
 
     const quantityInput = this._CartItemComponent.getQuantityInputElement()
     const price = this._CartItemComponent.getTotalPriceElement()
     const quantityText = this._CartItemComponent.getPriceQuantity()
 
     this._CartItemComponent.setOpenProductHandler(() => {
-      this._eventsForStore.closeCartPage()
-      this._eventsForStore.findProductsInDefaultProductList({ id, name })
-      this._eventsForStore.createMenuPath({ id, name })
+      eventsForStore.closeCartPage()
+      eventsForStore.findProductsInDefaultProductList({ id, name })
+      eventsForStore.createMenuPath({ id, name })
     })
 
     this._CartItemComponent.setQuantityDownHandler(() => {
@@ -41,7 +38,7 @@ export default class CartItemController {
       if (initialValue !== quantityInput.value) {
         quantityText.textContent = quantityInput.value
         price.textContent = product.price * quantityInput.value
-        this._eventsForStore.updateQuantityOfProductInCart({
+        eventsForStore.updateQuantityOfProductInCart({
           product,
           quantityUp: false,
         })
@@ -56,11 +53,11 @@ export default class CartItemController {
       quantityInput.value++
       quantityText.textContent = quantityInput.value
       price.textContent = product.price * quantityInput.value
-      this._eventsForStore.updateQuantityOfProductInCart({ product })
+      eventsForStore.updateQuantityOfProductInCart({ product })
     })
 
     this._CartItemComponent.setDeleteProductHandler(() => {
-      this._eventsForStore.deleteProductInCart(product)
+      eventsForStore.deleteProductInCart(product)
     })
   }
 

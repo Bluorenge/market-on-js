@@ -7,9 +7,9 @@ const createProductPageTemplate = (globalSetting, productObject) => {
     ${
       state
         ? firstActiveOptionIndex(arr) === index
-          ? ' market-product__option-item--active'
-          : ''
-        : ' market-product__option-item--disabled'
+          ? ` market-product__option-item--active`
+          : ``
+        : ` market-product__option-item--disabled`
     }
     ">${name}</li>`
   }
@@ -22,11 +22,11 @@ const createProductPageTemplate = (globalSetting, productObject) => {
           optionItem(optionName, optionStatus, product, indexItem)
         )[0]
       })
-      .join('')
+      .join(``)
   }
 
   const optionWrap = (product) => {
-    return product.hasOwnProperty('options') && product.options
+    return `options` in product && product.options
       ? `<div class="market-product__option-wrap">
            <div class="market-product__option-title">${
              product.options.nameOptionList
@@ -35,7 +35,7 @@ const createProductPageTemplate = (globalSetting, productObject) => {
              ${optionsList(product)}
            </ul>
          </div>`
-      : ''
+      : ``
   }
 
   const desc = (product) => {
@@ -44,7 +44,7 @@ const createProductPageTemplate = (globalSetting, productObject) => {
           <span class="market-product__desc-title">Описание:</span>
           <p class="market-product__desc-text">${product.desc}</p>
         </div>`
-      : ''
+      : ``
   }
 
   // Внутри превращаем productObject.option в массив и отрисовываем каждый элемент опций
@@ -85,23 +85,23 @@ export default class ProductPageComponent extends AbstractComponent {
   }
 
   getOptionTitleElement() {
-    return this.getElement().querySelector('.market-product__option-title')
+    return this.getElement().querySelector(`.market-product__option-title`)
   }
 
   getAllActiveOptionElements() {
     return this.getElement().querySelectorAll(
-      '.market-product__option-item:not(.market-product__option-item--disabled)'
+      `.market-product__option-item:not(.market-product__option-item--disabled)`
     )
   }
 
   getActiveOptionElement() {
     return this.getElement().querySelector(
-      '.market-product__option-item--active'
+      `.market-product__option-item--active`
     )
   }
 
   getPriceElement() {
-    return this.getElement().querySelector('.market-product__price')
+    return this.getElement().querySelector(`.market-product__price`)
   }
 
   setOrderButtonClickHandler(handler) {
@@ -113,24 +113,24 @@ export default class ProductPageComponent extends AbstractComponent {
   setOptionItemClickHandler(handler) {
     this.getOptionWrapElement()
       .querySelectorAll(
-        '.market-product__option-item:not(.market-product__option-item--disabled)'
+        `.market-product__option-item:not(.market-product__option-item--disabled)`
       )
       .forEach((item) => item.addEventListener(`click`, handler))
   }
 
   deleteActiveClassOption(el) {
     this.getAllActiveOptionElements().forEach((item) =>
-      item.classList.remove('market-product__option-item--active')
+      item.classList.remove(`market-product__option-item--active`)
     )
-    el.classList.toggle('market-product__option-item--active')
+    el.classList.toggle(`market-product__option-item--active`)
   }
 
   animationForAddProductToCart() {
     const productPic = this.getElement().querySelector(
-      '.market-product__img-wrap img'
+      `.market-product__img-wrap img`
     )
     const cloneProductPic = productPic.cloneNode(true)
-    cloneProductPic.classList.add('market-product__animate')
+    cloneProductPic.classList.add(`market-product__animate`)
     productPic.after(cloneProductPic)
   }
 }

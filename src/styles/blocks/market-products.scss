@@ -44,7 +44,7 @@
     padding: 10px;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    box-shadow: 0 8px 12px 3px rgba(45, 144, 148, 0.2);
+    box-shadow: 0 8px 12px 3px rgba(45, 144, 148, .2);
 
     @include respond-to(tablet) {
       padding: 20px;
@@ -82,18 +82,33 @@
       height: 200px;
     }
   }
-  
+
   &__product-bottom {
     display: flex;
     align-items: center;
-    width: 100%;
+  }
+
+  &__product-btn-wrap {
+    position: relative;
+    margin-left: auto;
+  }
+
+  &__product-btn--add-to-cart {
+    & span {
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
+
+  &__product-btn--one-click-order {
+    position: relative;
+    right: -8px;
+    border-right: none;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
   }
 
   &__product-price {
     font-size: 18px;
-  }
-
-  &__product-btn {
-    margin-left: auto;
   }
 }

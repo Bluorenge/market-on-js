@@ -17,7 +17,7 @@ export const inputFindProduct = (arr, nameFromInput) => {
           foundItems.push(item)
         }
         // Если элемент массива содержит ключ поиска, то..
-        else if (item.hasOwnProperty('productsInCategory')) {
+        else if (`productsInCategory` in item) {
           /* Фильтруем переданный массив по имени поиска
               В каждом элементе ищем имя
                 приводим его к нижнему регистру
@@ -55,11 +55,10 @@ export const findByName = (arr, id, name) =>
     if (item.id === id && item.name === name) return item
 
     // ..берём элемент с ключом nestingKey и снова ищём в нём нужное имя, либо..
-    if (item.hasOwnProperty('subCategory'))
-      return findByName(item.subCategory, id, name)
+    if (`subCategory` in item) return findByName(item.subCategory, id, name)
 
     // ..если нужно найти элемент в списке товаров в категории
-    if (item.hasOwnProperty('productsInCategory'))
+    if (`productsInCategory` in item)
       return findByName(item.productsInCategory, id, name)
   }, null)
 
@@ -81,21 +80,21 @@ export const menuPath = (arr, id, name) => {
         pushData(items, item.id, item.name)
         continueFind = false
       } else if (continueFind) {
-        if (item.hasOwnProperty('subCategory')) {
+        if (`subCategory` in item) {
           // Если в этой ветке содержится нужный элемент
           const there = (newItem) =>
             newItem.some((product) => {
               if (product.id === findId && product.name === findName) {
                 pushData(items, item.id, item.name)
-              } else if (product.hasOwnProperty('subCategory')) {
+              } else if (`subCategory` in product) {
                 there(product.subCategory)
-              } else if (product.hasOwnProperty('productsInCategory')) {
+              } else if (`productsInCategory` in product) {
                 there(product.productsInCategory)
               }
             })
           there(item.subCategory)
           return find(item.subCategory, findId, findName)
-        } else if (item.hasOwnProperty('productsInCategory')) {
+        } else if (`productsInCategory` in item) {
           // Если в этой категории содержится нужный элемент
           const there = item.productsInCategory.some(
             (product) => product.id === findId && product.name === findName

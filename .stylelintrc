@@ -92,13 +92,6 @@
         }
       ]
     ],
-    "color-hex-case": ["lower", {
-      "severity": "warning",
-      "message": "HEX-цвета нужно указывать строчными буквами"
-    }],
-    "color-named": ["never", {
-      "message": "Цвета ключевыми словами нельзя писать"
-    }],
     "color-no-invalid-hex": [true, {
       "message": "Ошибка в написании HEX-цвета"
     }],
@@ -139,10 +132,6 @@
     }],
     "declaration-colon-space-before": ["never", {
       "message": "Не следует ставить пробел перед двоеточием"
-    }],
-    "declaration-no-important": [true, {
-      "severity": "warning",
-      "message": "Применяйте !important с осторожностью"
     }],
     "declaration-block-no-duplicate-properties": [true, {
       "message": "Правила не должны повторяться"

@@ -46,16 +46,16 @@ import {
     В зависимости от результата проверок, отрисовываем нужную инфу, используя шаблон
 */
 ;(function (factory) {
-  typeof define === 'function' && define.amd
+  typeof define === `function` && define.amd
     ? define(factory)
-    : typeof exports === 'object'
+    : typeof exports === `object`
     ? (module.exports = factory())
     : factory()
 })(function () {
-  ;('use strict') // eslint-disable-line no-unused-expressions
+  ;(`use strict`) // eslint-disable-line no-unused-expressions
 
   /* globals window:true */
-  let _window = typeof window !== 'undefined' ? window : this
+  let _window = typeof window !== `undefined` ? window : this
   const market = (_window.market = function (
     globalSettingJson,
     productListJson,
@@ -70,11 +70,11 @@ import {
     let callbacks = {
       order: function () {},
     }
-    console.log('callbacks :', callbacks);
+    console.log(`callbacks :`, callbacks);
 
     let parameters = {
       horizontalScroll: true,
-      optionStyle: 'button',
+      optionStyle: `button`,
     }
 
     parameters = Object.assign(parameters, settings)
@@ -87,24 +87,24 @@ import {
     let cart = []
 
     // Корзина (миниатюра)
-    const cartWrap = document.querySelector('.market-cart-link')
+    const cartWrap = document.querySelector(`.market-cart-link`)
     // Поле поиска
-    const searchInput = document.querySelector('.market-header__search-input')
+    const searchInput = document.querySelector(`.market-header__search-input`)
     // Обёртка меню
-    const marketMenuWrap = document.querySelector('.market-header__nav')
+    const marketMenuWrap = document.querySelector(`.market-header__nav`)
     // Иконка корзины
-    const iconCart = document.querySelector('.market-cart-link__icon-wrap')
+    const iconCart = document.querySelector(`.market-cart-link__icon-wrap`)
     // Обёртка контента страницы
-    const marketContentWrap = document.querySelector('.market-content')
+    const marketContentWrap = document.querySelector(`.market-content`)
 
     // * Блок с функциями программы
 
     // Удаление тени у блока с контентом
     const deleteShadow = () => {
       // Если обёртка контента имеент тень...
-      if (marketContentWrap.classList.contains('market-content--shadow')) {
+      if (marketContentWrap.classList.contains(`market-content--shadow`)) {
         // ...удаляем её
-        marketContentWrap.classList.remove('market-content--shadow')
+        marketContentWrap.classList.remove(`market-content--shadow`)
       }
     }
 
@@ -112,9 +112,9 @@ import {
     const checkForNeedCarouselToNav = () => {
       // Находим все карточки в каталоге
       // ! привязка к классу
-      const navItems = document.querySelectorAll('.market-header__nav-item')
+      const navItems = document.querySelectorAll(`.market-header__nav-item`)
 
-      elementReady('.market-header__nav-item').then(() => {
+      elementReady(`.market-header__nav-item`).then(() => {
         // Задаём начальную ширину
         let width = 0
         // Проходим по каждой карточке в каталоге и складываем их ширину
@@ -139,10 +139,10 @@ import {
     const checkClickOnCartProduct = (element) => {
       // ! привязка к имени тега. что если ещё будет ещё одно изображение в блоке
       const checkElement = [
-        element.classList.contains('market-products__product-title'),
-        element.classList.contains('market-products__product-img-wrap'),
-        element.tagName === 'IMG',
-        element.classList.contains('market-btn'),
+        element.classList.contains(`market-products__product-title`),
+        element.classList.contains(`market-products__product-img-wrap`),
+        element.tagName === `IMG`,
+        element.classList.contains(`market-btn`),
       ]
 
       // Проверка, содержит ли переданный элемент класс из массива
@@ -152,7 +152,7 @@ import {
     // Удаляем все пункты меню, кроме первого
     const deleteNavItemToFirst = () => {
       // Находим все пункты меню
-      let navItems = document.querySelectorAll('.market-header__nav-item')
+      let navItems = document.querySelectorAll(`.market-header__nav-item`)
 
       // Проходим по коллекции пунктов меню
       navItems.forEach((item, index) => {
@@ -167,7 +167,7 @@ import {
     // Вернуться на предудщую страницу
     const oneStepBack = () => {
       const menuItems = marketMenuWrap.querySelectorAll(
-        '.market-header__nav-item'
+        `.market-header__nav-item`
       )
 
       const prevMenuItem = menuItems[menuItems.length - 2]
@@ -176,7 +176,7 @@ import {
       // Находим в [productList] подкатегорию/товар, соответствующие подзаголовку
       const findElementInArr = findByName(
         productList,
-        Number(prevMenuItem.id.replace(/[^+\d]/g, '')),
+        Number(prevMenuItem.id.replace(/[^+\d]/g, ``)),
         prevMenuItem.textContent
       )
       lastMenuItem.remove()
@@ -201,15 +201,15 @@ import {
       // Если в поле поиска есть текст...
       if (searchInput.value.length > 0) {
         // ...удаляем его
-        searchInput.value = ''
+        searchInput.value = ``
       }
 
       // Удаляем последний пункт меню
       const lastMenuItem = marketMenuWrap.querySelector(
-        '.market-header__nav li:last-child'
+        `.market-header__nav li:last-child`
       )
 
-      if (lastMenuItem.textContent === 'Поиск') {
+      if (lastMenuItem.textContent === `Поиск`) {
         deleteNavItemToFirst()
         createMenuPath(id, name)
       }
@@ -218,14 +218,14 @@ import {
     // Создать текущее состояние приложения
     const createCurrentStateData = () => {
       // Всплываем до карточки каталога
-      const productItem = event.target.closest('.market-products__product')
+      const productItem = event.target.closest(`.market-products__product`)
 
       // Получаем текст подзаголовка текущей карточки
       const nameOfItem = productItem.querySelector(
-        '.market-products__product-title'
+        `.market-products__product-title`
       ).textContent
 
-      const productId = Number(productItem.id.replace(/[^+\d]/g, ''))
+      const productId = Number(productItem.id.replace(/[^+\d]/g, ``))
 
       stateAfterSearch(productId, nameOfItem)
 
@@ -237,10 +237,10 @@ import {
     // Обработчик клика на список товаров (категорию/товар) листа, в котором...
     const onProductHendler = () => {
       const productListWrap = marketContentWrap.querySelector(
-        '.market-products__list'
+        `.market-products__list`
       )
       const previousBtn = marketContentWrap.querySelector(
-        '.market-btn--prev-step'
+        `.market-btn--prev-step`
       )
 
       // Если это страница с карточками
@@ -258,11 +258,11 @@ import {
     const checkForNeedCarousel = () => {
       // Находим все товары
       const productsItem = document.querySelectorAll(
-        '.market-products__product'
+        `.market-products__product`
       )
 
       // Проверяем загрузились ли дом-элементы карточек списка
-      elementReady('.market-products__product').then(() => {
+      elementReady(`.market-products__product`).then(() => {
         // Задаём начальное значение
         let productListWidth = 0
         // Проходим по коллекции, в которой...
@@ -280,26 +280,26 @@ import {
     const changeClassOfActiveOption = () => {
       // Обёртка кнопок опций
       const optionList = marketContentWrap.querySelector(
-        '.market-product__option-list'
+        `.market-product__option-list`
       )
 
       // Если это активная кнопка
       if (
-        event.target.tagName === 'LI' &&
+        event.target.tagName === `LI` &&
         event.target.classList.contains(
-          'market-product__option-item--disabled'
+          `market-product__option-item--disabled`
         ) === false
       ) {
         // Находим все кнопки опций
         const optionBtn = optionList.querySelectorAll(
-          '.market-product__option-item--active'
+          `.market-product__option-item--active`
         )
         // Удаляем активный класс у всех опций
         optionBtn.forEach((item) =>
-          item.classList.remove('market-product__option-item--active')
+          item.classList.remove(`market-product__option-item--active`)
         )
         // Добавляем активный класс на нажатую кнопку
-        event.target.classList.toggle('market-product__option-item--active')
+        event.target.classList.toggle(`market-product__option-item--active`)
       }
     }
 
@@ -347,13 +347,13 @@ import {
 
     const animatedAddToCart = () => {
       // Находим изображение товара
-      const productPic = document.querySelector('.market-product__img-wrap img')
+      const productPic = document.querySelector(`.market-product__img-wrap img`)
 
       // Клонируем его
       const cloneProductPic = productPic.cloneNode(true)
 
       // Добавляем ему класс анимации
-      cloneProductPic.classList.add('market-product__animate')
+      cloneProductPic.classList.add(`market-product__animate`)
 
       // Вставляем копию картинки после картинки
       productPic.after(cloneProductPic)
@@ -361,26 +361,26 @@ import {
 
     // Добавление товара в корзину
     const onProductPageHandler = (product) => {
-      const productWrap = marketContentWrap.querySelector('.market-product')
+      const productWrap = marketContentWrap.querySelector(`.market-product`)
 
       if (productWrap !== null) {
         // Обёртка опций
         const optionWrap = productWrap.querySelector(
-          '.market-product__option-wrap'
+          `.market-product__option-wrap`
         )
-        let productPrice = productWrap.querySelector('.market-product__price')
+        let productPrice = productWrap.querySelector(`.market-product__price`)
 
         // Если нажата кнопка добавления в корзину
-        if (event.target.classList.contains('market-btn--add-to-cart')) {
+        if (event.target.classList.contains(`market-btn--add-to-cart`)) {
           // Записываем имя и значение опции
           if (optionWrap !== null) {
             // Название группы опций
             const optionName = optionWrap.querySelector(
-              '.market-product__option-title'
+              `.market-product__option-title`
             ).textContent
             // Название выбранной опции
             const optionValue = optionWrap.querySelector(
-              '.market-product__option-item--active'
+              `.market-product__option-item--active`
             ).textContent
 
             // Добавляем товар с опцией в виде {} в корзину
@@ -398,9 +398,9 @@ import {
 
         // Если нажата активная опция
         if (
-          event.target.classList.contains('market-product__option-item') &&
+          event.target.classList.contains(`market-product__option-item`) &&
           !event.target.classList.contains(
-            'market-product__option-item--disabled'
+            `market-product__option-item--disabled`
           )
         ) {
           changeClassOfActiveOption()
@@ -415,7 +415,7 @@ import {
         }
 
         // Если нажата кнопка шага назад
-        if (event.target.classList.contains('market-btn--prev-step')) {
+        if (event.target.classList.contains(`market-btn--prev-step`)) {
           oneStepBack()
         }
       }
@@ -424,8 +424,8 @@ import {
     // Создание кнопки назад
     const createPrevBtn = () => {
       marketContentWrap.insertAdjacentHTML(
-        'beforeend',
-        '<button class="market-btn--prev-step">← Назад</button>'
+        `beforeend`,
+        `<button class="market-btn--prev-step">← Назад</button>`
       )
     }
 
@@ -436,7 +436,7 @@ import {
      */
     const createCurrentState = (data, id, createMenuItem = true) => {
       // Очищаем обёртку контента
-      marketContentWrap.innerHTML = ''
+      marketContentWrap.innerHTML = ``
       // Удаляем тень
       deleteShadow()
       // Если текущее состояние приложения существует, то...
@@ -446,7 +446,7 @@ import {
           addMunuItem(data, id)
         }
         // Если найденный элемент содержит подкатегории...
-        if (data.hasOwnProperty('subCategory')) {
+        if (data.hasOwnProperty(`subCategory`)) {
           // Отрисовываем по шаблону список товаров с данными подкатегории
           createProductList(data.subCategory, globalSetting, id)
           createPrevBtn()
@@ -454,7 +454,7 @@ import {
           checkForNeedCarousel()
         }
         // Иначе, если найденный элемент содержит только товары категории
-        else if (data.hasOwnProperty('productsInCategory')) {
+        else if (data.hasOwnProperty(`productsInCategory`)) {
           // Отрисовываем по шаблону список товаров категории/подкатегории
           createProductList(data.productsInCategory, globalSetting, id)
           createPrevBtn()
@@ -487,7 +487,7 @@ import {
       const quantityAll = cart.reduce((total, item) => total + item.quantity, 0)
 
       // Отрисовка количества в индикаторе корзины (красный кружок)
-      iconCart.setAttribute('data-before', quantityAll)
+      iconCart.setAttribute(`data-before`, quantityAll)
       // Отрисовываем новую инфу по шаблоне в блоке корзины
       createCartBlock(cart, globalSetting)
     }
@@ -501,26 +501,26 @@ import {
     const changePrice = (productData, element) => {
       // Накходим обёртку общей цены товара
       const productTotalPrice = element.querySelector(
-        '.market-cart__product-total-price'
+        `.market-cart__product-total-price`
       )
       // Изменяем общую цену внутри карточки товара
       productTotalPrice.textContent = (
         productData.price * productData.quantity
-      ).toLocaleString('ru-RU')
+      ).toLocaleString(`ru-RU`)
 
       // Находим обёртку количества товара
       const priceQuantity = element.querySelector(
-        '.market-cart__price-quantity'
+        `.market-cart__price-quantity`
       )
       // Изменяем количество товара
       priceQuantity.textContent = productData.quantity
 
       // Накходим обёртку общей цены всех товаров
-      const priceTotal = document.querySelector('.market-cart__total-price')
+      const priceTotal = document.querySelector(`.market-cart__total-price`)
       // Изменяем общую цену всех товаров
       priceTotal.textContent = cart
         .reduce((total, item) => total + item.price * item.quantity, 0)
-        .toLocaleString('ru-RU')
+        .toLocaleString(`ru-RU`)
     }
 
     /**
@@ -531,12 +531,12 @@ import {
      */
     const changeQuantityProduct = (productData, element) => {
       // Находим кнопку увеличения количества товара
-      const quantityUp = element.querySelector('.market-cart__quantity-up')
+      const quantityUp = element.querySelector(`.market-cart__quantity-up`)
       // Находим кнопку уменьшения количества товара
-      const quantityDown = element.querySelector('.market-cart__quantity-down')
+      const quantityDown = element.querySelector(`.market-cart__quantity-down`)
       // Находим инпут с количеством товара
       const quantityInput = element.querySelector(
-        '.market-cart__quantity-input'
+        `.market-cart__quantity-input`
       )
 
       // Проверяем, есть ли у товара опции
@@ -579,20 +579,20 @@ import {
       // Отлавливаем ручное изменение инпута
       quantityInput.oninput = debounce(() => {
         // Если первый символ ноль
-        if (quantityInput.value[0] === '0') {
+        if (quantityInput.value[0] === `0`) {
           quantityInput.value = 1
         }
         // Если ввод пустой
-        if (quantityInput.value === '') {
+        if (quantityInput.value === ``) {
           quantityInput.value = 1
         }
         // Зачем-то ещё одна проверка (пока делал, забыл зачем. какой-то баг был)
-        if (quantityInput.value < '0' || quantityInput.value > '9') {
+        if (quantityInput.value < `0` || quantityInput.value > `9`) {
           quantityInput.value = 1
         }
 
         // Запрещаем ввод букв
-        quantityInput.value = quantityInput.value.replace(/\D/g, '')
+        quantityInput.value = quantityInput.value.replace(/\D/g, ``)
 
         productData.quantity = quantityInput.value - 1
         checkProduct(productData)
@@ -609,7 +609,7 @@ import {
     const deleteProductFromCart = (productIndex, element) => {
       // Кнопка удаления товара
       const deleteProductBtn = element.querySelector(
-        '.market-cart__delete-wrap'
+        `.market-cart__delete-wrap`
       )
 
       // Если нажата кнопка удаления товара
@@ -625,7 +625,7 @@ import {
 
     const changeProductDataInCart = () => {
       const currentCartElement = event.target.closest(
-        '.market-cart__product-content'
+        `.market-cart__product-content`
       )
 
       // Если обёртка товара найдена
@@ -634,11 +634,11 @@ import {
         const checkProduct = (item) => {
           // Находим заголовок текущего товара
           const productTitle = currentCartElement.querySelector(
-            '.market-cart__title'
+            `.market-cart__title`
           ).textContent
           // Находим опцию текущего товара
           const productOption = currentCartElement.querySelector(
-            '.market-cart__option'
+            `.market-cart__option`
           )
           // Если опции есть
           return productOption !== null
@@ -664,11 +664,11 @@ import {
 
     // Отправка заказа
     const sendOrder = (parentElement) => {
-      const btnOrder = parentElement.querySelector('.market-cart__btn--order')
+      const btnOrder = parentElement.querySelector(`.market-cart__btn--order`)
 
       if (event.target === btnOrder) {
         const productTextarea = parentElement.querySelector(
-          '.market-cart__textarea'
+          `.market-cart__textarea`
         )
 
         if (productTextarea !== null) {
@@ -676,19 +676,19 @@ import {
         }
 
         const productItem = parentElement.querySelectorAll(
-          '.market-cart__product-content'
+          `.market-cart__product-content`
         )
         const orderArray = []
 
         for (let product of productItem) {
-          const title = product.querySelector('.market-cart__title')
-          const optionName = product.querySelector('.market-cart__option-title')
-          const optionValue = product.querySelector('.market-cart__option')
+          const title = product.querySelector(`.market-cart__title`)
+          const optionName = product.querySelector(`.market-cart__option-title`)
+          const optionValue = product.querySelector(`.market-cart__option`)
           const quantityOfProduct = product.querySelector(
-            '.market-cart__price-quantity'
+            `.market-cart__price-quantity`
           )
           const priceOfProduct = product.querySelector(
-            '.market-cart__product-total-price'
+            `.market-cart__product-total-price`
           )
 
           orderArray.push({
@@ -704,7 +704,7 @@ import {
         }
 
         const totalPrice = parentElement.querySelector(
-          '.market-cart__total-price'
+          `.market-cart__total-price`
         )
 
         // Формируем массив с товарами
@@ -715,10 +715,10 @@ import {
               id: ++index,
               name: item.name,
               count: Number(item.quantity),
-              price: Number(item.price.replace(/\s/g, '')),
+              price: Number(item.price.replace(/\s/g, ``)),
             }
             if (item.optionName !== undefined) {
-              product.optionName = item.optionName.replace(/\:/, '')
+              product.optionName = item.optionName.replace(/\:/, ``)
               product.optionValue = item.optionValue
             }
             return order.push(product)
@@ -728,7 +728,7 @@ import {
 
         callbacks.order(
           orderList(orderArray),
-          Number(totalPrice.textContent.replace(/\s/g, ''))
+          Number(totalPrice.textContent.replace(/\s/g, ``))
         )
       }
     }
@@ -737,7 +737,7 @@ import {
     const onBackToMainPageBtn = (parentElement) => {
       // Кнопка возврата на главную
       const toMainFromCartBtn = parentElement.querySelector(
-        '.market-cart__link-to-main'
+        `.market-cart__link-to-main`
       )
 
       // Если нажата кнопка
@@ -752,7 +752,7 @@ import {
 
     // Обработчик на странице корзины
     const onCartPageHandler = () => {
-      const contentCartWrap = document.querySelector('.market-cart')
+      const contentCartWrap = document.querySelector(`.market-cart`)
 
       // Если контент корзины найден
       if (contentCartWrap !== null) {
@@ -777,16 +777,16 @@ import {
       // Ищем все элементы по введённому в поле значению
       const searchElements = inputFindProduct(productList, searchInput.value)
       const lastNavItem = marketMenuWrap.querySelector(
-        '.market-header__nav li:last-child'
+        `.market-header__nav li:last-child`
       )
 
-      if (lastNavItem.textContent !== 'Поиск') {
+      if (lastNavItem.textContent !== `Поиск`) {
         lastNavItemName = lastNavItem.textContent
         deleteNavItemToFirst()
-        createNavItem('Поиск', 'search')
+        createNavItem(`Поиск`, `search`)
       }
 
-      const lastNavItemId = Number(marketContentWrap.id.replace(/[^+\d]/g, ''))
+      const lastNavItemId = Number(marketContentWrap.id.replace(/[^+\d]/g, ``))
 
       // Если элементы не найдены
       if (searchElements.length === 0) {
@@ -795,7 +795,7 @@ import {
       } else {
         // Если в поле введено больше одного символа
         if (searchInput.value.length > 0) {
-          marketContentWrap.innerHTML = ''
+          marketContentWrap.innerHTML = ``
           createProductList(searchElements, globalSetting)
           checkForNeedCarousel()
         }
@@ -808,11 +808,11 @@ import {
     }, 150)
 
     // Обработчик клика события на всё меню
-    marketMenuWrap.addEventListener('click', () => {
+    marketMenuWrap.addEventListener(`click`, () => {
       // Если клик произошёл на теге li
-      if (event.target.tagName === 'LI') {
+      if (event.target.tagName === `LI`) {
         // Находим все пункты меню
-        let navItems = document.querySelectorAll('.market-header__nav-item')
+        let navItems = document.querySelectorAll(`.market-header__nav-item`)
 
         // Получаем текст пункта меню
         const textMenuItem = event.target.textContent
@@ -845,7 +845,7 @@ import {
               item.remove()
             }
           })
-          const menuId = Number(event.target.id.replace(/[^+\d]/g, ''))
+          const menuId = Number(event.target.id.replace(/[^+\d]/g, ``))
           // Ищем соответсвующий заголовку элемент в [productList]
           currentState = findByName(productList, menuId, textMenuItem)
 
@@ -856,30 +856,30 @@ import {
     })
 
     // Обработчик клика на корзину (миниатюра блока наверху)
-    cartWrap.addEventListener('click', () => {
+    cartWrap.addEventListener(`click`, () => {
       // Обёртка контента в корзине
-      const cartContent = document.querySelector('.market-cart')
+      const cartContent = document.querySelector(`.market-cart`)
 
       // Если контент корзины не отрисован, то...
       if (cartContent === null) {
         // Удаляем все пункты меню, кроме первого
         deleteNavItemToFirst()
         // Добавляем в меню пункт с корзиной
-        createNavItem('Корзина', 'cart')
+        createNavItem(`Корзина`, `cart`)
 
         // Очищаем обёртку
-        marketContentWrap.innerHTML = ''
+        marketContentWrap.innerHTML = ``
         deleteShadow()
 
         // Создаём страницу корзины на основе [cart]
         createCartPage(cart, globalSetting)
-        const cartContent = document.querySelector('.market-cart')
+        const cartContent = document.querySelector(`.market-cart`)
         addScrollBar(cartContent)
       }
     })
 
     // Обработчик клика на контент магазина
-    marketContentWrap.addEventListener('click', () => {
+    marketContentWrap.addEventListener(`click`, () => {
       onProductHendler()
       onProductPageHandler(currentState)
       onCartPageHandler()
@@ -890,12 +890,12 @@ import {
 })
 
 market(
-  '{"userId": "557933","currency": "р."}',
-  '[{"id":1,"name":"Футболки","img":"1.png","subCategory":[{"id":2,"name":"Крутые","img":"1.png","productsInCategory":[{"id":3,"name":"Крутая первая","price":"1200","img":"1.png","active":true,"desc":"Состав: чистая крутость<br />Ваще круть","options":{"nameOptionList":"Степень крутости","optionList":[{"1":true,"price":"1200"},{"2":true,"price":"300"},{"100500":true,"price":"800"}]}},{"id":4,"name":"Крутая вторая","price":"1300","img":"2.png"}]},{"id":5,"name":"Не оч крутые","img":"2.png","productsInCategory":[{"id":6,"name":"Ну такая первая","price":"800","img":"1.png","active":true,"desc":"Состав: посредственность<br />Пойдёт","options":{"nameOptionList":"Степень обычности","optionList":[{"-1":true,"price":"800"},{"-2":true,"price":"300"},{"-100500":true,"price":"800"}]}}]}]},{"id":7,"name":"Толстковки","img":"1.png","subCategory":[{"id":8,"name":"Крутые2","img":"1.png","subCategory":[{"id":9,"name":"Крутые3","img":"1.png","productsInCategory":[{"id":10,"name":"Крутая первая толст","price":"1200","img":"1.png","desc":"Состав: чистая крутость<br />Ваще круть","active":true,"options":{"nameOptionList":"Степень крутости","optionList":[{"1":true,"price":"1200"},{"2":true,"price":"300"},{"100500":true,"price":"800"}]}},{"id":11,"name":"Крутая вторая толст","price":"1300","img":"2.png","active":true}]}]},{"id":12,"name":"Не оч крутыеТол","img":"2.png","productsInCategory":[{"id":13,"name":"Ну такая первая","price":"800","img":"1.png","desc":"Состав: посредственность<br />Пойдёт","active":true,"options":{"nameOptionList":"Степень обычности","optionList":[{"-1":true,"price":"800"},{"-2":true,"price":"300"},{"-100500":true,"price":"1800"}]}}]}]},{"id":14,"name":"Суперск","price":"6000","img":"1.png","active":true},{"id":15,"name":"Ееее","price":"200","img":"2.png","desc":"Состав: ееее.<br />Ееее ее е ееее.","active":false,"options":{"nameOptionList":"Е","optionList":[{"е":true,"price":"200"},{"ее":false,"price":"300"},{"еее":true,"price":"800"}]}}]',
+  `{"userId": "557933","currency": "р."}`,
+  `[{"id":1,"name":"Футболки","img":"1.png","subCategory":[{"id":2,"name":"Крутые","img":"1.png","productsInCategory":[{"id":3,"name":"Крутая первая","price":"1200","img":"1.png","active":true,"desc":"Состав: чистая крутость<br />Ваще круть","options":{"nameOptionList":"Степень крутости","optionList":[{"1":true,"price":"1200"},{"2":true,"price":"300"},{"100500":true,"price":"800"}]}},{"id":4,"name":"Крутая вторая","price":"1300","img":"2.png"}]},{"id":5,"name":"Не оч крутые","img":"2.png","productsInCategory":[{"id":6,"name":"Ну такая первая","price":"800","img":"1.png","active":true,"desc":"Состав: посредственность<br />Пойдёт","options":{"nameOptionList":"Степень обычности","optionList":[{"-1":true,"price":"800"},{"-2":true,"price":"300"},{"-100500":true,"price":"800"}]}}]}]},{"id":7,"name":"Толстковки","img":"1.png","subCategory":[{"id":8,"name":"Крутые2","img":"1.png","subCategory":[{"id":9,"name":"Крутые3","img":"1.png","productsInCategory":[{"id":10,"name":"Крутая первая толст","price":"1200","img":"1.png","desc":"Состав: чистая крутость<br />Ваще круть","active":true,"options":{"nameOptionList":"Степень крутости","optionList":[{"1":true,"price":"1200"},{"2":true,"price":"300"},{"100500":true,"price":"800"}]}},{"id":11,"name":"Крутая вторая толст","price":"1300","img":"2.png","active":true}]}]},{"id":12,"name":"Не оч крутыеТол","img":"2.png","productsInCategory":[{"id":13,"name":"Ну такая первая","price":"800","img":"1.png","desc":"Состав: посредственность<br />Пойдёт","active":true,"options":{"nameOptionList":"Степень обычности","optionList":[{"-1":true,"price":"800"},{"-2":true,"price":"300"},{"-100500":true,"price":"1800"}]}}]}]},{"id":14,"name":"Суперск","price":"6000","img":"1.png","active":true},{"id":15,"name":"Ееее","price":"200","img":"2.png","desc":"Состав: ееее.<br />Ееее ее е ееее.","active":false,"options":{"nameOptionList":"Е","optionList":[{"е":true,"price":"200"},{"ее":false,"price":"300"},{"еее":true,"price":"800"}]}}]`,
   {
     order: (orderList, orderTotalPrice) => {
-      console.log('orderList :', orderList)
-      console.log('orderTotalPrice :', orderTotalPrice)
+      console.log(`orderList :`, orderList)
+      console.log(`orderTotalPrice :`, orderTotalPrice)
     },
   },
   { horizontalScroll: true }

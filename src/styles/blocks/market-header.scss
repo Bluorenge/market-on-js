@@ -56,14 +56,12 @@
     font-size: 12px;
 
     &:not(:last-child) {
+      margin-right: 20px;
+
       &:hover {
         text-decoration: underline;
         cursor: pointer;
       }
-    }
-
-    &:not(:last-child) {
-      margin-right: 20px;
     }
 
     @include respond-to(tablet) {

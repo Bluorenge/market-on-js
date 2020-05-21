@@ -5,12 +5,12 @@ import CartPageComponent from '../components/cart-page'
 
 import CartItemController from '../controllers/cart-item'
 
-import CartModel from '../model-cart'
+import { $cart } from '../model-cart'
 import { eventsForStore } from '../../main/eventsForStore'
 
-const renderProducts = (container, setting, products, events) => {
+const renderProducts = (container, setting, products) => {
   return products.map((item) => {
-    const productController = new CartItemController(container, events)
+    const productController = new CartItemController(container)
     productController.render(setting, item)
     return productController
   })
@@ -22,11 +22,7 @@ export default class CartController {
     this._container = args[1]
 
     this._setting = args[2]
-    this._productsModel = args[3]
 
-    this._orderCallback = args[4]
-
-    this._cartModel = new CartModel()
     this._cartIconComponent = null
     this._cartPageComponent = null
 
@@ -38,22 +34,21 @@ export default class CartController {
 
   render() {
     // Обновляем иконку корзины
-    this._cartModel.$cart.watch((state) => this._updateIcon(state))
+    $cart.watch((state) => this._updateIcon(state))
     // Обновляем страницу корзины при удалении товара
-    this._cartModel.$cart.watch(eventsForStore.deleteProductInCart, (state) =>
+    $cart.watch(eventsForStore.deleteProductInCart, (state) =>
       this._renderCartPage(state)
     )
-    this._cartModel.$cart.watch(
-      eventsForStore.updateQuantityOfProductInCart,
-      (state) => this._changeTotalPrice(state)
+    $cart.watch(eventsForStore.updateQuantityOfProductInCart, (state) =>
+      this._changeTotalPrice(state)
     )
-    // Удаляем страницу корзины при её закрытии
-    this._productsModel.$productList.watch(eventsForStore.toDefaultState, () =>
-      this._removeCartPage()
-    )
-    this._productsModel.$productList.watch(eventsForStore.closeCartPage, () =>
-      this._removeCartPage()
-    )
+    // Удаляем страницу корзины при её закрытии или переходе на главную
+    eventsForStore.toDefaultState.watch(() => this._removeCartPage())
+    eventsForStore.closeCartPage.watch(() => this._removeCartPage())
+    eventsForStore.openCartPage.watch(() => {
+      eventsForStore.createCartMenu()
+      this._renderCartPage($cart.getState())
+    })
   }
 
   _updateIcon(cartData) {
@@ -70,13 +65,14 @@ export default class CartController {
     this._cartIconComponent.setProductCount()
 
     this._cartIconComponent.setOpenCartClickHandler(() => {
-      eventsForStore.createCartMenu()
       eventsForStore.openCartPage()
-      this._renderCartPage(cartData)
     })
   }
 
   _renderCartPage(cartData) {
+    eventsForStore.clearSearchInput()
+    eventsForStore.disabledSearch()
+
     if (this._cartPageComponent) {
       remove(this._cartPageComponent)
     }
@@ -96,8 +92,7 @@ export default class CartController {
       const newProducts = renderProducts(
         this._cartPageComponent.getElement(),
         this._setting,
-        cartData,
-        eventsForStore
+        cartData
       )
 
       this._showedCartProductsComponent = this._showedCartProductsComponent.concat(
@@ -110,23 +105,23 @@ export default class CartController {
           arr.map((item) => {
             const product = {
               name: item.name,
-              count: Number(item.quantity),
-              price: Number(item.price.replace(/\s/g, '')),
+              count: item.quantity,
+              price: item.price,
             }
-            if (item.optionName !== undefined) {
-              product.optionName = item.optionName.replace(/\:/, '')
-              product.optionValue = item.optionValue
+            if (item.option !== undefined) {
+              product.optionName = item.option.optionName.replace(/:/, ``)
+              product.optionValue = item.option.optionValue
             }
             return order.push(product)
           })
           return order
         }
-        const orderList = getOrderList(this._cartModel.$cart.getState())
+        const orderList = getOrderList($cart.getState())
         const totalPrice = orderList.reduce(
-          (price, product) => price + product.price,
+          (priceAcc, product) => priceAcc + product.count * product.price,
           0
         )
-        this._orderCallback(orderList, totalPrice)
+        eventsForStore.sendOrder({ orderList, totalPrice })
       })
     }
   }
@@ -134,7 +129,7 @@ export default class CartController {
   _changeTotalPrice(cart) {
     const totalPrice = cart
       .reduce((total, item) => total + item.price * item.quantity, 0)
-      .toLocaleString('ru-RU')
+      .toLocaleString(`ru-RU`)
     this._cartPageComponent.getTotalPriceElement().textContent = totalPrice
   }
 
@@ -146,6 +141,7 @@ export default class CartController {
   }
 
   _removeCartPage() {
+    eventsForStore.enabledSearch()
     remove(this._cartPageComponent)
   }
 }

@@ -8,7 +8,7 @@ export default class SearchInputComponent extends AbstractComponent {
   }
 
   getInput() {
-    return this.getElement().querySelector('.market-header__search-input')
+    return this.getElement().querySelector(`.market-header__search-input`)
   }
 
   setInputHandler(handler) {

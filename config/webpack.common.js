@@ -1,16 +1,16 @@
-const paths = require('./paths')
-const TerserPlugin = require('terser-webpack-plugin')
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const HTMLWebpackPlugin = require('html-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const paths = require(`./paths`)
+const TerserPlugin = require(`terser-webpack-plugin`)
+const { CleanWebpackPlugin } = require(`clean-webpack-plugin`)
+const HTMLWebpackPlugin = require(`html-webpack-plugin`)
+const MiniCssExtractPlugin = require(`mini-css-extract-plugin`)
 
-const devMode = process.env.NODE_ENV !== 'production'
+const devMode = process.env.NODE_ENV !== `production`
 
 module.exports = {
   entry: {
-    market: paths.src + '/market.js',
-    ['data-maker']: paths.src + '/data-maker.js',
-    ['market-mvp']: paths.src + '/market-mvp.js'
+    market: paths.src + `/market.js`,
+    [`data-maker`]: paths.src + `/data-maker.js`,
+    [`market-mvp`]: paths.src + `/market-mvp.js`
   },
 
   optimization: {
@@ -34,30 +34,30 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader'
+          loader: `babel-loader`
         }
       },
       {
         test: /\.(css|s[ac]ss)$/i,
         use: [
-          devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+          devMode ? `style-loader` : MiniCssExtractPlugin.loader,
           {
-            loader: 'css-loader',
+            loader: `css-loader`,
             options: {
               sourceMap: devMode
             }
           },
           {
-            loader: 'postcss-loader',
+            loader: `postcss-loader`,
             options: {
               sourceMap: devMode
             }
           },
           {
-            loader: 'sass-loader',
+            loader: `sass-loader`,
             options: {
               sassOptions: {
-                outputStyle: 'expanded'
+                outputStyle: `expanded`
               }
             }
           }
@@ -67,9 +67,9 @@ module.exports = {
         test: /\.(ttf|eot|otf|woff2?)$/i,
         use: [
           {
-            loader: 'file-loader',
+            loader: `file-loader`,
             options: {
-              name: 'fonts/[name].[ext]'
+              name: `fonts/[name].[ext]`
             }
           }
         ]
@@ -78,10 +78,10 @@ module.exports = {
         test: /\.(gif|png|jpe?g|svg)$/i,
         use: [
           {
-            loader: 'file-loader',
+            loader: `file-loader`,
             options: {
-              name: '[path][name].[ext]',
-              context: 'src'
+              name: `[path][name].[ext]`,
+              context: `src`
             }
           }
         ]
@@ -94,37 +94,37 @@ module.exports = {
       verbose: true
     }),
     new HTMLWebpackPlugin({
-      filename: 'market.html',
-      template: paths.src + '/views/market.html',
+      filename: `market.html`,
+      template: paths.src + `/views/market.html`,
       meta: {
         charset: {
-          charset: 'utf-8'
+          charset: `utf-8`
         },
-        viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no'
+        viewport: `width=device-width, initial-scale=1, shrink-to-fit=no`
       },
-      chunks: ['market']
+      chunks: [`market`]
     }),
     new HTMLWebpackPlugin({
-      filename: 'data-maker.html',
-      template: paths.src + '/views/data-maker.html',
+      filename: `data-maker.html`,
+      template: paths.src + `/views/data-maker.html`,
       meta: {
         charset: {
-          charset: 'utf-8'
+          charset: `utf-8`
         },
-        viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no'
+        viewport: `width=device-width, initial-scale=1, shrink-to-fit=no`
       },
-      chunks: ['data-maker']
+      chunks: [`data-maker`]
     }),
     new HTMLWebpackPlugin({
-      filename: 'market-mvp.html',
-      template: paths.src + '/views/market-mvp.html',
+      filename: `market-mvp.html`,
+      template: paths.src + `/views/market-mvp.html`,
       meta: {
         charset: {
-          charset: 'utf-8'
+          charset: `utf-8`
         },
-        viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no'
+        viewport: `width=device-width, initial-scale=1, shrink-to-fit=no`
       },
-      chunks: ['market-mvp']
+      chunks: [`market-mvp`]
     })
   ]
 }

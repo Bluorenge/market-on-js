@@ -1,8 +1,8 @@
 import { render, RenderPosition } from '../utils/render'
 import SearchInputComponent from './component-search-input'
 import { debounce } from '../utils/utils'
+
 import { eventsForStore } from '../main/eventsForStore'
-import { $productList } from '../products/model-products'
 
 export default class SearchInputController {
   constructor(container) {
@@ -17,11 +17,10 @@ export default class SearchInputController {
       RenderPosition.BEFOREEND
     )
     const input = searchInputComponent.getInput()
-    // При изменении состояния списка продуктов, очищаем поле
-    $productList.watch(
-      eventsForStore.changeProductListState,
-      () => (input.value = '')
-    )
+    // Следим за вызовом события очищения поля поиска
+    eventsForStore.clearSearchInput.watch(() => (input.value = ``))
+    eventsForStore.disabledSearch.watch(() => (input.disabled = true))
+    eventsForStore.enabledSearch.watch(() => (input.disabled = false))
 
     searchInputComponent.setInputHandler(
       debounce(() => {

@@ -16,7 +16,7 @@ const cartProductTemplate = (globalSetting, item) => {
           <span class="market-cart__option-title">${item.option.optionName}</span>
           <span class="market-cart__option">${item.option.optionValue}</span>
         </div>`
-          : ''
+          : ``
       }
     </div>
     <div class="market-cart__desc-wrap">
@@ -30,7 +30,7 @@ const cartProductTemplate = (globalSetting, item) => {
         </span>
         <span class="market-cart__total-product-price">
           <span class="market-cart__price-quantity">${item.quantity}</span>
-          <span> x ${item.price + ' ' + globalSetting.currency}</span>
+          <span> x ${item.price + ` ` + globalSetting.currency}</span>
         </span>
       </div>
       <div class="market-cart__quantity-wrap">
@@ -63,48 +63,48 @@ export default class CartItemComponent extends AbstractComponent {
   }
 
   getQuantityInputElement() {
-    return this.getElement().querySelector('.market-cart__quantity-input')
+    return this.getElement().querySelector(`.market-cart__quantity-input`)
   }
 
   getTotalPriceElement() {
-    return this.getElement().querySelector('.market-cart__product-total-price')
+    return this.getElement().querySelector(`.market-cart__product-total-price`)
   }
 
   getPriceQuantity() {
-    return this.getElement().querySelector('.market-cart__price-quantity')
+    return this.getElement().querySelector(`.market-cart__price-quantity`)
   }
 
   setOpenProductHandler(handler) {
     this.getElement()
-      .querySelector('.market-cart__title')
-      .addEventListener('click', handler)
+      .querySelector(`.market-cart__title`)
+      .addEventListener(`click`, handler)
 
     this.getElement()
-      .querySelector('.market-cart__img-wrap')
-      .addEventListener('click', handler)
+      .querySelector(`.market-cart__img-wrap`)
+      .addEventListener(`click`, handler)
   }
 
   setQuantityDownHandler(handler) {
     this.getElement()
-      .querySelector('.market-cart__quantity-down')
-      .addEventListener('click', handler)
+      .querySelector(`.market-cart__quantity-down`)
+      .addEventListener(`click`, handler)
   }
 
   setQuantityInputHandler(handler) {
     this.getElement().querySelector(
-      '.market-cart__quantity-input'
+      `.market-cart__quantity-input`
     ).oninput = handler
   }
 
   setQuantityUpHandler(handler) {
     this.getElement()
-      .querySelector('.market-cart__quantity-up')
-      .addEventListener('click', handler)
+      .querySelector(`.market-cart__quantity-up`)
+      .addEventListener(`click`, handler)
   }
 
   setDeleteProductHandler(handler) {
     this.getElement()
-      .querySelector('.market-cart__delete-wrap')
-      .addEventListener('click', handler)
+      .querySelector(`.market-cart__delete-wrap`)
+      .addEventListener(`click`, handler)
   }
 }

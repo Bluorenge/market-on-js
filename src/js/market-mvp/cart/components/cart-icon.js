@@ -2,18 +2,18 @@ import AbstractComponent from '../../utils/abstract-component.js'
 
 const cartIconTemplate = (data, setting) => {
   const dataExist = data.length > 0
-  const iconClass = dataExist ? ` market-cart-link__icon-wrap--filled` : ''
+  const iconClass = dataExist ? ` market-cart-link__icon-wrap--filled` : ``
   const text = dataExist
     ? `<div class="market-cart-link__text-row">
         <span class="market-cart-link__price">${
           data
             .reduce((total, item) => total + item.price * item.quantity, 0)
-            .toLocaleString('ru-RU') +
-          ' ' +
+            .toLocaleString(`ru-RU`) +
+          ` ` +
           setting.currency
         }</span>
       </div>`
-    : '<div class="market-cart-link__empty">Корзина пуста</div>'
+    : `<div class="market-cart-link__empty">Корзина пуста</div>`
 
   return `<div class="market-header__cart market-cart-link">
     <div class="market-cart-link__icon-wrap${iconClass}">
@@ -45,8 +45,8 @@ export default class CartIconComponent extends AbstractComponent {
     )
 
     this.getElement()
-      .querySelector('.market-cart-link__icon-wrap')
-      .setAttribute('data-before', quantityAll)
+      .querySelector(`.market-cart-link__icon-wrap`)
+      .setAttribute(`data-before`, quantityAll)
   }
 
   setOpenCartClickHandler(handler) {

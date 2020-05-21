@@ -3,16 +3,18 @@ module.exports = function (api) {
 
   const presets = [
     [
-      '@babel/preset-env',
+      `@babel/preset-env`,
       {
-        modules : false
+        modules: false,
       },
     ],
   ]
   const plugins = [
-    '@babel/plugin-proposal-class-properties',
+    `@babel/plugin-proposal-class-properties`,
+    `@babel/proposal-optional-chaining`,
+    `@babel/proposal-nullish-coalescing-operator`,
     [
-      '@babel/plugin-transform-runtime',
+      `@babel/plugin-transform-runtime`,
       {
         corejs: 3,
       },

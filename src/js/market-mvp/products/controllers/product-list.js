@@ -1,37 +1,34 @@
 import { render, remove, RenderPosition } from '../../utils/render'
 
-import { elementReady, carousel } from '../../utils/utils'
+import { carousel } from '../../utils/carousel&scrollbar'
+import { elementReady } from '../../utils/utils'
 
-import ProductController from './product'
+import ListItemController from './list-item'
 import ProductPageController from './product-page'
 
 import ProductListComponent from '../components/product-list'
 import BtnPrevComponent from '../components/btn-prev'
 import EmptyMessageComponent from '../components/empty-message'
 import CarouselDotsComponent from '../components/carousel-dots'
+
+// Чтобы сделать шаг назад
+import { $menu } from '../../menu/model-menu'
+import { $productList, searchList } from '../model-products'
 import { eventsForStore } from '../../main/eventsForStore'
 
-const renderProducts = (
-  productListElement,
-  setting,
-  products,
-  onDataChange
-) => {
+const renderProducts = (productListElement, setting, option, products) => {
   const createArrayOfProductControllers = (arr) => {
     return arr.map((item) => {
-      const productController = new ProductController(
-        productListElement,
-        onDataChange
-      )
-      productController.render(setting, item)
+      const productController = new ListItemController(productListElement)
+      productController.render(setting, option, item)
       return productController
     })
   }
 
   switch (true) {
-    case 'subCategory' in products:
+    case `subCategory` in products:
       return createArrayOfProductControllers(products.subCategory)
-    case 'productsInCategory' in products:
+    case `productsInCategory` in products:
       return createArrayOfProductControllers(products.productsInCategory)
     default:
       return createArrayOfProductControllers(products)
@@ -55,10 +52,10 @@ const getContentViewType = (currentState, defaultState) => {
     case currentState === defaultState:
       typeView.MAIN_PAGE = true
       break
-    case 'subCategory' in currentState:
+    case `subCategory` in currentState:
       typeView.CATEGORIES_LIST = true
       break
-    case 'productsInCategory' in currentState:
+    case `productsInCategory` in currentState:
       typeView.PRODUCT_LIST = true
       break
     case Array.isArray(currentState):
@@ -70,8 +67,6 @@ const getContentViewType = (currentState, defaultState) => {
   }
   return typeView
 }
-import { $productList, searchList } from '../model-products'
-import { $menu, isSearchMenu } from '../../menu/model-menu'
 
 export default class ProductListController {
   constructor(...args) {
@@ -81,20 +76,15 @@ export default class ProductListController {
 
     this._wrap = null
     this._contentViewType = null
-    this._containerElement = this._container.getElement()
 
     this._productsControllers = []
     this._btnPrevComponent = null
     this._emptyTextComponent = null
     this._dotsForCarouselComponent = null
-
-    this._onItemOpen = this._onItemOpen.bind(this)
-    this._onProductAddToCart = this._onProductAddToCart.bind(this)
   }
 
   render() {
     $productList.watch((currentState) => this._onDataChange(currentState))
-    $productList.watch(eventsForStore.openCartPage, () => this._removeProduct())
     $productList.watch(eventsForStore.toDefaultState, (currentState) =>
       this._onDataChange(currentState)
     )
@@ -102,51 +92,34 @@ export default class ProductListController {
       eventsForStore.findProductsInDefaultProductList,
       (currentState) => this._onDataChange(currentState)
     )
-    $productList.watch(eventsForStore.searchByDefault, (currentState) =>
-      this._onDataChange(currentState)
-    )
+    eventsForStore.openCartPage.watch(() => {
+      if (this._emptyTextComponent) {
+        this._removeEmptyPage()
+      }
+      this._removeProduct()
+    })
     searchList.watch((currentState) =>
       currentState ? this._onDataChange(currentState) : false
+    )
+    eventsForStore.productListToCurrentView.watch((currentState) =>
+      this._onDataChange(currentState)
     )
   }
 
   _renderProductList(settings, products, isMainPage = true) {
     this._wrap = new ProductListComponent()
-    render(this._containerElement, this._wrap, RenderPosition.BEFOREEND)
+    render(this._container.getElement(), this._wrap, RenderPosition.BEFOREEND)
 
     const newProducts = renderProducts(
       this._wrap.getElement(),
       settings,
-      products,
-      this._onItemOpen
+      this._options,
+      products
     )
 
     this._productsControllers = this._productsControllers.concat(newProducts)
 
-    // elementReady работает только по классу
-    elementReady(
-      this._containerElement,
-      `.${this._wrap.getElement().classList[0]}`
-    ).then(() => {
-      const width = this._productsControllers.reduce(
-        (acc, item) => acc + item.getComponent().offsetWidth,
-        0
-      )
-      if (!this._dotsForCarouselComponent) {
-        this._dotsForCarouselComponent = new CarouselDotsComponent()
-        render(
-          this._containerElement,
-          this._dotsForCarouselComponent,
-          RenderPosition.AFTERBEGIN
-        )
-      }
-      carousel(
-        this._options,
-        this._containerElement,
-        this._wrap.getElement(),
-        width
-      )
-    })
+    this._createCarousel()
 
     if (!isMainPage) {
       this._renderPrevBtn()
@@ -155,8 +128,7 @@ export default class ProductListController {
 
   _renderProductPage(settings, product) {
     const productPageController = new ProductPageController(
-      this._containerElement,
-      this._onProductAddToCart
+      this._container.getElement()
     )
     productPageController.render(settings, product)
     this._productsControllers = this._productsControllers.concat(
@@ -170,17 +142,17 @@ export default class ProductListController {
 
     if (this._emptyTextComponent) {
       render(
-        this._containerElement,
+        this._container.getElement(),
         this._emptyTextComponent,
         RenderPosition.BEFOREEND
       )
     }
   }
 
-  _renderPrevBtn(sd) {
+  _renderPrevBtn() {
     this._btnPrevComponent = new BtnPrevComponent()
     render(
-      this._containerElement,
+      this._container.getElement(),
       this._btnPrevComponent,
       RenderPosition.BEFOREEND
     )
@@ -193,20 +165,54 @@ export default class ProductListController {
     })
   }
 
+  _createCarousel() {
+    // elementReady работает только по классу
+    elementReady(
+      this._container.getElement(),
+      `.${this._wrap.getElement().classList[0]}`
+    ).then(() => {
+      const width = this._productsControllers.reduce(
+        (acc, item) => acc + item.getComponent().offsetWidth,
+        0
+      )
+      if (!this._dotsForCarouselComponent) {
+        this._dotsForCarouselComponent = new CarouselDotsComponent()
+        render(
+          this._container.getElement(),
+          this._dotsForCarouselComponent,
+          RenderPosition.AFTERBEGIN
+        )
+      }
+      carousel(
+        this._options,
+        this._container.getElement(),
+        this._wrap.getElement(),
+        width
+      )
+    })
+  }
+
   _removeProduct() {
     remove(this._wrap)
+
     if (this._btnPrevComponent) {
       remove(this._btnPrevComponent)
     }
+
     if (this._dotsForCarouselComponent) {
       remove(this._dotsForCarouselComponent)
       this._dotsForCarouselComponent = null
-      this._containerElement.classList.remove('market-content--shadow')
+      this._container.getElement().classList.remove(`market-content--shadow`)
     }
+
     this._productsControllers.forEach((productController) =>
       productController.destroy()
     )
     this._productsControllers = []
+  }
+
+  _removeEmptyPage() {
+    remove(this._emptyTextComponent)
   }
 
   _onDataChange(currentState) {
@@ -215,7 +221,7 @@ export default class ProductListController {
     }
 
     if (this._emptyTextComponent) {
-      remove(this._emptyTextComponent)
+      this._removeEmptyPage()
     }
 
     this._contentViewType = getContentViewType(
@@ -230,23 +236,12 @@ export default class ProductListController {
       this._contentViewType.PRODUCT_LIST ||
       this._contentViewType.SEARCH_LIST
     ) {
-      this._renderProductList(this._setting, currentState, false)
+      const isMainPage = false
+      this._renderProductList(this._setting, currentState, isMainPage)
     } else if (this._contentViewType.PRODUCT_PAGE) {
-      this._renderProductPage(this._setting, currentState)
+      eventsForStore.openProductPage()
     } else {
       this._renderEmptyPage()
     }
-  }
-
-  _onItemOpen(data) {
-    if (isSearchMenu($menu.getState())) {
-      eventsForStore.deleteLastMenuItem()
-    }
-    eventsForStore.addMenuItem(data)
-    eventsForStore.changeProductListState(data)
-  }
-
-  _onProductAddToCart(data) {
-    eventsForStore.addToCart(data)
   }
 }

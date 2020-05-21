@@ -1,46 +1,50 @@
 import { render, remove, RenderPosition } from '../../utils/render.js'
+
 import ProductPageComponent from '../components/product-page'
 
+import { eventsForStore } from '../../main/eventsForStore'
+import { productPage, $productList } from '../../products/model-products'
+
 export default class ProductPageController {
-  constructor(container, addToCart) {
+  constructor(container, setting) {
     this._container = container
-    this._addToCart = addToCart
+    this._setting = setting
 
     this._productPageComponent = null
+    // Наблюдаем за появлением стора с продуктом
+    productPage.watch((state) => {
+      this._renderCartPage(this._setting, state)
+    })
+    $productList.watch(() => this._removeCartPage())
+    eventsForStore.openCartPage.watch(() => this._removeCartPage())
   }
 
-  render(setting, product) {
+  _renderCartPage(setting, product) {
+    eventsForStore.disabledSearch()
+
     this._productPageComponent = new ProductPageComponent(setting, product)
     render(
-      this._container,
+      this._container.getElement(),
       this._productPageComponent,
       RenderPosition.BEFOREEND
     )
 
-    const optionWrap = this._productPageComponent.getOptionWrapElement()
     let productPrice = this._productPageComponent.getPriceElement()
 
     this._productPageComponent.setOrderButtonClickHandler(() => {
-      if (optionWrap) {
-        const optionName = this._productPageComponent.getOptionTitleElement()
-          .textContent
-        const optionValue = this._productPageComponent.getActiveOptionElement()
-          .textContent
+      const optionName = this._productPageComponent.getOptionTitleElement()
+      const optionValue = this._productPageComponent.getActiveOptionElement()
 
-        this._addToCart({
-          product,
-          productPrice: productPrice.textContent,
-          optionName,
-          optionValue,
-        })
-      } else {
-        this._addToCart({
-          product,
-          productPrice: productPrice.textContent,
-        })
-      }
+      eventsForStore.addToCart({
+        product,
+        productPrice: productPrice.textContent,
+        optionName: optionName ? optionName.textContent : undefined,
+        optionValue: optionValue ? optionValue.textContent : undefined,
+      })
       this._productPageComponent.animationForAddProductToCart()
     })
+
+    const optionWrap = this._productPageComponent.getOptionWrapElement()
 
     if (optionWrap) {
       this._productPageComponent.setOptionItemClickHandler(() => {
@@ -56,7 +60,10 @@ export default class ProductPageController {
     }
   }
 
-  destroy() {
-    remove(this._productPageComponent)
+  _removeCartPage() {
+    if (this._productPageComponent) {
+      remove(this._productPageComponent)
+    }
+    eventsForStore.enabledSearch()
   }
 }

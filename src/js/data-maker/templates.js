@@ -1,10 +1,6 @@
 import { entryProductBtn } from './data-maker'
 
-const createFieldsetCategory = (
-  id,
-  typeOfCategory,
-  data
-) => {
+const createFieldsetCategory = (id, typeOfCategory, data) => {
   return `
     <fieldset id="${id}" class="data-maker__fields data-maker__fields--category">
       <div class="data-maker__fields-top">
@@ -22,14 +18,14 @@ const createFieldsetCategory = (
         <label class="data-maker__field-wrap">
           <h3 class="data-maker__name-field">Название ${typeOfCategory} *</h3>
           <input class="data-maker__input data-maker__input--name" type="text" name="category-id-${id}" placeholder="Название ${typeOfCategory}" 
-          ${data !== undefined ? `value="${data.name}"` : ''} required>
+          ${data !== undefined ? `value="${data.name}"` : ``} required>
         </label>
         <label class="data-maker__field-wrap">
           <h3 class="data-maker__name-field data-maker__name-field--new-line">
             Картинка ${typeOfCategory} <span>(название картинки из редактора)</span>
           </h3>
           <input class="data-maker__input data-maker__input--img" type="text" name="img-category-id-${id}" placeholder="Название картинки" 
-          ${data !== undefined ? `value="${data.img}"` : ''}>
+          ${data !== undefined ? `value="${data.img}"` : ``}>
         </label>
       </div>
       <div class="data-maker__add data-maker__add--product" tabindex="0">
@@ -47,11 +43,7 @@ const createFieldsetProduct = (id, data) => {
     <fieldset id="${id}" class="data-maker__fields data-maker__fields--product">
       <div class="data-maker__fields-top">
         <h2 class="data-maker__fields-title">
-          ${
-            data !== undefined
-              ? `${data.name}`
-              : `Добавление товара`
-          }
+          ${data !== undefined ? `${data.name}` : `Добавление товара`}
         </h2>
         <div class="data-maker__hide-btn">Скрыть</div>
         <div class="data-maker__delete-btn data-maker__delete-btn--fields"></div>   
@@ -60,26 +52,20 @@ const createFieldsetProduct = (id, data) => {
         <div class="data-maker__field-wrap">
           <h3 class="data-maker__name-field">Название товара *</h3>
           <input class="data-maker__input data-maker__input--name" type="text" name="name-product-id-${id}" placeholder="Название товара" 
-          ${data !== undefined ? `value="${data.name}"` : ''} required>
+          ${data !== undefined ? `value="${data.name}"` : ``} required>
           <span>В наличии:</span>
           <input class="data-maker__input data-maker__input--product-active" type="checkbox"
-          ${
-            data !== undefined 
-              ? data.active
-                ? 'checked'
-                : ''
-              : 'checked'
-          }>
+          ${data !== undefined ? (data.active ? `checked` : ``) : `checked`}>
         </div>
         <label class="data-maker__field-wrap">
           <h3 class="data-maker__name-field data-maker__name-field--new-line">Название картинки <span>(название файла из редактора)</span></h3>
           <input class="data-maker__input data-maker__input--img" type="text" name="img-product-id-${id}" placeholder="Название картинки" 
-          ${data !== undefined ? `value="${data.img}"` : ''}>
+          ${data !== undefined ? `value="${data.img}"` : ``}>
         </label>
         <label class="data-maker__field-wrap">
           <h3 class="data-maker__name-field">Цена товара *</h3>
           <input class="data-maker__input data-maker__input--price-product" type="number" name="price-product-id-${id}" placeholder="Цена товара" 
-          ${data !== undefined ? `value="${data.price}"` : ''} required>
+          ${data !== undefined ? `value="${data.price}"` : ``} required>
         </label>
       </div>
       <div class="data-maker__add data-maker__add--desc" tabindex="0">
@@ -100,7 +86,7 @@ const createProductDesc = (id, text) => {
         <div class="data-maker__delete-btn data-maker__delete-btn--desc"></div>
       </div>  
       <textarea class="data-maker__input data-maker__input--desc-product" name="desc-product-id-${id}" placeholder="Поддерживает перенос строк">${
-    text !== undefined ? text : ''
+    text !== undefined ? text : ``
   }</textarea>
     </label>
   `
@@ -115,7 +101,7 @@ const createOption = (id, numberOption, state) => {
           state !== undefined ? state : numberOption
         }-product" type="text" name="option-${numberOption}-product-id-${id}" placeholder="Например: M"
         ${
-          state !== undefined ? `value="${state.map(([key]) => key)[0]}"` : ''
+          state !== undefined ? `value="${state.map(([key]) => key)[0]}"` : ``
         } required>
       </label>
       <label class="data-maker__option-field-wrap">
@@ -123,18 +109,18 @@ const createOption = (id, numberOption, state) => {
         <input class="data-maker__input data-maker__input--option-price" type="number" placeholder="Введите цену товара"
         ${
           state !== undefined
-            ? `value="${state.map(([key, value]) => value)[1]}"`
-            : ''
+            ? `value="${state.map(([, value]) => value)[1]}"`
+            : ``
         } required>
       </label>
       <label class="data-maker__option-field-wrap">
         <input class="data-maker__input data-maker__input--option-active" type="checkbox"
         ${
           state !== undefined
-            ? state.map(([key, value]) => value)[0] === true
-              ? 'checked'
-              : ''
-            : 'checked'
+            ? state.map(([, value]) => value)[0] === true
+              ? `checked`
+              : ``
+            : `checked`
         }>
         <span>Сделать активной</span>
       </label>
@@ -151,7 +137,7 @@ const createOptionWrap = (id, state) => {
           <div class="data-maker__delete-btn data-maker__delete-btn--option"></div>
         </div>
         <input class="data-maker__input data-maker__input--option-list-name" type="text" name="option-title-product-id-${id}" placeholder="Название опции" required
-        ${state !== undefined ? `value="${state.nameOptionList}"` : ''}>
+        ${state !== undefined ? `value="${state.nameOptionList}"` : ``}>
       </label>
       <div class="data-maker__option">
       ${
@@ -160,7 +146,7 @@ const createOptionWrap = (id, state) => {
               .map((item, index) =>
                 createOption(id, index + 1, Object.entries(item))
               )
-              .join('')
+              .join(``)
           : createOption(id, 1)
       }
       </div>
@@ -169,33 +155,27 @@ const createOptionWrap = (id, state) => {
   `
 }
 
-// 'subCategory', 'productsInCategory'
+// `subCategory`, `productsInCategory`
 const createTree = (arr, firstLevel, secondLevel) => {
-  const rootNode = document.querySelector('.data-maker')
+  const rootNode = document.querySelector(`.data-maker`)
 
   const newTree = (arr, firstLevel, secondLevel, indexItem) => {
-    arr.map((item, index) => {
+    arr.map((item) => {
       // Если у элемента нет подкатегорий и товаров внутри
-      if (
-        item.hasOwnProperty(firstLevel) === false &&
-        item.hasOwnProperty(secondLevel) === false
-      ) {
+      if (firstLevel in item === false && secondLevel in item === false) {
         // Значит это товар
-        const newProduct = createFieldsetProduct(
-          item.id,
-          item
-        )
+        const newProduct = createFieldsetProduct(item.id, item)
         const desc =
             item.desc !== undefined
               ? createProductDesc(
                   item.id,
-                  item.desc.replace(/<br\s*[\/]?>/gi, '\n')
+                  item.desc.replace(/<br\s*[/]?>/gi, `\n`)
                 )
-              : '',
+              : ``,
           option =
             item.options !== undefined
               ? createOptionWrap(item.id, item.options)
-              : ''
+              : ``
 
         // Ищем родительскую категорию
         const parentCategory = rootNode.querySelector(
@@ -204,37 +184,37 @@ const createTree = (arr, firstLevel, secondLevel) => {
 
         if (parentCategory !== null) {
           const btnAddProduct = parentCategory.querySelector(
-            '.data-maker__add--product'
+            `.data-maker__add--product`
           )
-          btnAddProduct.insertAdjacentHTML('beforebegin', newProduct)
+          btnAddProduct.insertAdjacentHTML(`beforebegin`, newProduct)
         } else {
           // То отрисовываем товар на первом уровне
-          entryProductBtn.insertAdjacentHTML('beforebegin', newProduct)
+          entryProductBtn.insertAdjacentHTML(`beforebegin`, newProduct)
         }
 
         const productNode = document.getElementById(item.id)
 
         const productDescBtn = productNode.querySelector(
-          '.data-maker__add--desc'
+          `.data-maker__add--desc`
         )
         if (productDescBtn !== null) {
-          productDescBtn.insertAdjacentHTML('beforebegin', desc)
+          productDescBtn.insertAdjacentHTML(`beforebegin`, desc)
           productDescBtn.remove()
         }
 
         const productOptionsBtn = productNode.querySelector(
-          '.data-maker__add--option-wrap'
+          `.data-maker__add--option-wrap`
         )
         if (productOptionsBtn !== null) {
-          productOptionsBtn.insertAdjacentHTML('beforebegin', option)
+          productOptionsBtn.insertAdjacentHTML(`beforebegin`, option)
           productOptionsBtn.remove()
         }
       }
       // Иначе если есть продукты в категории
-      else if (item.hasOwnProperty(secondLevel)) {
+      else if (secondLevel in item) {
         const newCategory = createFieldsetCategory(
           item.id,
-          'подкатегории',
+          `подкатегории`,
           item
         )
 
@@ -243,10 +223,10 @@ const createTree = (arr, firstLevel, secondLevel) => {
         )
 
         const btnAddProduct = parentCategory.querySelectorAll(
-          '.data-maker__add--product'
+          `.data-maker__add--product`
         )
         btnAddProduct[btnAddProduct.length - 1].insertAdjacentHTML(
-          'beforebegin',
+          `beforebegin`,
           newCategory
         )
 
@@ -263,22 +243,14 @@ const createTree = (arr, firstLevel, secondLevel) => {
 
         if (parentCategory !== null) {
           const btnAddProduct = parentCategory.querySelector(
-            '.data-maker__add--product'
+            `.data-maker__add--product`
           )
-          newCategory = createFieldsetCategory(
-            item.id,
-            'подкатегории',
-            item
-          )
-          btnAddProduct.insertAdjacentHTML('beforebegin', newCategory)
+          newCategory = createFieldsetCategory(item.id, `подкатегории`, item)
+          btnAddProduct.insertAdjacentHTML(`beforebegin`, newCategory)
         } else {
-          newCategory = createFieldsetCategory(
-            item.id,
-            'категории',
-            item
-          )
+          newCategory = createFieldsetCategory(item.id, `категории`, item)
           // Отрисовываем категорию на первом уровне
-          entryProductBtn.insertAdjacentHTML('beforebegin', newCategory)
+          entryProductBtn.insertAdjacentHTML(`beforebegin`, newCategory)
         }
 
         return newTree(item[firstLevel], firstLevel, secondLevel, item.id)

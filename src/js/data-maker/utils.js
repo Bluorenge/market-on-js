@@ -1,7 +1,9 @@
 // Импортируем информацию о товарах для поиска
 import { ENTER_KEYCODE } from './data-maker'
 
-const randomColor = (el) => el.style.backgroundColor = "#" + Math.floor(Math.random()*16777215).toString(16)
+const randomColor = (el) =>
+  (el.style.backgroundColor =
+    `#` + Math.floor(Math.random() * 16777215).toString(16))
 /**
  * Получаем индекс последнего элемента на текущем уровне
  *
@@ -51,7 +53,7 @@ const inputFindProduct = (nameFromInput, arr) => {
             foundItems.push(item)
           }
           // Если элемент массива содержит ключ поиска, то..
-          else if (item.hasOwnProperty(secondLevel)) {
+          else if (secondLevel in item) {
             /* Фильтруем переданный массив по имени поиска
                 В каждом элементе ищем имя
                   приводим его к нижнему регистру
@@ -80,7 +82,7 @@ const inputFindProduct = (nameFromInput, arr) => {
   }
 
   // ! привязка к названиями потомков
-  findProduct(arr, 'subCategory', 'productsInCategory', nameFromInput)
+  findProduct(arr, `subCategory`, `productsInCategory`, nameFromInput)
 
   return foundItems
 }
@@ -102,7 +104,7 @@ const findElementsOfArrayByKey = (nameFromInput, arr) => {
       arr.map((item) => {
         foundItems.push(item.id)
         // Если элемент массива содержит ключ поиска, то..
-        if (item.hasOwnProperty(secondLevel)) {
+        if (secondLevel in item) {
           // Иначе снова вызываем функцию поиска в подкатегории
           return findProduct(
             item[secondLevel],
@@ -111,7 +113,7 @@ const findElementsOfArrayByKey = (nameFromInput, arr) => {
             searchName
           )
         }
-        if (item.hasOwnProperty(firstLevel)) {
+        if (firstLevel in item) {
           // Иначе снова вызываем функцию поиска в подкатегории
           return findProduct(
             item[firstLevel],
@@ -125,7 +127,7 @@ const findElementsOfArrayByKey = (nameFromInput, arr) => {
   }
 
   // ! привязка к названиями потомков
-  findProduct(arr, 'subCategory', 'productsInCategory', nameFromInput)
+  findProduct(arr, `subCategory`, `productsInCategory`, nameFromInput)
 
   return foundItems
 }

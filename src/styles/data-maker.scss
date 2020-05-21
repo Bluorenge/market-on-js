@@ -53,18 +53,18 @@
   }
 
   &__fields {
-    position: relative;
     display: flex;
     flex-direction: column;
+    position: relative;
+    height: auto;
+    max-height: 9999px;
     padding: 10px;
     border: 1px solid #2d9094;
     border-radius: 5px;
     margin-bottom: 10px;
-    animation: fade-in .5s ease-out;
-    height: auto;
-    max-height: 9999px;
     overflow: hidden;
     transition: max-height 1s ease;
+    animation: fade-in .5s ease-out;
 
     &--collapse {
       max-height: 64px;
@@ -81,8 +81,8 @@
   }
 
   &__fields-top {
-    position: relative;
     display: flex;
+    position: relative;
   }
 
   &__fields-title {
@@ -139,8 +139,8 @@
   }
 
   &__field-wrap {
-    position: relative;
     display: block;
+    position: relative;
     padding-bottom: 10px;
     border-bottom: 1px solid #3ecacf;
     margin-bottom: 10px;

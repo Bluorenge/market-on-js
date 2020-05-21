@@ -1,47 +1,66 @@
 import AbstractComponent from '../../utils/abstract-component'
-import { createPrice } from '../../utils/utils'
+import { createPrice, isItProductInCart } from '../../utils/utils'
+import { $cart } from '../../cart/model-cart'
 
-const createProductTemplate = (globalSetting, item) => {
-  // Проверяем, существует ли цена
-  const priceExist = 'price' in item
-  // Шаблон цены
-  const priceTemplate = () => {
-    return `<span class='market-products__product-price'>${createPrice(item)} ${
+const createProductTemplate = (globalSetting, option, listItem) => {
+  const isProduct = `price` in listItem
+  const productExist = !isItProductInCart($cart.getState(), listItem.name)
+    ? `+`
+    : `✓`
+
+  const oneClickBtn =
+    isProduct && option.oneClickOrder && !listItem.hasOwnProperty(`options`)
+      ? `<button class="market-products__product-btn market-btn market-products__product-btn--one-click-order">в 1 клик</button>`
+      : ``
+
+  const bottomContentTemplate = () => {
+    return `<div class="market-products__product-bottom">
+    <span class="market-products__product-price">${createPrice(listItem)} ${
       globalSetting.currency
-    }</span>`
+    }</span>
+    <div class="market-products__product-btn-wrap">
+      ${oneClickBtn}
+      <button class="market-products__product-btn market-btn market-products__product-btn--add-to-cart">
+        <span>${productExist}</span>
+        <span class="gg-shopping-cart"></span>
+      </button>
+    </div>
+  </div>`
   }
 
-  const isActive = priceExist && !item.active ? ' style="display: none;"' : ''
+  const isActive =
+    isProduct && !listItem.active ? ` style="display: none;"` : ``
 
-  // Присваиваем цену переменной
-  const getPrice = priceExist ? priceTemplate() : ''
+  const checkNeedBottomContent = isProduct ? bottomContentTemplate() : ``
 
-  return `<div id="product-${item.id}" class='market-products__product'${isActive}>
+  return `<div id="product-${listItem.id}" class="market-products__product"${isActive}>
     <div class="market-products__product-wrap">
-      <h2 class='market-products__product-title'>${item.name}</h2>
-      <div class='market-products__product-img-wrap'><img src='https://media.lpgenerator.ru/images/${globalSetting.userId}/${item.img}'></div>
-      <div class='market-products__product-bottom'>
-        ${getPrice}
-        <button class='market-products__product-btn market-btn market-products__product-btn--open'>Подробнее</button>
-      </div>
+      <h2 class="market-products__product-title">${listItem.name}</h2>
+      <div class="market-products__product-img-wrap"><img src="https://media.lpgenerator.ru/images/${globalSetting.userId}/${listItem.img}"></div>
+      ${checkNeedBottomContent}
     </div>
   </div>`
 }
 
-export default class ProductItemComponent extends AbstractComponent {
-  constructor(setting, product) {
+export default class ProductlistItemComponent extends AbstractComponent {
+  constructor(setting, option, product) {
     super()
 
     this._setting = setting
+    this._option = option
     this._product = product
   }
 
   getTemplate() {
-    return createProductTemplate(this._setting, this._product)
+    return createProductTemplate(this._setting, this._option, this._product)
   }
 
   getProductNameElement() {
-    return this.getElement().querySelector('.market-products__product-title')
+    return this.getElement().querySelector(`.market-products__product-title`)
+  }
+
+  getProductPriceElement() {
+    return this.getElement().querySelector(`.market-products__product-price`)
   }
 
   setOpenButtonClickHandler(handler) {
@@ -51,8 +70,17 @@ export default class ProductItemComponent extends AbstractComponent {
     this.getElement()
       .querySelector(`.market-products__product-title`)
       .addEventListener(`click`, handler)
+  }
+
+  setAddToCartBtnClickHandler(handler) {
     this.getElement()
-      .querySelector(`.market-products__product-btn--open`)
+      .querySelector(`.market-products__product-btn--add-to-cart`)
+      .addEventListener(`click`, handler)
+  }
+
+  setOneClickOrderBtnClickHandler(handler) {
+    this.getElement()
+      .querySelector(`.market-products__product-btn--one-click-order`)
       .addEventListener(`click`, handler)
   }
 }

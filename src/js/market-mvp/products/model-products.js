@@ -1,27 +1,27 @@
+import { createEffect, createStore, sample, restore } from 'effector'
+
 import { findByName } from '../utils/filter'
-import { createEffect, restore, combine, createStore, sample } from 'effector'
 import { eventsForStore } from '../main/eventsForStore'
 
-export const awaitProducts = createEffect('get products', {
+export const awaitProducts = createEffect(`get products`, {
   handler: (value) => Promise.resolve(value),
 })
 
 export let $productList
 export let searchList
+export let productPage
 
-awaitProducts.done.watch(({ result, params }) => {
+awaitProducts.done.watch(({ result }) => {
   $productList = createStore(result)
 
   $productList
     .on(eventsForStore.changeProductListState, (state, data) => {
-      console.log('state :', state)
-      console.log('data :', data)
       switch (true) {
-        case 'subCategory' in state:
+        case `subCategory` in state:
           return state.subCategory.find(
             (item) => item.id == data.id && item.name == data.name
           )
-        case 'productsInCategory' in state:
+        case `productsInCategory` in state:
           return state.productsInCategory.find(
             (item) => item.id == data.id && item.name == data.name
           )
@@ -39,21 +39,22 @@ awaitProducts.done.watch(({ result, params }) => {
     })
     .reset(eventsForStore.toDefaultState)
 
+  // * нарушено правило чистой функции, чтобы вычесления производить здесь, а не в контроллере
   searchList = sample($productList, eventsForStore.search, (state, data) => {
-    if (data.searchValue == '') {
+    if (data.searchValue == ``) {
       eventsForStore.deleteLastMenuItem()
-      'subCategory' in state ||
-      'productsInCategory' in state ||
+      ;`subCategory` in state ||
+      `productsInCategory` in state ||
       Array.isArray(state)
-        ? eventsForStore.searchByDefault(state)
+        ? eventsForStore.productListToCurrentView(state)
         : false
     } else {
       switch (true) {
-        case 'subCategory' in state:
+        case `subCategory` in state:
           return state.subCategory.filter((item) =>
             item.name.toLowerCase().includes(data.searchValue.toLowerCase())
           )
-        case 'productsInCategory' in state:
+        case `productsInCategory` in state:
           return state.productsInCategory.filter((item) =>
             item.name.toLowerCase().includes(data.searchValue.toLowerCase())
           )
@@ -66,4 +67,10 @@ awaitProducts.done.watch(({ result, params }) => {
       }
     }
   })
+
+  productPage = sample(
+    $productList,
+    eventsForStore.openProductPage,
+    (state) => state
+  )
 })

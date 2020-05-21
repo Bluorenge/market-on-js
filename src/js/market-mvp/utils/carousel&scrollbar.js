@@ -1,3 +1,4 @@
+
 // Импорт кастомного скроллбара
 import PerfectScrollbar from 'perfect-scrollbar'
 // Функция карусели
@@ -76,7 +77,6 @@ import PerfectScrollbar from 'perfect-scrollbar'
   })
 
   var gliderPrototype = Glider.prototype
-
   gliderPrototype.init = function (refresh, paging) {
     var _ = this
 
@@ -94,7 +94,10 @@ import PerfectScrollbar from 'perfect-scrollbar'
     var breakpointChanged = _.settingsBreakpoint()
     if (!paging) paging = breakpointChanged
 
-    if (_.opt.slidesToShow === `auto` || _.opt._autoSlide) {
+    if (
+      _.opt.slidesToShow === `auto` ||
+      typeof _.opt._autoSlide !== `undefined`
+    ) {
       var slideCount = _.containerWidth / _.opt.itemWidth
 
       _.opt._autoSlide = _.opt.slidesToShow = _.opt.exactWidth
@@ -119,6 +122,8 @@ import PerfectScrollbar from 'perfect-scrollbar'
 
     _.track.style.width = width + `px`
     _.trackWidth = width
+    _.isDrag = false
+    _.preventClick = false
 
     _.opt.resizeLock && _.scrollTo(_.slide * _.itemWidth, 0)
 
@@ -140,16 +145,29 @@ import PerfectScrollbar from 'perfect-scrollbar'
     var mouseup = function () {
       _.mouseDown = undefined
       _.ele.classList.remove(`drag`)
+      if (_.isDrag) {
+        _.preventClick = true
+      }
+      _.isDrag = false
     }
 
     var events = {
       mouseup: mouseup,
       mouseleave: mouseup,
       mousedown: function (e) {
+        e.preventDefault()
+        e.stopPropagation()
         _.mouseDown = e.clientX
         _.ele.classList.add(`drag`)
       },
       mousemove: _.mouse,
+      click: function (e) {
+        if (_.preventClick) {
+          e.preventDefault()
+          e.stopPropagation()
+        }
+        _.preventClick = false
+      },
     }
 
     _.ele.classList.toggle(`draggable`, _.opt.draggable === true)
@@ -190,9 +208,7 @@ import PerfectScrollbar from 'perfect-scrollbar'
     if (!_.opt.arrows) {
       Object.keys(_.arrows).forEach(function (direction) {
         var element = _.arrows[direction]
-        _.event(element, `remove`, {
-          click: element._func,
-        })
+        _.event(element, `remove`, { click: element._func })
       })
       return
     }
@@ -445,6 +461,7 @@ import PerfectScrollbar from 'perfect-scrollbar'
   gliderPrototype.handleMouse = function (e) {
     var _ = this
     if (_.mouseDown) {
+      _.isDrag = true
       _.ele.scrollLeft +=
         (_.mouseDown - e.clientX) * (_.opt.dragVelocity || 3.3)
       _.mouseDown = e.clientX
@@ -523,148 +540,6 @@ import PerfectScrollbar from 'perfect-scrollbar'
   return Glider
 })
 
-/* Рекурсивный поиск одного элемента по всему массиву
-  Функция, принимающая на вход:
-    arr - сам массив
-    name - имя поиска
-*/
-const findByName = (arr, id, name) =>
-  arr.reduce((a, item) => {
-    // При первой итерации этот if пропускается, потому что передаётся null
-    if (a) return a
-
-    // Если текущий элемент массива содержит нужное имя, возращаем его. Если нет, то..
-    if (item.id === id && item.name === name) return item
-
-    // ..берём элемент с ключом nestingKey и снова ищём в нём нужное имя, либо..
-    if (`subCategory` in item)
-      return findByName(item.subCategory, id, name)
-
-    // ..если нужно найти элемент в списке товаров в категории
-    if (`productsInCategory` in item)
-      return findByName(item.productsInCategory, id, name)
-  }, null)
-
-/* 
-  Возвращает найденные элементы
-  ! функция в функции, потому что привязка к внешней переменной
-*/
-const inputFindProduct = (arr, nameFromInput) => {
-  // [] с найденными через input элементами
-  let foundItems = []
-
-  /**
-   * Рекурсивный поиск всех элементов по всему массиву
-   * ! здесь в блоке else привязка к subCategory из массива
-   * @param {array} arr - массив, по которому осуществляется поиск
-   * @param {string} searchName - имя поиска
-   */
-  const findProduct = (arr, searchName) => {
-    if (arr !== undefined) {
-      // Проходим по каждому элементу массива
-      arr.map((item) => {
-        if (item.name.toLowerCase().includes(searchName)) {
-          foundItems.push(item)
-        }
-        // Если элемент массива содержит ключ поиска, то..
-        else if (`productsInCategory` in item) {
-          /* Фильтруем переданный массив по имени поиска
-              В каждом элементе ищем имя
-                приводим его к нижнему регистру
-                и проверяем на содержание символов, переданных в атрибуте searchName
-          */
-          let newItem = item.productsInCategory.filter((item) =>
-            item.name.toLowerCase().includes(searchName)
-          )
-
-          // Добавляем отфильтрованный массив во внешнюю переменную foundItems
-          foundItems = foundItems.concat(newItem)
-
-          return foundItems
-        } else {
-          // Иначе снова вызываем функцию поиска в подкатегории
-          return findProduct(item.subCategory, searchName)
-        }
-      })
-    }
-  }
-
-  // ! привязка к исходнуму массиву с данными и названиями категорий
-  findProduct(arr, nameFromInput.toLowerCase())
-
-  return foundItems
-}
-
-// Путь к элементу (для меню из поиска)
-const menuPath = (arr, id, name) => {
-  let items = []
-  let stopFind = true
-  const pushData = (arr, id, name) => {
-    arr.push({
-      id,
-      name,
-    })
-  }
-
-  const find = (arr, findId, findName) => {
-    arr.find((item) => {
-      if (item.id === findId && item.name === findName) {
-        // Добавлять или нет айди и имя найденного элемента
-        // pushData(items, item.id, item.name)
-        stopFind = false
-      } else if (stopFind) {
-        if (`subCategory` in item) {
-          // Если в этой ветке содержится нужный элемент
-          const there = (newItem) =>
-            newItem.some((product) => {
-              if (product.id === findId && product.name === findName) {
-                pushData(items, item.id, item.name)
-              } else if (`subCategory` in product) {
-                there(product.subCategory)
-              } else if (`productsInCategory` in product) {
-                there(product.productsInCategory)
-              }
-            })
-          there(item.subCategory)
-          return find(item.subCategory, findId, findName)
-        } else if (`productsInCategory` in item) {
-          // Если в этой категории содержится нужный элемент
-          const there = item.productsInCategory.some(
-            (product) => product.id === findId && product.name === findName
-          )
-          if (there) {
-            pushData(items, item.id, item.name)
-          }
-          return find(item.productsInCategory, findId, findName)
-        }
-      }
-    })
-  }
-  find(arr, id, name)
-  return items
-}
-
-// Функция задержки выполнения функции
-const debounce = (func, wait, immediate) => {
-  let timeout
-
-  return function () {
-    let context = this,
-      args = arguments
-    let callNow = immediate && !timeout
-    clearTimeout(timeout)
-    timeout = setTimeout(function () {
-      timeout = null
-      if (!immediate) {
-        func.apply(context, args)
-      }
-    }, wait)
-
-    if (callNow) func.apply(context, args)
-  }
-}
-
-// Проверка, сенсорное ли устройство
 const isTouchDevice = () => {
   const prefixes = ` -webkit- -moz- -o- -ms- `.split(` `)
 
@@ -683,27 +558,6 @@ const isTouchDevice = () => {
 
   return mq(query)
 }
-
-const elementReady = (selector) => {
-  return new Promise((resolve) => {
-    let el = document.querySelector(selector)
-    if (el) {
-      resolve(el)
-    }
-    new MutationObserver((mutationRecords, observer) => {
-      // Query for elements matching the specified selector
-      Array.from(document.querySelectorAll(selector)).forEach((element) => {
-        resolve(element)
-        //Once we have resolved we don`t need the observer anymore.
-        observer.disconnect()
-      })
-    }).observe(document.documentElement, {
-      childList: true,
-      subtree: true,
-    })
-  })
-}
-
 const addScrollBar = (element) => {
   // Добавляем скроллбар, если это не тач-устройство
   if (isTouchDevice() === false) {
@@ -712,118 +566,96 @@ const addScrollBar = (element) => {
 }
 
 // Создание карусели и скролбара
-const carousel = (width, horizontal) => {
-  // Обёртка контента страницы
-  const marketContentWrap = document.querySelector(`.market-content`)
-  // Размер обёртки карусели
-  const carouselWrap = document.querySelector(`.market-products__list`)
-
-  if (!horizontal) {
+export const carousel = (options, wrap, list, width) => {
+  if (!options.horizontalScroll) {
     // Добавляем списку вертикальную раскладку
-    marketContentWrap
+    wrap
       .querySelector(`.market-products__list`)
       .classList.add(`market-products__list--vertical`)
   }
 
-  elementReady(`.market-products__list`).then((element) => {
-    // Проверяем, больше ли длина списка элементов блока, в котором они находятся
-    if (element.offsetWidth < width) {
-      marketContentWrap.classList.add(`market-content--shadow`)
+  // Проверяем, больше ли длина списка элементов блока, в котором они находятся
+  if (list.offsetWidth < width) {
+    wrap.classList.add(`market-content--shadow`)
 
-      if (horizontal) {
-        // Создаём карусель
-        new Glider(carouselWrap, {
-          slidesToShow: `auto`,
-          slidesToScroll: `auto`,
-          dots: `.dots`,
-          dragVelocity: 1,
-          responsive: [
-            {
-              // screens greater than >= 775px
-              breakpoint: 775,
-              settings: {
-                draggable: true,
-              },
+    if (options.horizontalScroll) {
+      // Создаём карусель
+      new Glider(list, {
+        slidesToShow: `auto`,
+        slidesToScroll: `auto`,
+        dots: `.dots`,
+        dragVelocity: 1,
+        responsive: [
+          {
+            // screens greater than >= 775px
+            breakpoint: 775,
+            settings: {
+              draggable: true,
             },
-            {
-              breakpoint: 1024,
-              settings: {
-                slidesToShow: 3.5,
-                slidesToScroll: 1,
-                draggable: true,
-              },
+          },
+          {
+            breakpoint: 1024,
+            settings: {
+              slidesToShow: 3.5,
+              slidesToScroll: 1,
+              draggable: true,
             },
-          ],
-        })
+          },
+        ],
+      })
 
-        // Проверка, долистан ли скролл до конца блока
-        const checkScrollY = (element) => {
-          let maxScrollLeft =
-            carouselWrap.scrollWidth - carouselWrap.clientWidth
+      // Проверка, долистан ли скролл до конца блока
+      const checkScrollY = (list) => {
+        let maxScrollLeft = list.scrollWidth - list.clientWidth
 
-          // Расчёт максимального скролла с запасом
-          if (element.scrollLeft >= maxScrollLeft - 15) {
-            marketContentWrap.classList.remove(`market-content--shadow`)
-          } else {
-            marketContentWrap.classList.add(`market-content--shadow`)
-          }
+        // Расчёт максимального скролла с запасом
+        if (list.scrollLeft >= maxScrollLeft - 15) {
+          wrap.classList.remove(`market-content--shadow`)
+        } else {
+          wrap.classList.add(`market-content--shadow`)
         }
-
-        // Прокрутка контекта внутри блока
-        carouselWrap.addEventListener(`wheel`, function (e) {
-          if (e.deltaY > 0) this.scrollLeft += 50
-          else this.scrollLeft -= 50
-
-          checkScrollY(this)
-        })
-
-        carouselWrap.addEventListener(`scroll`, function () {
-          checkScrollY(this)
-        })
-      } else {
-        // Проверка, долистан ли скролл до конца блока
-        const checkScrollX = (element) => {
-          let maxScrollBottom =
-            carouselWrap.scrollHeight - carouselWrap.clientHeight
-
-          // Расчёт максимального скролла с запасом
-          if (element.scrollTop >= maxScrollBottom - 15) {
-            marketContentWrap.classList.remove(`market-content--shadow`)
-          } else {
-            marketContentWrap.classList.add(`market-content--shadow`)
-          }
-        }
-
-        // * сюда можно сделать какой-нибудь эффект при пролистывания до низа блока
-        carouselWrap.addEventListener(`scroll`, function () {
-          // checkScrollX(this)
-        })
       }
 
-      addScrollBar(carouselWrap)
-    }
-  })
-}
+      // Прокрутка контекта внутри блока
+      list.addEventListener(`wheel`, function (e) {
+        if (e.deltaY > 0) this.scrollLeft += 50
+        else this.scrollLeft -= 50
 
+        checkScrollY(this)
+      })
+
+      list.addEventListener(`scroll`, function () {
+        checkScrollY(this)
+      })
+    } else {
+      // Проверка, долистан ли скролл до конца блока
+      const checkScrollX = (list) => {
+        let maxScrollBottom = list.scrollHeight - list.clientHeight
+
+        // Расчёт максимального скролла с запасом
+        if (list.scrollTop >= maxScrollBottom - 15) {
+          wrap.classList.remove(`market-content--shadow`)
+        } else {
+          wrap.classList.add(`market-content--shadow`)
+        }
+      }
+
+      // * сюда можно сделать какой-нибудь эффект при пролистывания до низа блока
+      list.addEventListener(`scroll`, function () {
+        // checkScrollX(this)
+      })
+    }
+
+    addScrollBar(list)
+  }
+}
 // Карусель навигации
-const carouselNav = (width) => {
-  const nav = document.querySelector(`.market-header__nav`)
-  if (nav.offsetWidth < width) {
-    new Glider(nav, {
+export const carouselNav = (menuWrap, width) => {
+  if (menuWrap.offsetWidth < width) {
+    new Glider(menuWrap, {
       slidesToShow: `auto`,
       dragVelocity: 1,
       draggable: true,
     }).scrollTo(width)
   }
-}
-
-export {
-  findByName,
-  inputFindProduct,
-  menuPath,
-  debounce,
-  elementReady,
-  carousel,
-  carouselNav,
-  addScrollBar
 }
