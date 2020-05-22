@@ -5,7 +5,7 @@ import { carouselNav } from '../utils/carousel&scrollbar'
 import MenuComponent from './components/menu'
 import MenuItemComponent from './components/menu-item'
 
-import { eventsForStore } from '../main/eventsForStore'
+import { eventsForStore } from '../utils/eventsForStore'
 import { $menu, whatMenuIsIt } from '../menu/model-menu'
 
 export default class MenuController {
@@ -20,6 +20,7 @@ export default class MenuController {
 
   render() {
     $menu.watch((menu) => this._onViewChange(menu))
+    // Подписываемся на очищение поля поиска
     eventsForStore.clearSearchInput.watch(() => {
       if (whatMenuIsIt($menu.getState(), `Поиск`)) {
         eventsForStore.deleteLastMenuItem()
@@ -61,17 +62,16 @@ export default class MenuController {
       else if (isCartMenu && index !== this._menuItemComponents.length - 1) {
         element.setOpenButtonClickHandler(() => {
           eventsForStore.clearSearchInput()
-          eventsForStore.removeMenuItemsTo({ id: 0 })
-          eventsForStore.toDefaultState()
+          eventsForStore.toMainPageFromCart()
         })
       }
       // Если это не последний элемент
       else if (index !== this._menuItemComponents.length - 1) {
         element.setOpenButtonClickHandler(() => {
-          eventsForStore.clearSearchInput()
           const id = Number(element.getElement().id.replace(/[^+\d]/g, ``))
           const name = element.getElement().textContent
 
+          eventsForStore.clearSearchInput()
           eventsForStore.removeMenuItemsTo({ id, name })
           eventsForStore.findProductsInDefaultProductList({ id, name })
         })

@@ -1,26 +1,28 @@
 import { render, remove, RenderPosition } from '../../utils/render'
-
-import { carousel } from '../../utils/carousel&scrollbar'
+import { eventsForStore } from '../../utils/eventsForStore'
 import { elementReady } from '../../utils/utils'
+import { carousel } from '../../utils/carousel&scrollbar'
 
 import ListItemController from './list-item'
-import ProductPageController from './product-page'
 
-import ProductListComponent from '../components/product-list'
+import MarketListComponent from '../components/market-list'
 import BtnPrevComponent from '../components/btn-prev'
 import EmptyMessageComponent from '../components/empty-message'
 import CarouselDotsComponent from '../components/carousel-dots'
 
 // Чтобы сделать шаг назад
-import { $menu } from '../../menu/model-menu'
 import { $productList, searchList } from '../model-products'
-import { eventsForStore } from '../../main/eventsForStore'
+import { $menu, whatMenuIsIt } from '../../menu/model-menu'
 
-const renderProducts = (productListElement, setting, option, products) => {
+const renderListItems = (productListElement, setting, option, products) => {
   const createArrayOfProductControllers = (arr) => {
     return arr.map((item) => {
-      const productController = new ListItemController(productListElement)
-      productController.render(setting, option, item)
+      const productController = new ListItemController(
+        productListElement,
+        setting,
+        option
+      )
+      productController.render(item)
       return productController
     })
   }
@@ -36,48 +38,38 @@ const renderProducts = (productListElement, setting, option, products) => {
 }
 
 const getContentViewType = (currentState, defaultState) => {
-  const typeView = {
-    EMPTY_PAGE: false,
-    MAIN_PAGE: false,
-    CATEGORIES_LIST: false,
-    PRODUCT_LIST: false,
-    SEARCH_LIST: false,
-    PRODUCT_PAGE: false,
-  }
-
+  let typeView
   switch (true) {
     case Array.isArray(currentState) && currentState.length == 0:
-      typeView.EMPTY_PAGE = true
+      typeView = `EMPTY_PAGE`
       break
     case currentState === defaultState:
-      typeView.MAIN_PAGE = true
+      typeView = `MAIN_PAGE`
       break
     case `subCategory` in currentState:
-      typeView.CATEGORIES_LIST = true
+      typeView = `CATEGORIES_LIST`
       break
     case `productsInCategory` in currentState:
-      typeView.PRODUCT_LIST = true
+      typeView = `PRODUCT_LIST`
       break
     case Array.isArray(currentState):
-      typeView.SEARCH_LIST = true
+      typeView = `SEARCH_LIST`
       break
     default:
-      typeView.PRODUCT_PAGE = true
+      typeView = `PRODUCT_PAGE`
       break
   }
   return typeView
 }
 
-export default class ProductListController {
+export default class MarketListController {
   constructor(...args) {
     this._container = args[0]
     this._options = args[1]
     this._setting = args[2]
 
-    this._wrap = null
-    this._contentViewType = null
-
     this._productsControllers = []
+    this._wrap = null
     this._btnPrevComponent = null
     this._emptyTextComponent = null
     this._dotsForCarouselComponent = null
@@ -85,34 +77,32 @@ export default class ProductListController {
 
   render() {
     $productList.watch((currentState) => this._onDataChange(currentState))
-    $productList.watch(eventsForStore.toDefaultState, (currentState) =>
+    $productList.watch(eventsForStore.toMainPage, (currentState) =>
       this._onDataChange(currentState)
-    )
-    $productList.watch(
-      eventsForStore.findProductsInDefaultProductList,
-      (currentState) => this._onDataChange(currentState)
     )
     eventsForStore.openCartPage.watch(() => {
       if (this._emptyTextComponent) {
         this._removeEmptyPage()
       }
-      this._removeProduct()
+      this._removeProducts()
     })
+    // Следим за созданием списка поиска
     searchList.watch((currentState) =>
       currentState ? this._onDataChange(currentState) : false
     )
+    // Возврат к списку до начала поиска
     eventsForStore.productListToCurrentView.watch((currentState) =>
       this._onDataChange(currentState)
     )
   }
 
-  _renderProductList(settings, products, isMainPage = true) {
-    this._wrap = new ProductListComponent()
+  _renderProductList(products) {
+    this._wrap = new MarketListComponent()
     render(this._container.getElement(), this._wrap, RenderPosition.BEFOREEND)
 
-    const newProducts = renderProducts(
+    const newProducts = renderListItems(
       this._wrap.getElement(),
-      settings,
+      this._setting,
       this._options,
       products
     )
@@ -120,21 +110,6 @@ export default class ProductListController {
     this._productsControllers = this._productsControllers.concat(newProducts)
 
     this._createCarousel()
-
-    if (!isMainPage) {
-      this._renderPrevBtn()
-    }
-  }
-
-  _renderProductPage(settings, product) {
-    const productPageController = new ProductPageController(
-      this._container.getElement()
-    )
-    productPageController.render(settings, product)
-    this._productsControllers = this._productsControllers.concat(
-      productPageController
-    )
-    this._renderPrevBtn()
   }
 
   _renderEmptyPage() {
@@ -157,11 +132,17 @@ export default class ProductListController {
       RenderPosition.BEFOREEND
     )
     this._btnPrevComponent.setPrevBtnHandler(() => {
-      eventsForStore.deleteLastMenuItem()
       let menu = $menu.getState()
-      const id = menu[menu.length - 1].id
-      const name = menu[menu.length - 1].name
-      eventsForStore.findProductsInDefaultProductList({ id, name })
+      if (whatMenuIsIt(menu, 'Поиск')) {
+        eventsForStore.deleteLastMenuItem()
+        eventsForStore.clearSearchInput()
+        eventsForStore.productListToCurrentView($productList.getState())
+      } else {
+        const id = menu[menu.length - 2].id
+        const name = menu[menu.length - 2].name
+        eventsForStore.deleteLastMenuItem()
+        eventsForStore.findProductsInDefaultProductList({ id, name })
+      }
     })
   }
 
@@ -192,7 +173,39 @@ export default class ProductListController {
     })
   }
 
-  _removeProduct() {
+  _onDataChange(currentState) {
+    if (this._productsControllers.length > 0) {
+      this._removeProducts()
+    }
+
+    if (this._emptyTextComponent) {
+      this._removeEmptyPage()
+    }
+
+    const contentViewType = getContentViewType(
+      currentState,
+      $productList.defaultState
+    )
+
+    switch (contentViewType) {
+      case 'MAIN_PAGE':
+        this._renderProductList(currentState)
+        break
+      case 'CATEGORIES_LIST':
+      case 'PRODUCT_LIST':
+      case 'SEARCH_LIST':
+        this._renderProductList(currentState)
+        this._renderPrevBtn()
+        break
+      case 'EMPTY_PAGE':
+        this._renderEmptyPage()
+        break
+      case 'PRODUCT_PAGE':
+        eventsForStore.openProductPage()
+    }
+  }
+
+  _removeProducts() {
     remove(this._wrap)
 
     if (this._btnPrevComponent) {
@@ -202,6 +215,7 @@ export default class ProductListController {
     if (this._dotsForCarouselComponent) {
       remove(this._dotsForCarouselComponent)
       this._dotsForCarouselComponent = null
+      // * привязка к классу
       this._container.getElement().classList.remove(`market-content--shadow`)
     }
 
@@ -213,35 +227,5 @@ export default class ProductListController {
 
   _removeEmptyPage() {
     remove(this._emptyTextComponent)
-  }
-
-  _onDataChange(currentState) {
-    if (this._productsControllers.length > 0) {
-      this._removeProduct()
-    }
-
-    if (this._emptyTextComponent) {
-      this._removeEmptyPage()
-    }
-
-    this._contentViewType = getContentViewType(
-      currentState,
-      $productList.defaultState
-    )
-
-    if (this._contentViewType.MAIN_PAGE) {
-      this._renderProductList(this._setting, currentState)
-    } else if (
-      this._contentViewType.CATEGORIES_LIST ||
-      this._contentViewType.PRODUCT_LIST ||
-      this._contentViewType.SEARCH_LIST
-    ) {
-      const isMainPage = false
-      this._renderProductList(this._setting, currentState, isMainPage)
-    } else if (this._contentViewType.PRODUCT_PAGE) {
-      eventsForStore.openProductPage()
-    } else {
-      this._renderEmptyPage()
-    }
   }
 }

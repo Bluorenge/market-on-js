@@ -1,6 +1,6 @@
 import { newProductCartArr, newProductCart } from '../utils/utils'
 import { createStore } from 'effector'
-import { eventsForStore } from '../main/eventsForStore'
+import { eventsForStore } from '../utils/eventsForStore'
 
 export const $cart = createStore([])
 

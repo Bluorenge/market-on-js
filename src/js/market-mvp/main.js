@@ -1,27 +1,34 @@
 import { render, RenderPosition } from './utils/render'
 
-import HeaderComponent from './main/header'
-import MainContentComponent from './main/content-wrap'
+import HeaderComponent from './wrap-components/header'
+import MainContentComponent from './wrap-components/main-content'
 
 import MenuController from './menu/controller-menu'
 import SearchInputController from './search-input/controller-search-input'
 import ProductPageController from './products/controllers/product-page'
-import ProductListController from './products/controllers/product-list'
+import MarketListController from './products/controllers/market-list'
 import CartController from './cart/controllers/cart'
 
 import { awaitProducts } from './products/model-products'
-import { eventsForStore } from './main/eventsForStore'
-
-// TODO: добавить кнопку назад на страницу товара
+import { eventsForStore } from './utils/eventsForStore'
 
 // TODO: кнопка быстрой покупки. По-умолчанию: на страницу корзины. Если опция кастомной быстрой покупки, то через колбек.
-
-// TODO: сделать опцию, чтобы задать высоту блоку
 // TODO: сделать опцию, чтобы отобразить опции как селект
 
 // TODO: количество доступного товара. В том числе и отдельных опций
 // TODO: где хранить сохранять значение текущего кол-ва товара?
 // TODO: круто было бы на сервере сохранять список всех товаров.
+
+// Новое:
+// 1. Кнопка быстрого добалвения в корзину
+// 2. Кнопка быстрой покупки (опционально)
+// 3. Открытие страницы товара из корзины
+// 4. Кнопка назад на поиске
+
+// Архитектурные изменения:
+// 1. Реализован паттерн MVP.
+// 2. Использован стейт-менеджер эфектор
+// 3. Для отрисовки магазина, нужен только один тег на странице.
 
 // DREAMS:
 // TODO: 1. сделать навигацию по кнопкам назад, когда мышка над магазином. А как историю писать?
@@ -37,6 +44,7 @@ class Market {
       {
         horizontalScroll: true,
         oneClickOrder: true,
+        oneClickOrderCustom: false
       },
       option
     )
@@ -58,24 +66,30 @@ class Market {
     const mainContent = new MainContentComponent()
     render(this.container, mainContent, RenderPosition.BEFOREEND)
 
-    const productListController = new ProductListController(
+    const productListController = new MarketListController(
       mainContent,
       this._options,
       this._setting
     )
     productListController.render()
 
+    // Страница и значок корзины
     const cartController = new CartController(
       header,
       mainContent,
       this._setting
     )
     cartController.render()
+    // Инициаоизируем сейчас - отрисовываем потом
     new ProductPageController(mainContent, this._setting)
   }
 
   sendOrder(fn) {
     eventsForStore.sendOrder.watch(fn)
+  }
+
+  oneClickOrder(fn) {
+    eventsForStore.oneClickOrder.watch(fn)
   }
 }
 

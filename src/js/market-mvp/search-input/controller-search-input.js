@@ -2,7 +2,7 @@ import { render, RenderPosition } from '../utils/render'
 import SearchInputComponent from './component-search-input'
 import { debounce } from '../utils/utils'
 
-import { eventsForStore } from '../main/eventsForStore'
+import { eventsForStore } from '../utils/eventsForStore'
 
 export default class SearchInputController {
   constructor(container) {

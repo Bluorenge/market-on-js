@@ -47,6 +47,7 @@ export const newProductCartArr = (
   return productArr
 }
 
+// Проверка по имени есть ли товар в корзине
 export const isItProductInCart = (cart, productName) =>
   cart.some((user) => user.name === productName)
 
@@ -115,4 +116,11 @@ export const elementReady = (parent, selector) => {
       subtree: true,
     })
   })
+}
+
+export const animationForAddProductToCart = (parentElement) => {
+  const productPic = parentElement.querySelector(`img`)
+  const cloneProductPic = productPic.cloneNode(true)
+  cloneProductPic.classList.add(`market-product__animate`)
+  productPic.after(cloneProductPic)
 }

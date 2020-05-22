@@ -6,7 +6,7 @@ import CartPageComponent from '../components/cart-page'
 import CartItemController from '../controllers/cart-item'
 
 import { $cart } from '../model-cart'
-import { eventsForStore } from '../../main/eventsForStore'
+import { eventsForStore } from '../../utils/eventsForStore'
 
 const renderProducts = (container, setting, products) => {
   return products.map((item) => {
@@ -42,12 +42,15 @@ export default class CartController {
     $cart.watch(eventsForStore.updateQuantityOfProductInCart, (state) =>
       this._changeTotalPrice(state)
     )
-    // Удаляем страницу корзины при её закрытии или переходе на главную
-    eventsForStore.toDefaultState.watch(() => this._removeCartPage())
-    eventsForStore.closeCartPage.watch(() => this._removeCartPage())
     eventsForStore.openCartPage.watch(() => {
+      eventsForStore.clearSearchInput()
+      eventsForStore.disabledSearch()
       eventsForStore.createCartMenu()
       this._renderCartPage($cart.getState())
+    })
+    eventsForStore.closeCartPage.watch(() => {
+      eventsForStore.enabledSearch()
+      this._removeCartPage()
     })
   }
 
@@ -70,9 +73,6 @@ export default class CartController {
   }
 
   _renderCartPage(cartData) {
-    eventsForStore.clearSearchInput()
-    eventsForStore.disabledSearch()
-
     if (this._cartPageComponent) {
       remove(this._cartPageComponent)
     }
@@ -85,8 +85,7 @@ export default class CartController {
     )
 
     this._cartPageComponent.setToMainBtnOnClickHandler(() => {
-      eventsForStore.removeMenuItemsTo({ id: 0 })
-      eventsForStore.toDefaultState()
+      eventsForStore.toMainPageFromCart()
     })
     if (cartData.length > 0) {
       const newProducts = renderProducts(
@@ -121,6 +120,7 @@ export default class CartController {
           (priceAcc, product) => priceAcc + product.count * product.price,
           0
         )
+        // Коллбек на отправку заказа
         eventsForStore.sendOrder({ orderList, totalPrice })
       })
     }
@@ -141,7 +141,6 @@ export default class CartController {
   }
 
   _removeCartPage() {
-    eventsForStore.enabledSearch()
     remove(this._cartPageComponent)
   }
 }

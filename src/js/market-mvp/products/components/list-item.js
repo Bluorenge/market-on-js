@@ -2,19 +2,22 @@ import AbstractComponent from '../../utils/abstract-component'
 import { createPrice, isItProductInCart } from '../../utils/utils'
 import { $cart } from '../../cart/model-cart'
 
-const createProductTemplate = (globalSetting, option, listItem) => {
+const listItemTemplate = (globalSetting, option, listItem) => {
   const isProduct = `price` in listItem
+  const isOneClick = isProduct && option.oneClickOrder
+
   const productExist = !isItProductInCart($cart.getState(), listItem.name)
     ? `+`
     : `✓`
-
-  const oneClickBtn =
-    isProduct && option.oneClickOrder && !listItem.hasOwnProperty(`options`)
-      ? `<button class="market-products__product-btn market-btn market-products__product-btn--one-click-order">в 1 клик</button>`
-      : ``
+  const oneClickBtn = isOneClick
+    ? `<button class="market-products__product-btn market-btn market-products__product-btn--one-click-order">купить в 1 клик</button>`
+    : ``
+  const oneClickClass = isOneClick
+    ? ` market-products__product-bottom--one-click`
+    : ''
 
   const bottomContentTemplate = () => {
-    return `<div class="market-products__product-bottom">
+    return `<div class="market-products__product-bottom${oneClickClass}">
     <span class="market-products__product-price">${createPrice(listItem)} ${
       globalSetting.currency
     }</span>
@@ -42,7 +45,7 @@ const createProductTemplate = (globalSetting, option, listItem) => {
   </div>`
 }
 
-export default class ProductlistItemComponent extends AbstractComponent {
+export default class ListItemComponent extends AbstractComponent {
   constructor(setting, option, product) {
     super()
 
@@ -52,10 +55,10 @@ export default class ProductlistItemComponent extends AbstractComponent {
   }
 
   getTemplate() {
-    return createProductTemplate(this._setting, this._option, this._product)
+    return listItemTemplate(this._setting, this._option, this._product)
   }
 
-  getProductNameElement() {
+  getItemNameElement() {
     return this.getElement().querySelector(`.market-products__product-title`)
   }
 

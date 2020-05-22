@@ -1,6 +1,5 @@
 .market {
   max-width: 960px;
-  height: 515px;
   padding: 20px 15px;
   margin: auto;
   line-height: 1.25;
@@ -97,22 +96,23 @@
 }
 
 .market-btn {
-  max-height: 34px;
-  padding: 5px 10px;
+  padding: 0 10px;
   border: 1px solid #2d9094;
   background-color: transparent;
   border-radius: 5px;
   color: #2d9094;
   cursor: pointer;
   font-size: 12px;
+  line-height: 26px;
 
   &:hover {
     border-color: #42bcc0;
   }
 
   @include respond-to(tablet) {
-    padding: 7px 12px;
+    padding: 0 12px;
     font-size: 16px;
+    line-height: 34px;
   }
 }
 

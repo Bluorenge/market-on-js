@@ -1,11 +1,12 @@
 import { createEvent } from 'effector'
 
 export const eventsForStore = {
-  openListItem: createEvent(),
-  changeProductListState: createEvent(),
-  findProductsInDefaultProductList: createEvent(),
+  changeProductListState: createEvent('Open product-list-item'),
+  findProductsInDefaultProductList: createEvent(
+    'For open product into cart and open list from menu'
+  ),
   closeCartPage: createEvent(),
-  toDefaultState: createEvent(),
+  toMainPage: createEvent(),
 
   openProductPage: createEvent(),
 
@@ -14,7 +15,7 @@ export const eventsForStore = {
   clearSearchInput: createEvent(),
   disabledSearch: createEvent(),
   enabledSearch: createEvent(),
-  
+
   addMenuItem: createEvent(),
   removeMenuItemsTo: createEvent(),
   createMenuPath: createEvent(),
@@ -26,5 +27,13 @@ export const eventsForStore = {
   addToCart: createEvent(),
   updateQuantityOfProductInCart: createEvent(),
   deleteProductInCart: createEvent(),
-  sendOrder: createEvent()
+  sendOrder: createEvent(),
+  toMainPageFromCart: createEvent(),
+  oneClickOrder: createEvent(),
 }
+
+eventsForStore.toMainPageFromCart.watch(() => {
+  eventsForStore.removeMenuItemsTo({ id: 0 })
+  eventsForStore.toMainPage()
+  eventsForStore.closeCartPage()
+})

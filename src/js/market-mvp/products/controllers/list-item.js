@@ -1,24 +1,46 @@
-import { render, remove, RenderPosition } from '../../utils/render.js'
-import ProductItemComponent from '../components/product'
-import { firstActiveOptionName } from '../../utils/utils'
+import { render, remove, replace, RenderPosition } from '../../utils/render.js'
+import { eventsForStore } from '../../utils/eventsForStore'
+import {
+  firstActiveOptionName,
+  animationForAddProductToCart,
+} from '../../utils/utils'
 
-import { eventsForStore } from '../../main/eventsForStore'
+import ListItemComponent from '../components/list-item'
 
 export default class ListItemController {
-  constructor(container) {
+  constructor(container, setting, option) {
     this._container = container
+    this._setting = setting
+    this._option = option
 
     this._productComponent = null
   }
 
-  render(setting, option, product) {
-    this._productComponent = new ProductItemComponent(setting, option, product)
+  render(product) {
+    this._productComponent = new ListItemComponent(
+      this._setting,
+      this._option,
+      product
+    )
     render(this._container, this._productComponent, RenderPosition.BEFOREEND)
-    const productWrap = this._productComponent.getElement()
+    this._initHandler(product)
+  }
 
-    const id = Number(productWrap.id.replace(/[^+\d]/g, ``))
-    const name = this._productComponent.getProductNameElement().textContent
+  destroy() {
+    remove(this._productComponent)
+  }
 
+  getComponent() {
+    return this._productComponent.getElement()
+  }
+
+  _initHandler(product) {
+    const id = Number(
+      this._productComponent.getElement().id.replace(/[^+\d]/g, ``)
+    )
+    const name = this._productComponent.getItemNameElement().textContent
+
+    // При открытии элемента списка:
     this._productComponent.setOpenButtonClickHandler(() => {
       eventsForStore.clearSearchInput()
       eventsForStore.addMenuItem({ id, name })
@@ -42,24 +64,34 @@ export default class ListItemController {
           : undefined,
       }
 
+      // Добавляем товар в корзину
       this._productComponent.setAddToCartBtnClickHandler(() => {
         eventsForStore.addToCart(productData)
+        this._replace(product)
       })
 
-      if (option.oneClickOrder && !product.hasOwnProperty(`options`)) {
+      if (this._option.oneClickOrder && `options` in product == false) {
         this._productComponent.setOneClickOrderBtnClickHandler(() => {
           eventsForStore.addToCart(productData)
-          eventsForStore.openCartPage()
+          if (!this._option.oneClickOrderCustom) {
+            eventsForStore.openCartPage()
+          } else {
+            eventsForStore.oneClickOrder({ productData })
+          }
         })
       }
     }
   }
 
-  destroy() {
-    remove(this._productComponent)
-  }
-
-  getComponent() {
-    return this._productComponent.getElement()
+  _replace(product) {
+    const newViewOfListItem = new ListItemComponent(
+      this._setting,
+      this._option,
+      product
+    )
+    replace(newViewOfListItem, this._productComponent)
+    this._productComponent = newViewOfListItem
+    animationForAddProductToCart(this._productComponent.getElement())
+    this._initHandler(product)
   }
 }

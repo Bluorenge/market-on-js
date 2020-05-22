@@ -1,7 +1,7 @@
 import { render, remove, RenderPosition } from '../../utils/render.js'
 import CartItemComponent from '../components/cart-item'
 
-import { eventsForStore } from '../../main/eventsForStore'
+import { eventsForStore } from '../../utils/eventsForStore'
 
 export default class CartItemController {
   constructor(container) {
@@ -21,10 +21,12 @@ export default class CartItemController {
     const price = this._CartItemComponent.getTotalPriceElement()
     const quantityText = this._CartItemComponent.getPriceQuantity()
 
+    // Открытие страницы с продуктом
     this._CartItemComponent.setOpenProductHandler(() => {
       eventsForStore.closeCartPage()
-      eventsForStore.findProductsInDefaultProductList({ id, name })
       eventsForStore.createMenuPath({ id, name })
+      eventsForStore.findProductsInDefaultProductList({ id, name })
+      eventsForStore.openProductPage()
     })
 
     this._CartItemComponent.setQuantityDownHandler(() => {

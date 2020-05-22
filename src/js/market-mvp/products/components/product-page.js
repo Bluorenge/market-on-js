@@ -124,13 +124,4 @@ export default class ProductPageComponent extends AbstractComponent {
     )
     el.classList.toggle(`market-product__option-item--active`)
   }
-
-  animationForAddProductToCart() {
-    const productPic = this.getElement().querySelector(
-      `.market-product__img-wrap img`
-    )
-    const cloneProductPic = productPic.cloneNode(true)
-    cloneProductPic.classList.add(`market-product__animate`)
-    productPic.after(cloneProductPic)
-  }
 }
