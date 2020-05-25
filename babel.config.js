@@ -19,6 +19,12 @@ module.exports = function (api) {
         corejs: 3,
       },
     ],
+    [
+      `@babel/plugin-transform-parameters`,
+      {
+        loose: true,
+      },
+    ],
   ]
 
   return {

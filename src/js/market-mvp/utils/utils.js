@@ -49,7 +49,7 @@ export const newProductCartArr = (
 
 // Проверка по имени есть ли товар в корзине
 export const isItProductInCart = (cart, productName) =>
-  cart.some((user) => user.name === productName)
+  cart.some((product) => product.name === productName)
 
 // Функция задержки выполнения функции
 export const debounce = (func, wait, immediate) => {
@@ -118,9 +118,76 @@ export const elementReady = (parent, selector) => {
   })
 }
 
+const distanceBetweenElements = function (elementOne, elementTwo) {
+  const x1 = elementOne.getBoundingClientRect().top
+  const x2 = elementTwo.getBoundingClientRect().top
+
+  const y1 = elementOne.getBoundingClientRect().left
+  const y2 = elementTwo.getBoundingClientRect().left
+
+  const xToX = Math.floor(x2 - x1)
+  const yToY = Math.floor(y1 - y2)
+
+  return { xToX, yToY }
+}
+
+const animate = function ({ timing, draw, duration }) {
+  let start = performance.now()
+
+  requestAnimationFrame(function animate(time) {
+    // timeFraction изменяется от 0 до 1
+    let timeFraction = (time - start) / duration
+    if (timeFraction > 1) timeFraction = 1
+
+    // вычисление текущего состояния анимации
+    let progress = timing(timeFraction)
+
+    draw(progress) // отрисовать её
+
+    if (timeFraction < 1) {
+      requestAnimationFrame(animate)
+    }
+  })
+}
+
 export const animationForAddProductToCart = (parentElement) => {
+  const cart = document.querySelector('.market-cart-link__icon-wrap')
   const productPic = parentElement.querySelector(`img`)
+
   const cloneProductPic = productPic.cloneNode(true)
   cloneProductPic.classList.add(`market-product__animate`)
-  productPic.after(cloneProductPic)
+
+  const spaceBetween = distanceBetweenElements(cart, productPic)
+  const entryTop = spaceBetween.xToX
+  const entryLeft =
+    productPic.getBoundingClientRect().left - productPic.offsetWidth
+
+  cloneProductPic.style.top = entryTop + 'px'
+  cloneProductPic.style.left = entryLeft + 'px'
+
+  const marketWrap = parentElement.closest('.market')
+  marketWrap.append(cloneProductPic)
+
+  animate({
+    duration: 1000,
+    timing(timeFraction) {
+      return timeFraction * (2 - timeFraction)
+    },
+    draw(progress) {
+      const roundedToHundredth = function (number) {
+        return +number.toFixed(3)
+      }
+      cloneProductPic.style.top =
+        entryTop +
+        roundedToHundredth(progress) * -spaceBetween.xToX +
+        cart.offsetHeight / 2 +
+        'px'
+      cloneProductPic.style.left =
+        entryLeft +
+        roundedToHundredth(progress) * spaceBetween.yToY +
+        cart.offsetWidth +
+        'px'
+    },
+  })
+  // setTimeout(() => cloneProductPic.remove(), 1000)
 }

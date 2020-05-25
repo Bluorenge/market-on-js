@@ -174,6 +174,7 @@ export default class MarketListController {
   }
 
   _onDataChange(currentState) {
+  console.log('currentState :', currentState);
     if (this._productsControllers.length > 0) {
       this._removeProducts()
     }

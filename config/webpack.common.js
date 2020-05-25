@@ -25,7 +25,8 @@ module.exports = {
         cache: true,
         parallel: true
       })
-    ]
+    ],
+    minimize: false
   },
 
   module: {
@@ -33,6 +34,10 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
+        // include: [
+        //   /node_modules\/effector\/effector.es.js/,
+        //   paths.src
+        // ],
         use: {
           loader: `babel-loader`
         }

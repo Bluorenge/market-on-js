@@ -17,6 +17,7 @@ export default class ProductPageController {
     this._btnPrevComponent = null
     // Наблюдаем за появлением стора с продуктом
     productPage.watch((state) => {
+    console.log('state :', state);
       eventsForStore.clearSearchInput()
       eventsForStore.disabledSearch()
       this._renderCartPage(state)
@@ -26,6 +27,7 @@ export default class ProductPageController {
   }
 
   _renderCartPage(product) {
+  console.log('product :', product);
     this._productPageComponent = new ProductPageComponent(
       this._setting,
       product

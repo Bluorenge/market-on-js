@@ -3,9 +3,11 @@ import { eventsForStore } from '../../utils/eventsForStore'
 import {
   firstActiveOptionName,
   animationForAddProductToCart,
+  isItProductInCart,
 } from '../../utils/utils'
 
 import ListItemComponent from '../components/list-item'
+import { $cart } from '../../cart/model-cart'
 
 export default class ListItemController {
   constructor(container, setting, option) {
@@ -66,8 +68,14 @@ export default class ListItemController {
 
       // Добавляем товар в корзину
       this._productComponent.setAddToCartBtnClickHandler(() => {
-        eventsForStore.addToCart(productData)
-        this._replace(product)
+        if (!isItProductInCart($cart.getState(), product.name)) {
+          eventsForStore.addToCart(productData)
+          this._replace(product)
+          animationForAddProductToCart(this._productComponent.getElement())
+        } else {
+          eventsForStore.addToCart(productData)
+          animationForAddProductToCart(this._productComponent.getElement())
+        }
       })
 
       if (this._option.oneClickOrder && `options` in product == false) {
@@ -91,7 +99,6 @@ export default class ListItemController {
     )
     replace(newViewOfListItem, this._productComponent)
     this._productComponent = newViewOfListItem
-    animationForAddProductToCart(this._productComponent.getElement())
     this._initHandler(product)
   }
 }

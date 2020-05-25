@@ -72,7 +72,6 @@
 }
 
 .data-maker__fields {
-  position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -80,18 +79,19 @@
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
+  position: relative;
+  height: auto;
+  max-height: 9999px;
   padding: 10px;
   border: 1px solid #2d9094;
   border-radius: 5px;
   margin-bottom: 10px;
-  -webkit-animation: fade-in .5s ease-out;
-          animation: fade-in .5s ease-out;
-  height: auto;
-  max-height: 9999px;
   overflow: hidden;
   -webkit-transition: max-height 1s ease;
   -o-transition: max-height 1s ease;
   transition: max-height 1s ease;
+  -webkit-animation: fade-in .5s ease-out;
+          animation: fade-in .5s ease-out;
 }
 
 .data-maker__fields--collapse {
@@ -108,10 +108,10 @@
 }
 
 .data-maker__fields-top {
-  position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  position: relative;
 }
 
 .data-maker__fields-title {
@@ -183,8 +183,8 @@
 }
 
 .data-maker__field-wrap {
-  position: relative;
   display: block;
+  position: relative;
   padding-bottom: 10px;
   border-bottom: 1px solid #3ecacf;
   margin-bottom: 10px;
