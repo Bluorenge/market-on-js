@@ -1,7 +1,7 @@
 import { render, remove, RenderPosition } from '../../utils/render.js'
 import CartItemComponent from '../components/cart-item'
 
-import { eventsForStore } from '../../utils/eventsForStore'
+import { eventsForStore } from '../../models/eventsForStore'
 
 export default class CartItemController {
   constructor(container) {

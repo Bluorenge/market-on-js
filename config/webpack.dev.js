@@ -23,12 +23,12 @@ module.exports = merge(common, {
     watchContentBase: true,
     clientLogLevel: `silent`,
     // writeToDisk: true,
-    port: 8080
+    port: 8080,
   },
 
   plugins: [
     new MiniCssExtractPlugin({
       filename: `style/[name].css`,
-    })
-  ]
+    }),
+  ],
 })

@@ -1,18 +1,17 @@
 import { render, RenderPosition } from './utils/render'
 
-import HeaderComponent from './wrap-components/header'
-import MainContentComponent from './wrap-components/main-content'
+import HeaderComponent from './common-components/header'
+import MainContentComponent from './common-components/main-content'
 
-import MenuController from './menu/controller-menu'
-import SearchInputController from './search-input/controller-search-input'
-import ProductPageController from './products/controllers/product-page'
-import MarketListController from './products/controllers/market-list'
+import MenuController from './menu/controllers/menu'
+import SearchInputController from './search-input/controllers/search-input'
+import ProductPageController from './product-page/controllers/product-page'
+import MarketListController from './market-list/controllers/market-list'
 import CartController from './cart/controllers/cart'
 
-import { awaitProducts } from './products/model-products'
-import { eventsForStore } from './utils/eventsForStore'
+import { awaitProducts } from './models/products'
+import { eventsForStore } from './models/eventsForStore'
 
-// TODO: кнопка быстрой покупки. По-умолчанию: на страницу корзины. Если опция кастомной быстрой покупки, то через колбек.
 // TODO: сделать опцию, чтобы отобразить опции как селект
 
 // TODO: количество доступного товара. В том числе и отдельных опций
@@ -34,7 +33,6 @@ import { eventsForStore } from './utils/eventsForStore'
 // DREAMS:
 // TODO: 1. сделать навигацию по кнопкам назад, когда мышка над магазином. А как историю писать?
 // TODO: возвращаться к результатам поиска. - Пока не получится, потому что сломается поиск, ведь он работает по текущему виду. Плюс инпут очищается при переходе по списку.
-// TODO:
 
 class Market {
   constructor(element, setting, products, option) {
@@ -73,6 +71,8 @@ class Market {
       this._setting
     )
     productListController.render()
+    // Инициализируем сейчас - отрисовываем потом
+    new ProductPageController(mainContent, this._setting)
 
     // Страница и значок корзины
     const cartController = new CartController(
@@ -81,8 +81,6 @@ class Market {
       this._setting
     )
     cartController.render()
-    // Инициаоизируем сейчас - отрисовываем потом
-    new ProductPageController(mainContent, this._setting)
   }
 
   sendOrder(fn) {

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 
 // Импорт кастомного скроллбара
 import PerfectScrollbar from 'perfect-scrollbar'
@@ -9,7 +10,7 @@ import PerfectScrollbar from 'perfect-scrollbar'
     ? (module.exports = factory())
     : factory()
 })(function () {
-  ;(`use strict`) // eslint-disable-line no-unused-expressions
+  (`use strict`) // eslint-disable-line no-unused-expressions
 
   /* globals window:true */
   var _window = typeof window !== `undefined` ? window : this
@@ -212,7 +213,7 @@ import PerfectScrollbar from 'perfect-scrollbar'
       })
       return
     }
-    ;[`prev`, `next`].forEach(function (direction) {
+    [`prev`, `next`].forEach(function (direction) {
       var arrow = _.opt.arrows[direction]
       if (arrow) {
         if (typeof arrow === `string`) arrow = document.querySelector(arrow)
@@ -269,7 +270,7 @@ import PerfectScrollbar from 'perfect-scrollbar'
       _.page = _.dots ? _.dots.children.length - 1 : 0
     }
 
-    ;[].forEach.call(_.slides, function (slide, index) {
+    [].forEach.call(_.slides, function (slide, index) {
       var slideClasses = slide.classList
 
       var wasVisible = slideClasses.contains(`visible`)
@@ -283,7 +284,7 @@ import PerfectScrollbar from 'perfect-scrollbar'
       var itemEnd = itemStart + _.itemWidth
 
       ;[].forEach.call(slideClasses, function (className) {
-        ;/^left|right/.test(className) && slideClasses.remove(className)
+        /^left|right/.test(className) && slideClasses.remove(className)
       })
       slideClasses.toggle(`active`, _.slide === index)
       if (middle === index || (extraMiddle && extraMiddle === index)) {
@@ -308,7 +309,7 @@ import PerfectScrollbar from 'perfect-scrollbar'
       }
     })
     if (_.dots) {
-      ;[].forEach.call(_.dots.children, function (dot, index) {
+      [].forEach.call(_.dots.children, function (dot, index) {
         dot.classList.toggle(`active`, _.page === index)
       })
     }
@@ -506,7 +507,7 @@ import PerfectScrollbar from 'perfect-scrollbar'
     var clear = function (ele) {
       ele.removeAttribute(`style`)
       ;[].forEach.call(ele.classList, function (className) {
-        ;/^glider/.test(className) && ele.classList.remove(className)
+        /^glider/.test(className) && ele.classList.remove(className)
       })
     }
     // remove track

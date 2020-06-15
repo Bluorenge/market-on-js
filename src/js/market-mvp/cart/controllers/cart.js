@@ -3,10 +3,10 @@ import { render, remove, RenderPosition } from '../../utils/render.js'
 import CartIconComponent from '../components/cart-icon'
 import CartPageComponent from '../components/cart-page'
 
-import CartItemController from '../controllers/cart-item'
+import CartItemController from './cart-item'
 
-import { $cart } from '../model-cart'
-import { eventsForStore } from '../../utils/eventsForStore'
+import { $cart } from '../../models/cart'
+import { eventsForStore } from '../../models/eventsForStore'
 
 const renderProducts = (container, setting, products) => {
   return products.map((item) => {

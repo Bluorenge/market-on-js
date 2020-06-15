@@ -232,3 +232,23 @@
     margin-bottom: 5px;
   }
 }
+
+.data-maker {
+  display: flex;
+
+  &__left {
+    width: 20%;
+  }
+
+  &__right {
+    width: 80%;
+  }
+
+  &__menu {
+    padding: 0;
+  }
+
+  &__menu-item {
+    list-style-type: none;
+  }
+}
