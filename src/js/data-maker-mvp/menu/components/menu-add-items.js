@@ -6,17 +6,17 @@ const menuAddCategoryTemplate = `<div class="data-maker__btn-add-wrap">
 </div>`
 
 export default class MenuAddItemsBtnComponent extends AbstractComponent {
-  public getTemplate(): string {
+  getTemplate() {
     return menuAddCategoryTemplate
   }
 
-  public setAddCategoryHandler(handler: () => void): void {
+  setAddCategoryHandler(handler) {
     this.getElement()
       .querySelector(`.data-maker__btn--add-category`)
       .addEventListener(`click`, handler)
   }
 
-  public setAddProductHandler(handler: () => void): void {
+  setAddProductHandler(handler) {
     this.getElement()
       .querySelector(`.data-maker__btn--add-product`)
       .addEventListener(`click`, handler)

@@ -7,12 +7,7 @@ import {
   createTree,
 } from './templates'
 
-import {
-  findElementInArr,
-  debounce,
-  checkEnter,
-  findElementsOfArrayByKey,
-} from './utils'
+import { findElementInArr, debounce, checkEnter, findElementsOfArrayByKey } from './utils'
 
 import * as findAnd from 'find-and'
 import * as clipboard from 'clipboard'
@@ -90,14 +85,12 @@ const addElementOnEntryLevel = (type, elementInsert) => {
  */
 const addProduct = (target, parentNode, data) => {
   // Находим кнопку добавления товара
-  const productToCatBtn = [...parentNode.children].filter((el) =>
-    el.classList.contains(`data-maker__add--product`)
+  const productToCatBtn = [...parentNode.children].filter(el =>
+    el.classList.contains(`data-maker__add--product`),
   )[0]
 
   // Находим кнопкe добавления подкатегории
-  const subCategoryBtn = parentNode.querySelector(
-    `.data-maker__add--subcategory`
-  )
+  const subCategoryBtn = parentNode.querySelector(`.data-maker__add--subcategory`)
 
   // Добавляем товар в текущую категорию
   if (productToCatBtn === target) {
@@ -144,18 +137,15 @@ const addProduct = (target, parentNode, data) => {
  */
 const addCategory = (target, parentNode, data) => {
   // Находим кнопкe добавления подкатегории
-  const subCategoryBtn = [...parentNode.children].filter((e) =>
-    e.classList.contains(`data-maker__add--subcategory`)
+  const subCategoryBtn = [...parentNode.children].filter(e =>
+    e.classList.contains(`data-maker__add--subcategory`),
   )[0]
 
   const productBtn = parentNode.querySelector(`.data-maker__add--product`)
 
   if (subCategoryBtn === target) {
     // Добавляем подкатегорию
-    subCategoryBtn.insertAdjacentHTML(
-      `beforebegin`,
-      createFieldsetCategory(id, `подкатегории`)
-    )
+    subCategoryBtn.insertAdjacentHTML(`beforebegin`, createFieldsetCategory(id, `подкатегории`))
 
     if (productBtn !== null) {
       productBtn.remove()
@@ -194,29 +184,20 @@ const addCategory = (target, parentNode, data) => {
  */
 const productOption = (target, element, elementId, data) => {
   // Кнопка открытия опций
-  const openOptionWrapHandler = element.querySelector(
-    `.data-maker__add--option-wrap`
-  )
+  const openOptionWrapHandler = element.querySelector(`.data-maker__add--option-wrap`)
 
   // Цена товара
-  const priceProduct = element.querySelector(
-    `.data-maker__input--price-product`
-  )
+  const priceProduct = element.querySelector(`.data-maker__input--price-product`)
 
   // Открываем блок опций
   if (openOptionWrapHandler === target) {
     // Вставляем опции в элемент
-    openOptionWrapHandler.insertAdjacentHTML(
-      `beforebegin`,
-      createOptionWrap(elementId)
-    )
+    openOptionWrapHandler.insertAdjacentHTML(`beforebegin`, createOptionWrap(elementId))
     // Отображаем блок с опциями
     openOptionWrapHandler.style.display = `none`
 
     // Добавляем цену в опцию
-    const optionPrice = element.querySelector(
-      `.data-maker__input--option-price`
-    )
+    const optionPrice = element.querySelector(`.data-maker__input--option-price`)
     optionPrice.value = Number(priceProduct.value)
 
     // Добавляем объект с опциями в итоговый массив
@@ -239,9 +220,7 @@ const productOption = (target, element, elementId, data) => {
   // Если обёртка опций существует
   if (wrapOption !== null) {
     // Добавляем опцию
-    const addOptionHandler = wrapOption.querySelector(
-      `.data-maker__add--option-item`
-    )
+    const addOptionHandler = wrapOption.querySelector(`.data-maker__add--option-item`)
     // Получаем номера всех опций
     const optionNum = wrapOption.querySelectorAll(`.data-maker__option-num`)
     // Получаем номер последней опции
@@ -256,14 +235,9 @@ const productOption = (target, element, elementId, data) => {
       // Увеличиваем номер последней опции
       lastOptionNum++
       // Отрисовываем в конце блока с опциями
-      optionList.insertAdjacentHTML(
-        `beforeend`,
-        createOption(elementId, lastOptionNum)
-      )
+      optionList.insertAdjacentHTML(`beforeend`, createOption(elementId, lastOptionNum))
       // Добавляем цену в опцию
-      const optionsPrice = optionList.querySelectorAll(
-        `.data-maker__input--option-price`
-      )
+      const optionsPrice = optionList.querySelectorAll(`.data-maker__input--option-price`)
       const lastOptionPrice = optionsPrice[optionsPrice.length - 1]
       lastOptionPrice.value = priceProduct.value
       // Добавляем инфу опции в массив опций итогового массива
@@ -302,10 +276,7 @@ const productDesc = (target, element, elementId, data) => {
 
   if (openProductDescHandler === target) {
     // Вставляем блок описания перед кнопкой описания
-    openProductDescHandler.insertAdjacentHTML(
-      `beforebegin`,
-      createProductDesc(elementId)
-    )
+    openProductDescHandler.insertAdjacentHTML(`beforebegin`, createProductDesc(elementId))
     // Скрываем кнопку добавления описания
     openProductDescHandler.style.display = `none`
     // Добавляем поле описания в объект товара
@@ -341,25 +312,18 @@ const inputAddName = (inputFieldParent, currentElementInput, currentInput) => {
     // Изменеяем имя текущего элемента в массиве
     currentElementInput.name = inputName.value
     // Заменяем тайтл заголовка
-    const titleProduct = inputFieldParent.querySelector(
-      `.data-maker__fields-title`
-    )
+    const titleProduct = inputFieldParent.querySelector(`.data-maker__fields-title`)
     titleProduct.textContent = inputName.value
   }
 }
 
-const inputAddValue = (
-  inputFieldParent,
-  currentInput,
-  currentChangeObject,
-  changeValue
-) => {
+const inputAddValue = (inputFieldParent, currentInput, currentChangeObject, changeValue) => {
   // Название картинки товара
   const input = inputFieldParent.querySelector(currentInput)
   currentChangeObject[changeValue] = input.value
 }
 
-const getFieldId = (fieldElement) => {
+const getFieldId = fieldElement => {
   // Уникальный индекс нового элемента
   // * уникальный id для поиска элемента в массиве
   const fieldsId = Number(fieldElement.id)
@@ -381,11 +345,11 @@ const addInputEvent = () => {
   allInputs.splice(0, 2)
 
   // Проходимся по всем массивам
-  allInputs.forEach((input) => {
-    input.oninput = debounce((target) => {
+  allInputs.forEach(input => {
+    input.oninput = debounce(target => {
       // Находим родительского блока текущего инпута
-      const inputFieldParent = target.path.find((item) =>
-        item.classList.contains(`data-maker__fields`)
+      const inputFieldParent = target.path.find(item =>
+        item.classList.contains(`data-maker__fields`),
       )
 
       // Находим объект родителя инпута в массиве
@@ -395,7 +359,7 @@ const addInputEvent = () => {
       inputAddName(inputFieldParent, dataOfInput, input)
 
       const activeProductInput = inputFieldParent.querySelector(
-        `.data-maker__input--product-active`
+        `.data-maker__input--product-active`,
       )
 
       if (input === activeProductInput) {
@@ -403,19 +367,12 @@ const addInputEvent = () => {
       }
 
       // Название картинки
-      inputAddValue(
-        inputFieldParent,
-        `.data-maker__input--img`,
-        dataOfInput,
-        `img`
-      )
+      inputAddValue(inputFieldParent, `.data-maker__input--img`, dataOfInput, `img`)
 
       // Выбираем блок с продуктом
       if (inputFieldParent.classList.contains(`data-maker__fields--product`)) {
         // Цена товара
-        const inputPrice = inputFieldParent.querySelector(
-          `.data-maker__input--price-product`
-        )
+        const inputPrice = inputFieldParent.querySelector(`.data-maker__input--price-product`)
         dataOfInput.price = Number(inputPrice.value)
 
         // inputAddValue(
@@ -426,9 +383,7 @@ const addInputEvent = () => {
         // )
 
         // Описание товара
-        const inputProductDesc = inputFieldParent.querySelector(
-          `.data-maker__input--desc-product`
-        )
+        const inputProductDesc = inputFieldParent.querySelector(`.data-maker__input--desc-product`)
 
         // ? если убрать вторую проверку, то косяк с именем
         if (inputProductDesc !== null && input === inputProductDesc) {
@@ -438,15 +393,13 @@ const addInputEvent = () => {
         }
 
         // Блок с опциями товара
-        const productOptionsWrap = inputFieldParent.querySelector(
-          `.data-maker__option-wrap`
-        )
+        const productOptionsWrap = inputFieldParent.querySelector(`.data-maker__option-wrap`)
 
         // Если блок с опциями найден
         if (productOptionsWrap !== null) {
           // Ищем название опций
           const inputProductOptionsName = productOptionsWrap.querySelector(
-            `.data-maker__input--option-list-name`
+            `.data-maker__input--option-list-name`,
           )
 
           // Если текущий импут, это имя блока опций
@@ -456,28 +409,21 @@ const addInputEvent = () => {
 
           // Ищём все опции
           const inputProductOptionName = productOptionsWrap.querySelectorAll(
-            `.data-maker__option-item`
+            `.data-maker__option-item`,
           )
 
           // Проходим по коллекции опций
           for (let item of inputProductOptionName) {
             // Находим номер опции
-            const itemNum = item.querySelector(`.data-maker__option-num`)
-              .textContent
+            const itemNum = item.querySelector(`.data-maker__option-num`).textContent
 
             // Ищем название опции
-            const inputOptionName = item.querySelector(
-              `.data-maker__input--option-name`
-            )
+            const inputOptionName = item.querySelector(`.data-maker__input--option-name`)
 
             // Ищем статус опции
-            const inputOptionStatus = item.querySelector(
-              `.data-maker__input--option-active`
-            )
+            const inputOptionStatus = item.querySelector(`.data-maker__input--option-active`)
 
-            const inputOptionPrice = item.querySelector(
-              `.data-maker__input--option-price`
-            )
+            const inputOptionPrice = item.querySelector(`.data-maker__input--option-price`)
 
             // Ищем опцию в элементе массива
             const option = dataOfInput.options.optionList[itemNum - 1]
@@ -562,9 +508,7 @@ const createStructure = () => {
     }
 
     // Находим кнопку удаления
-    const deleteFieldsBtn = fieldsWrap.querySelector(
-      `.data-maker__delete-btn--fields`
-    )
+    const deleteFieldsBtn = fieldsWrap.querySelector(`.data-maker__delete-btn--fields`)
 
     if (deleteFieldsBtn === target) {
       // Удаляем объект из массива
@@ -572,42 +516,33 @@ const createStructure = () => {
 
       const addSubcategoryBtn = (
         type,
-        name
+        name,
       ) => `<div class="data-maker__add data-maker__add--${type}" tabindex="0">
         + Добавить ${name}
       </div>`
 
       if (
-        fieldsWrap.parentNode.querySelector(`.data-maker__add--subcategory`) ===
-          null &&
+        fieldsWrap.parentNode.querySelector(`.data-maker__add--subcategory`) === null &&
         fieldsWrap.parentNode !== formWrap
       ) {
         fieldsWrap.parentNode.insertAdjacentHTML(
           `beforeend`,
-          addSubcategoryBtn(`subcategory`, `подкатегорию`)
+          addSubcategoryBtn(`subcategory`, `подкатегорию`),
         )
       }
 
       // Проверка среди непосредственных потомков
-      const parentProductBtn = [
-        ...fieldsWrap.parentNode.children,
-      ].filter((el) => el.classList.contains(`data-maker__add--product`))[0]
+      const parentProductBtn = [...fieldsWrap.parentNode.children].filter(el =>
+        el.classList.contains(`data-maker__add--product`),
+      )[0]
 
       // Если кнопка добавления продукта не найдена
-      if (
-        parentProductBtn === undefined &&
-        fieldsWrap.parentNode !== formWrap
-      ) {
-        const subcategoryBtn = [
-          ...fieldsWrap.parentNode.children,
-        ].filter((el) =>
-          el.classList.contains(`data-maker__add--subcategory`)
+      if (parentProductBtn === undefined && fieldsWrap.parentNode !== formWrap) {
+        const subcategoryBtn = [...fieldsWrap.parentNode.children].filter(el =>
+          el.classList.contains(`data-maker__add--subcategory`),
         )[0]
 
-        subcategoryBtn.insertAdjacentHTML(
-          `beforebegin`,
-          addSubcategoryBtn(`product`, `товар`)
-        )
+        subcategoryBtn.insertAdjacentHTML(`beforebegin`, addSubcategoryBtn(`product`, `товар`))
       }
 
       // Удаляем группу полей
@@ -687,12 +622,12 @@ checkInputValue(userIdInput, globalSetting, `userId`)
 checkInputValue(currencyInput, globalSetting, `currency`)
 addWrapListener()
 
-copyInfo.on(`success`, function (e) {
+copyInfo.on(`success`, e => {
   e.trigger.textContent = `Скопировано! Вставьте этот текст после кода магазина`
 
   e.clearSelection()
 
-  window.setTimeout(function () {
+  window.setTimeout(() => {
     e.trigger.textContent = `Скопировать информацию`
   }, 4000)
 })

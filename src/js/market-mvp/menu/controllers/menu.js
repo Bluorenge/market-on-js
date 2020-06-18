@@ -19,7 +19,7 @@ export default class MenuController {
   }
 
   render() {
-    $menu.watch((menu) => this._onViewChange(menu))
+    $menu.watch(menu => this._onViewChange(menu))
     // Подписываемся на очищение поля поиска
     eventsForStore.clearSearchInput.watch(() => {
       if (whatMenuIsIt($menu.getState(), `Поиск`)) {
@@ -33,8 +33,8 @@ export default class MenuController {
     render(header, this._menuComponent, RenderPosition.BEFOREEND)
     const menuWrap = this._menuComponent.getElement()
 
-    const renderMenuItems = (arr) => {
-      return arr.map((element) => {
+    const renderMenuItems = arr => {
+      return arr.map(element => {
         const menuItemComponent = new MenuItemComponent(element)
         render(menuWrap, menuItemComponent, RenderPosition.BEFOREEND)
         return menuItemComponent
@@ -42,24 +42,24 @@ export default class MenuController {
     }
     this._menuItemComponents = renderMenuItems(menu)
     const isCartMenu =
-      this._menuItemComponents[this._menuItemComponents.length - 1].getElement()
-        .textContent === `Корзина`
+      this._menuItemComponents[this._menuItemComponents.length - 1].getElement().textContent ===
+      `Корзина`
 
     elementReady(header, `.${menuWrap.classList[0]}`).then(() => {
       const width = this._menuItemComponents.reduce(
         (acc, item) => acc + item.getElement().offsetWidth,
-        0
+        0,
       )
       carouselNav(menuWrap, width)
     })
 
     this._menuItemComponents.map((element, index) => {
       // Если это единственный элемент
-      if (this._menuItemComponents.length == 1) {
-        return
+      if (this._menuItemComponents.length === 1) {
+        return ''
       }
       // Если это меню корзины и не последний элемент
-      else if (isCartMenu && index !== this._menuItemComponents.length - 1) {
+      if (isCartMenu && index !== this._menuItemComponents.length - 1) {
         element.setOpenButtonClickHandler(() => {
           eventsForStore.clearSearchInput()
           eventsForStore.toMainPageFromCart()
@@ -81,7 +81,7 @@ export default class MenuController {
 
   _onViewChange(menu) {
     if (this._menuItemComponents.length) {
-      this._menuItemComponents.forEach((element) => remove(element))
+      this._menuItemComponents.forEach(element => remove(element))
       this._menuItemComponents = []
     }
     remove(this._menuComponent)

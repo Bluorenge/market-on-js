@@ -9,15 +9,20 @@ const devMode = process.env.NODE_ENV !== `production`
 
 function excludeNodeModulesExcept(modules) {
   var pathSep = path.sep
-  if (pathSep == '\\') pathSep = '\\\\'
-  var moduleRegExps = modules.map(function (modName) {
+  if (pathSep === '\\') {
+    pathSep = '\\\\'
+  }
+  var moduleRegExps = modules.map(modName => {
     return new RegExp('node_modules' + pathSep + modName)
   })
 
   return function (modulePath) {
     if (/node_modules/.test(modulePath)) {
-      for (var i = 0; i < moduleRegExps.length; i++)
-        if (moduleRegExps[i].test(modulePath)) return false
+      for (var i = 0; i < moduleRegExps.length; i++) {
+        if (moduleRegExps[i].test(modulePath)) {
+          return false
+        }
+      }
       return true
     }
     return false
@@ -29,7 +34,7 @@ module.exports = {
     market: paths.src + `/market.js`,
     [`data-maker`]: paths.src + `/data-maker.js`,
     [`market-mvp`]: paths.src + `/market-mvp.js`,
-    [`data-maker-mvp`]: paths.src + `/data-maker-mvp.ts`,
+    [`data-maker-mvp`]: paths.src + `/data-maker-mvp.js`,
   },
 
   optimization: {
@@ -50,24 +55,6 @@ module.exports = {
 
   module: {
     rules: [
-      {
-        test: /\.ts$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: 'swc-loader',
-            options: {
-              sync: true,
-              jsc: {
-                parser: {
-                  syntax: 'typescript',
-                },
-              },
-            },
-          },
-          'ts-loader',
-        ],
-      },
       {
         test: /\.js$/,
         exclude: excludeNodeModulesExcept(['effector']),
@@ -125,10 +112,6 @@ module.exports = {
         ],
       },
     ],
-  },
-  
-  resolve: {
-    extensions: ['.ts', '.js'],
   },
 
   plugins: [

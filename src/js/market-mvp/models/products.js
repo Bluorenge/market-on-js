@@ -6,17 +6,24 @@ import { eventsForStore } from './eventsForStore'
 const findByName = (arr, id, name) =>
   arr.reduce((a, item) => {
     // При первой итерации этот if пропускается, потому что передаётся null
-    if (a) return a
+    if (a) {
+      return a
+    }
 
     // Если текущий элемент массива содержит нужное имя, возращаем его. Если нет, то..
-    if (item.id === id && item.name === name) return item
+    if (item.id === id && item.name === name) {
+      return item
+    }
 
     // ..берём элемент с ключом nestingKey и снова ищём в нём нужное имя, либо..
-    if (`subCategory` in item) return findByName(item.subCategory, id, name)
+    if (`subCategory` in item) {
+      return findByName(item.subCategory, id, name)
+    }
 
     // ..если нужно найти элемент в списке товаров в категории
-    if (`productsInCategory` in item)
+    if (`productsInCategory` in item) {
       return findByName(item.productsInCategory, id, name)
+    }
   }, null)
 
 export const getContentViewType = (currentState, defaultState) => {
@@ -45,7 +52,7 @@ export const getContentViewType = (currentState, defaultState) => {
 }
 
 export const awaitProducts = createEffect(`get products`, {
-  handler: (value) => Promise.resolve(value),
+  handler: value => Promise.resolve(value),
 })
 
 export let $productList
@@ -59,17 +66,11 @@ awaitProducts.done.watch(({ result }) => {
     .on(eventsForStore.changeProductListState, (state, data) => {
       switch (true) {
         case `subCategory` in state:
-          return state.subCategory.find(
-            (item) => item.id == data.id && item.name == data.name
-          )
+          return state.subCategory.find(item => item.id == data.id && item.name == data.name)
         case `productsInCategory` in state:
-          return state.productsInCategory.find(
-            (item) => item.id == data.id && item.name == data.name
-          )
+          return state.productsInCategory.find(item => item.id == data.id && item.name == data.name)
         case Array.isArray(state):
-          return state.find(
-            (item) => item.id == data.id && item.name == data.name
-          )
+          return state.find(item => item.id == data.id && item.name == data.name)
         default:
           return state.defaultState
       }
@@ -88,17 +89,17 @@ awaitProducts.done.watch(({ result }) => {
     } else {
       switch (true) {
         case `subCategory` in state:
-          return state.subCategory.filter((item) =>
-            item.name.toLowerCase().includes(data.searchValue.toLowerCase())
+          return state.subCategory.filter(item =>
+            item.name.toLowerCase().includes(data.searchValue.toLowerCase()),
           )
         case `productsInCategory` in state:
-          return state.productsInCategory.filter((item) =>
-            item.name.toLowerCase().includes(data.searchValue.toLowerCase())
+          return state.productsInCategory.filter(item =>
+            item.name.toLowerCase().includes(data.searchValue.toLowerCase()),
           )
         // Если это главная страница
         case Array.isArray(state):
-          return state.filter((item) =>
-            item.name.toLowerCase().includes(data.searchValue.toLowerCase())
+          return state.filter(item =>
+            item.name.toLowerCase().includes(data.searchValue.toLowerCase()),
           )
         default:
           return false
@@ -106,9 +107,5 @@ awaitProducts.done.watch(({ result }) => {
     }
   })
 
-  productPage = sample(
-    $productList,
-    eventsForStore.openProductPage,
-    (state) => state
-  )
+  productPage = sample($productList, eventsForStore.openProductPage, state => state)
 })

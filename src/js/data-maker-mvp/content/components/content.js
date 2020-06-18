@@ -1,9 +1,9 @@
 import AbstractComponent from '../../utils/abstarct-component'
 
-const generateListBtn = `<div class="data-maker__right"></div>`
+const generateListBtn = `<div class="data-maker__right" id="content-0"></div>`
 
 export default class ContentComponent extends AbstractComponent {
-  public getTemplate(): string {
+  getTemplate() {
     return generateListBtn
   }
 }

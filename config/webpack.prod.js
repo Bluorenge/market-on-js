@@ -20,11 +20,9 @@ module.exports = merge(common, {
     new MiniCssExtractPlugin({
       filename: `styles/[name].[contenthash].css`,
     }),
-    new CopyPlugin([
-      { from: paths.src + `/js/mock/mock.js`, to: paths.build + `/mock` },
-    ]),
+    new CopyPlugin([{ from: paths.src + `/js/mock/mock.js`, to: paths.build + `/mock` }]),
     new webpack.DefinePlugin({
-      Market: paths.src + `/js/market-mvp/main.js`
+      Market: paths.src + `/js/market-mvp/main.js`,
     }),
   ],
 })

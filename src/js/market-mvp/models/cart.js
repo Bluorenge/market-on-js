@@ -10,15 +10,15 @@ $cart
       data.product,
       data.productPrice,
       data.optionName,
-      data.optionValue
+      data.optionValue,
     )
     return newProductCartArr(state, product).reverse()
   })
   .on(eventsForStore.updateQuantityOfProductInCart, (state, data) =>
-    newProductCartArr(state, data.product, data.quantityUp)
+    newProductCartArr(state, data.product, data.quantityUp),
   )
   .on(eventsForStore.deleteProductInCart, (state, data) =>
-    state.filter((product) => {
+    state.filter(product => {
       // Если есть опции
       return product.option
         ? // Если уже есть такой же товар
@@ -27,5 +27,5 @@ $cart
             product.option.optionValue !== data.option.optionValue
           : true
         : product.id !== data.id && product.name !== data.name
-    })
+    }),
   )

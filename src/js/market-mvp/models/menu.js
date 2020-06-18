@@ -14,7 +14,7 @@ const menuPath = (arr, id, name) => {
   }
 
   const find = (arr, findId, findName) => {
-    arr.find((item) => {
+    arr.find(item => {
       if (item.id === findId && item.name === findName) {
         // Добавлять или нет айди и имя найденного элемента
         pushData(items, item.id, item.name)
@@ -22,8 +22,8 @@ const menuPath = (arr, id, name) => {
       } else if (continueFind) {
         if (`subCategory` in item) {
           // Если в этой ветке содержится нужный элемент
-          const there = (newItem) =>
-            newItem.some((product) => {
+          const there = newItem =>
+            newItem.some(product => {
               if (product.id === findId && product.name === findName) {
                 pushData(items, item.id, item.name)
               } else if (`subCategory` in product) {
@@ -34,10 +34,11 @@ const menuPath = (arr, id, name) => {
             })
           there(item.subCategory)
           return find(item.subCategory, findId, findName)
-        } else if (`productsInCategory` in item) {
+        }
+        if (`productsInCategory` in item) {
           // Если в этой категории содержится нужный элемент
           const there = item.productsInCategory.some(
-            (product) => product.id === findId && product.name === findName
+            product => product.id === findId && product.name === findName,
           )
           if (there) {
             pushData(items, item.id, item.name)
@@ -55,26 +56,19 @@ const entryMenu = [{ id: 0, name: `Главная` }]
 
 export const $menu = createStore(entryMenu)
 
-export const whatMenuIsIt = (menu, lastItem) =>
-  menu[menu.length - 1].name === lastItem
+export const whatMenuIsIt = (menu, lastItem) => menu[menu.length - 1].name === lastItem
 
 $menu
   .on(eventsForStore.addMenuItem, (state, menuItem) => [...state, menuItem])
   .on(eventsForStore.removeMenuItemsTo, (state, data) => {
-    const indexMenuItem = state.findIndex((item) => item.id === data.id)
+    const indexMenuItem = state.findIndex(item => item.id === data.id)
     return state.slice(0, indexMenuItem + 1)
   })
   .on(eventsForStore.createMenuPath, (_, data) =>
-    [...entryMenu].concat(
-      menuPath($productList.defaultState, data.id, data.name)
-    )
+    [...entryMenu].concat(menuPath($productList.defaultState, data.id, data.name)),
   )
-  .on(eventsForStore.createSearchMenu, (state) =>
-    !whatMenuIsIt(state, `Поиск`) ? state.concat({ name: `Поиск` }) : state
+  .on(eventsForStore.createSearchMenu, state =>
+    (!whatMenuIsIt(state, `Поиск`) ? state.concat({ name: `Поиск` }) : state),
   )
-  .on(eventsForStore.createCartMenu, () =>
-    [...entryMenu].concat({ name: `Корзина` })
-  )
-  .on(eventsForStore.deleteLastMenuItem, (state) =>
-    state.splice(0, state.length - 1)
-  )
+  .on(eventsForStore.createCartMenu, () => [...entryMenu].concat({ name: `Корзина` }))
+  .on(eventsForStore.deleteLastMenuItem, state => state.splice(0, state.length - 1))
