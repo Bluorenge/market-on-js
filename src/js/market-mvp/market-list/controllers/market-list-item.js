@@ -8,10 +8,7 @@ import {
 
 import ListItemComponent from '../components/market-list-item'
 import { $cart } from '../../models/cart'
-import {
-  $productList,
-  getContentViewType,
-} from '../../models/products'
+import { $productList, getContentViewType } from '../../models/products'
 
 export default class ListItemController {
   constructor(container, setting, option) {
@@ -23,11 +20,7 @@ export default class ListItemController {
   }
 
   render(product) {
-    this._productComponent = new ListItemComponent(
-      this._setting,
-      this._option,
-      product
-    )
+    this._productComponent = new ListItemComponent(this._setting, this._option, product)
     render(this._container, this._productComponent, RenderPosition.BEFOREEND)
     this._initHandler(product)
   }
@@ -41,9 +34,7 @@ export default class ListItemController {
   }
 
   _initHandler(product) {
-    const id = Number(
-      this._productComponent.getElement().id.replace(/[^+\d]/g, ``)
-    )
+    const id = Number(this._productComponent.getElement().id.replace(/[^+\d]/g, ``))
     const name = this._productComponent.getItemNameElement().textContent
 
     // При открытии элемента списка:
@@ -52,10 +43,7 @@ export default class ListItemController {
       eventsForStore.addMenuItem({ id, name })
       eventsForStore.changeProductListState({ id, name })
 
-      const contentViewType = getContentViewType(
-        $productList.getState(),
-        $productList.defaultState
-      )
+      const contentViewType = getContentViewType($productList.getState(), $productList.defaultState)
 
       if (contentViewType === 'PRODUCT_PAGE') {
         eventsForStore.openProductPage()
@@ -66,9 +54,7 @@ export default class ListItemController {
 
     if (isProduct) {
       const productPrice = Number(
-        this._productComponent
-          .getProductPriceElement()
-          .textContent.replace(/[^+\d]/g, ``)
+        this._productComponent.getProductPriceElement().textContent.replace(/[^+\d]/g, ``),
       )
       const productData = {
         product,
@@ -105,11 +91,7 @@ export default class ListItemController {
   }
 
   _replace(product) {
-    const newViewOfListItem = new ListItemComponent(
-      this._setting,
-      this._option,
-      product
-    )
+    const newViewOfListItem = new ListItemComponent(this._setting, this._option, product)
     replace(newViewOfListItem, this._productComponent)
     this._productComponent = newViewOfListItem
     this._initHandler(product)

@@ -11,11 +11,7 @@ export default class SearchInputController {
 
   render() {
     const searchInputComponent = new SearchInputComponent()
-    render(
-      this._container.getElement(),
-      searchInputComponent,
-      RenderPosition.BEFOREEND
-    )
+    render(this._container.getElement(), searchInputComponent, RenderPosition.BEFOREEND)
     const input = searchInputComponent.getInput()
     // Следим за вызовом события очищения поля поиска
     eventsForStore.clearSearchInput.watch(() => (input.value = ``))
@@ -28,7 +24,7 @@ export default class SearchInputController {
         eventsForStore.search({
           searchValue: input.value,
         })
-      }, 150)
+      }, 150),
     )
   }
 }

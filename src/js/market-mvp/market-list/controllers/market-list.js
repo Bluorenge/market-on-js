@@ -10,21 +10,13 @@ import CarouselDotsComponent from '../components/carousel-dots'
 import BtnPrevComponent from '../../common-components/btn-prev'
 
 import { eventsForStore } from '../../models/eventsForStore'
-import {
-  $productList,
-  searchList,
-  getContentViewType,
-} from '../../models/products'
+import { $productList, searchList, getContentViewType } from '../../models/products'
 import { $menu, whatMenuIsIt } from '../../models/menu'
 
 const renderListItems = (productListElement, setting, option, products) => {
-  const createArrayOfProductControllers = (arr) => {
-    return arr.map((item) => {
-      const productController = new ListItemController(
-        productListElement,
-        setting,
-        option
-      )
+  const createArrayOfProductControllers = arr => {
+    return arr.map(item => {
+      const productController = new ListItemController(productListElement, setting, option)
       productController.render(item)
       return productController
     })
@@ -54,10 +46,8 @@ export default class MarketListController {
   }
 
   render() {
-    $productList.watch((currentState) => this._onDataChange(currentState))
-    $productList.watch(eventsForStore.toMainPage, (currentState) =>
-      this._onDataChange(currentState)
-    )
+    $productList.watch(currentState => this._onDataChange(currentState))
+    $productList.watch(eventsForStore.toMainPage, currentState => this._onDataChange(currentState))
     eventsForStore.openCartPage.watch(() => {
       if (this._emptyTextComponent) {
         this._removeEmptyPage()
@@ -65,13 +55,9 @@ export default class MarketListController {
       this._removeProducts()
     })
     // Следим за созданием списка поиска
-    searchList.watch((currentState) =>
-      currentState ? this._onDataChange(currentState) : false
-    )
+    searchList.watch(currentState => (currentState ? this._onDataChange(currentState) : false))
     // Возврат к списку до начала поиска
-    eventsForStore.productListToCurrentView.watch((currentState) =>
-      this._onDataChange(currentState)
-    )
+    eventsForStore.productListToCurrentView.watch(currentState => this._onDataChange(currentState))
   }
 
   _renderProductList(products) {
@@ -82,7 +68,7 @@ export default class MarketListController {
       this._wrap.getElement(),
       this._setting,
       this._options,
-      products
+      products,
     )
 
     this._productsControllers = this._productsControllers.concat(newProducts)
@@ -94,21 +80,13 @@ export default class MarketListController {
     this._emptyTextComponent = new EmptyPageComponent()
 
     if (this._emptyTextComponent) {
-      render(
-        this._container.getElement(),
-        this._emptyTextComponent,
-        RenderPosition.BEFOREEND
-      )
+      render(this._container.getElement(), this._emptyTextComponent, RenderPosition.BEFOREEND)
     }
   }
 
   _renderPrevBtn() {
     this._btnPrevComponent = new BtnPrevComponent()
-    render(
-      this._container.getElement(),
-      this._btnPrevComponent,
-      RenderPosition.BEFOREEND
-    )
+    render(this._container.getElement(), this._btnPrevComponent, RenderPosition.BEFOREEND)
     this._btnPrevComponent.setPrevBtnHandler(() => {
       let menu = $menu.getState()
       if (whatMenuIsIt(menu, 'Поиск')) {
@@ -126,29 +104,23 @@ export default class MarketListController {
 
   _createCarousel() {
     // elementReady работает только по классу
-    elementReady(
-      this._container.getElement(),
-      `.${this._wrap.getElement().classList[0]}`
-    ).then(() => {
-      const width = this._productsControllers.reduce(
-        (acc, item) => acc + item.getComponent().offsetWidth,
-        0
-      )
-      if (!this._dotsForCarouselComponent) {
-        this._dotsForCarouselComponent = new CarouselDotsComponent()
-        render(
-          this._container.getElement(),
-          this._dotsForCarouselComponent,
-          RenderPosition.AFTERBEGIN
+    elementReady(this._container.getElement(), `.${this._wrap.getElement().classList[0]}`).then(
+      () => {
+        const width = this._productsControllers.reduce(
+          (acc, item) => acc + item.getComponent().offsetWidth,
+          0,
         )
-      }
-      carousel(
-        this._options,
-        this._container.getElement(),
-        this._wrap.getElement(),
-        width
-      )
-    })
+        if (!this._dotsForCarouselComponent) {
+          this._dotsForCarouselComponent = new CarouselDotsComponent()
+          render(
+            this._container.getElement(),
+            this._dotsForCarouselComponent,
+            RenderPosition.AFTERBEGIN,
+          )
+        }
+        carousel(this._options, this._container.getElement(), this._wrap.getElement(), width)
+      },
+    )
   }
 
   _onDataChange(currentState) {
@@ -160,10 +132,7 @@ export default class MarketListController {
       this._removeEmptyPage()
     }
 
-    const contentViewType = getContentViewType(
-      currentState,
-      $productList.defaultState
-    )
+    const contentViewType = getContentViewType(currentState, $productList.defaultState)
 
     switch (contentViewType) {
       case 'MAIN_PAGE':
@@ -194,9 +163,7 @@ export default class MarketListController {
       this._container.getElement().classList.remove(`market-content--shadow`)
     }
 
-    this._productsControllers.forEach((productController) =>
-      productController.destroy()
-    )
+    this._productsControllers.forEach(productController => productController.destroy())
     this._productsControllers = []
   }
 

@@ -1,6 +1,9 @@
 import AbstractComponent from '../../utils/abstarct-component'
 
-const categoryTemplate = (typeOfCategory, data) => {
+const categoryTemplate = (typeOfCategory, id, data) => {
+  const wrapTag = typeOfCategory === 'категории' ? 'form' : 'div'
+  const categoryId = id ? `id="${id}"` : ''
+
   let nameCategory = `Добавление <span class="data-maker__fields-title-type">${typeOfCategory}</span>`
   let nameValue = ``
   let imgValue = ``
@@ -11,7 +14,7 @@ const categoryTemplate = (typeOfCategory, data) => {
     imgValue = data.img ? data.img : ``
   }
 
-  return `<form class="data-maker__fields data-maker__fields--category">
+  return `<${wrapTag} class="data-maker__fields data-maker__fields--category" ${categoryId}>
       <div class="data-maker__fields-top">
         <h2 class="data-maker__fields-title">
         ${nameCategory}
@@ -40,23 +43,39 @@ const categoryTemplate = (typeOfCategory, data) => {
         + Добавить подкатегорию
       </div>
       <button class="data-maker__btn" style="display: none"></button>
-    </form>`
+    </${wrapTag}>`
 }
 
 export default class CategoryComponent extends AbstractComponent {
-  constructor(data) {
-    console.log('data :', data)
+  constructor(type, id, data) {
     super()
 
+    this.type = type
+    this.id = id
     this.data = data
   }
 
+  getIndex() {
+    return this.id
+  }
+
   getTemplate() {
-    return categoryTemplate(`Подкатегории`, this.data)
+    return categoryTemplate(this.type, this.id, this.data)
+  }
+
+  setInputsHandler(handler) {
+    this.getElement().querySelector('.data-maker__input--name').onchange = handler
+    this.getElement().querySelector(`.data-maker__input--img`).onchange = handler
+  }
+
+  setRemoveCategoryBtnHandler(handler) {
+    this.getElement().querySelector('.data-maker__delete-btn').addEventListener(`click`, handler)
   }
 
   setAddCategoryHandler(handler) {
-    this.getElement().querySelector(`.data-maker__add--category`).addEventListener(`click`, handler)
+    this.getElement()
+      .querySelector(`.data-maker__add--subcategory`)
+      .addEventListener(`click`, handler)
   }
 
   setAddProductHandler(handler) {

@@ -1,6 +1,7 @@
 export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
+  BEFOREBEGIN: `beforebegin`,
 }
 
 export const createElement = template => {
@@ -11,6 +12,9 @@ export const createElement = template => {
 
 export const render = (container, component, place) => {
   switch (place) {
+    case RenderPosition.BEFOREBEGIN:
+      container.before(component.getElement())
+      break
     case RenderPosition.AFTERBEGIN:
       container.prepend(component.getElement())
       break

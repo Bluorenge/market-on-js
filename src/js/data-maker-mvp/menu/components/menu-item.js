@@ -20,6 +20,18 @@ export default class MenuItemComponent extends AbstractComponent {
     return menuAddCategoryTemplate(this.id, this.type)
   }
 
+  getIndex() {
+    return this.id
+  }
+
+  getNameMenuItem() {
+    return this.getElement().querySelector(`.data-maker__item-btn`).textContent
+  }
+
+  setNameMenuItem(name) {
+    this.getElement().querySelector(`.data-maker__item-btn`).textContent = name
+  }
+
   setOpenItemHandler(handler) {
     this.getElement().querySelector(`.data-maker__item-btn`).addEventListener(`click`, handler)
   }

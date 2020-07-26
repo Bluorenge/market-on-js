@@ -10,15 +10,31 @@ export default class MenuAddItemsBtnComponent extends AbstractComponent {
     return menuAddCategoryTemplate
   }
 
-  setAddCategoryHandler(handler) {
-    this.getElement()
-      .querySelector(`.data-maker__btn--add-category`)
-      .addEventListener(`click`, handler)
+  disableBtn(btn) {
+    switch (btn) {
+      case 'category':
+        this.getElement().querySelector(`.data-maker__btn--add-category`).disabled = true
+        break
+      case 'product':
+        this.getElement().querySelector(`.data-maker__btn--add-product`).disabled = true
+    }
   }
 
-  setAddProductHandler(handler) {
-    this.getElement()
-      .querySelector(`.data-maker__btn--add-product`)
-      .addEventListener(`click`, handler)
+  enabledBtn() {
+    this.getElement().querySelector(`.data-maker__btn--add-category`).disabled = false
+    this.getElement().querySelector(`.data-maker__btn--add-product`).disabled = false
+  }
+
+  getAddCategoryBtn() {
+    return this.getElement().querySelector(`.data-maker__btn--add-category`)
+  }
+
+  getAddProductBtn() {
+    return this.getElement().querySelector(`.data-maker__btn--add-product`)
+  }
+
+  setAddMenuItemHandler(handler) {
+    this.getAddCategoryBtn().addEventListener(`click`, handler)
+    this.getAddProductBtn().addEventListener(`click`, handler)
   }
 }

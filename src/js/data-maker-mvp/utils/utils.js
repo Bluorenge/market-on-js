@@ -149,7 +149,7 @@ export const checkEnter = e => {
 }
 
 // Путь к элементу
-export const parentId = (arr, id) => {
+export const findParentId = (arr, id) => {
   let items = null
   let continueSerach = true
 
@@ -182,6 +182,9 @@ export const parentId = (arr, id) => {
             items = { id: item.id }
           }
           return find(item.productsInCategory, findId)
+        }
+        if (item.id === findId) {
+          items = { id: item.id }
         }
       }
     })
@@ -393,52 +396,35 @@ const list = [
   },
 ]
 
+const list2 = [
+  {
+    id: 1,
+    name: 'Футболки',
+    img: '1.png',
+  },
+]
+// console.log('parentId(list2) :', parentId(list2))
+
 // console.log(parentId(list, 24))
 // console.log(parentId(list, 14))
 
-// // Путь к элементу
-// export const parentId = (arr, id) => {
-//   let items = []
-//   let continueFind = true
-//   const pushData = (arr, id) => {
-//     arr.push({
-//       id,
-//     })
-//   }
-
-//   const find = (arr, findId) => {
-//     arr.find(item => {
-//       if (item.id === findId) {
-//         // Добавлять или нет айди найденного элемента
-//         pushData(items, item.id)
-//         continueFind = false
-//       } else if (continueFind) {
-//         if (`subCategory` in item) {
-//           // Если в этой ветке содержится нужный элемент
-//           const there = newItem =>
-//             newItem.some(product => {
-//               if (product.id === findId) {
-//                 pushData(items, item.id)
-//               } else if (`subCategory` in product) {
-//                 there(product.subCategory)
-//               } else if (`productsInCategory` in product) {
-//                 there(product.productsInCategory)
-//               }
-//             })
-//           there(item.subCategory)
-//           return find(item.subCategory, findId)
-//         }
-//         if (`productsInCategory` in item) {
-//           // Если в этой категории содержится нужный элемент
-//           const there = item.productsInCategory.some(product => product.id === findId)
-//           if (there) {
-//             pushData(items, item.id)
-//           }
-//           return find(item.productsInCategory, findId)
-//         }
-//       }
-//     })
-//   }
-//   find(arr, id)
-//   return items
-// }
+// Проверка, отобразился ли элемент на странице
+export const elementReady = (parent, selector) => {
+  return new Promise(resolve => {
+    let el = parent.querySelector(selector)
+    if (el) {
+      resolve(el)
+    }
+    new MutationObserver((mutationRecords, observer) => {
+      // Query for elements matching the specified selector
+      Array.from(parent.querySelectorAll(selector)).forEach(element => {
+        resolve(element)
+        // Once we have resolved we don`t need the observer anymore.
+        observer.disconnect()
+      })
+    }).observe(parent.documentElement, {
+      childList: true,
+      subtree: true,
+    })
+  })
+}

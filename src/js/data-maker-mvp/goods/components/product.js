@@ -1,6 +1,9 @@
 import AbstractComponent from '../../utils/abstarct-component'
 
-const getProductTemplate = data => {
+const getProductTemplate = (data, id) => {
+  const wrapTag = id ? 'div' : 'form'
+  const productId = id ? `id="${id}"` : ''
+
   const isActive = data?.active ? `checked` : ``
   const isChecked = data ? isActive : `checked`
   const name = data ? data.name : `Добавление товара`
@@ -8,7 +11,7 @@ const getProductTemplate = data => {
   const img = data?.img ? data.img : ``
   const price = data ? data.price : ``
 
-  return `<form class="data-maker__fields data-maker__fields--product">
+  return `<${wrapTag} class="data-maker__fields data-maker__fields--product" ${productId}>
     <div class="data-maker__fields-top">
       <h2 class="data-maker__fields-title">${name}</h2>
       <div class="data-maker__hide-btn">Скрыть</div>
@@ -31,26 +34,32 @@ const getProductTemplate = data => {
         <input class="data-maker__input data-maker__input--price-product" type="number" name="price-product" placeholder="Цена товара" value="${price}" required>
       </label>
     </div>
-    <div class="data-maker__add data-maker__add--desc" tabindex="0">
-      + Добавить описание
-    </div>
-    <div class="data-maker__add data-maker__add--option-wrap" tabindex="0">
-      + Добавить товару опцию
-    </div>
     <button class="data-maker__btn" style="display: none"></button>
-  </form>`
+  </${wrapTag}>`
 }
 
 export default class ProductComponent extends AbstractComponent {
-  constructor(data) {
+  constructor(data, id) {
     console.log('data :', data)
     super()
 
     this.data = data
+    this.id = id
   }
 
   getTemplate() {
-    return getProductTemplate(this.data)
+    return getProductTemplate(this.data, this.id)
+  }
+
+  setRemoveProductBtnHandler(handler) {
+    this.getElement().querySelector('.data-maker__delete-btn').addEventListener(`click`, handler)
+  }
+
+  setInputsHandler(handler) {
+    this.getElement().querySelector('.data-maker__input--name').onchange = handler
+    this.getElement().querySelector(`.data-maker__input--img`).onchange = handler
+    this.getElement().querySelector(`.data-maker__input--price-product`).onchange = handler
+    this.getElement().querySelector(`.data-maker__input--product-active`).onchange = handler
   }
 
   getData() {
@@ -65,16 +74,6 @@ export default class ProductComponent extends AbstractComponent {
       price,
       active,
     }
-  }
-
-  setAddDescHandler(handler) {
-    this.getElement().querySelector(`.data-maker__add--desc`).addEventListener(`click`, handler)
-  }
-
-  setAddOptionsHandler(handler) {
-    this.getElement()
-      .querySelector(`.data-maker__add--option-wrap`)
-      .addEventListener(`click`, handler)
   }
 
   clickBtn() {

@@ -12,7 +12,7 @@ export default class GlobalSettingController {
 
   render() {
     this._globalSetting = new GlobalSettingComponent($settingOfMarket.getState())
-    render(this.container, this._globalSetting, RenderPosition.BEFOREEND)
+    render(this.container.getElement(), this._globalSetting, RenderPosition.BEFOREEND)
   }
 
   remove() {

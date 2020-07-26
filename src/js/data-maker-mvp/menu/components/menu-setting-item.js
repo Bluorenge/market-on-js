@@ -9,6 +9,10 @@ export default class MenuSettingItemComponent extends AbstractComponent {
     return menuSettingItemTemplate
   }
 
+  getIndex() {
+    return 0
+  }
+
   setOpenItemHandler(handler) {
     this.getElement().querySelector(`.data-maker__item-btn`).addEventListener(`click`, handler)
   }

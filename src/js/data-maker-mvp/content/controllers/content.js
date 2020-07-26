@@ -42,7 +42,7 @@ export default class ContentController {
   }
 
   _renderView(classTypeOfController) {
-    this._viewController = new classTypeOfController(this._contentComponent.getElement())
+    this._viewController = new classTypeOfController(this._contentComponent)
     this._viewController.render()
   }
 }

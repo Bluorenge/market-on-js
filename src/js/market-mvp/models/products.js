@@ -3,8 +3,8 @@ import { createEffect, createStore, sample } from 'effector'
 import { eventsForStore } from './eventsForStore'
 
 // Рекурсивный поиск одного элемента по всему массиву
-const findByName = (arr, id, name) =>
-  arr.reduce((a, item) => {
+const findByName = (arr, id, name) => {
+  return arr.reduce((a, item) => {
     // При первой итерации этот if пропускается, потому что передаётся null
     if (a) {
       return a
@@ -25,11 +25,12 @@ const findByName = (arr, id, name) =>
       return findByName(item.productsInCategory, id, name)
     }
   }, null)
+}
 
 export const getContentViewType = (currentState, defaultState) => {
   let typeView
   switch (true) {
-    case Array.isArray(currentState) && currentState.length == 0:
+    case Array.isArray(currentState) && currentState.length === 0:
       typeView = `EMPTY_PAGE`
       break
     case currentState === defaultState:
@@ -66,11 +67,13 @@ awaitProducts.done.watch(({ result }) => {
     .on(eventsForStore.changeProductListState, (state, data) => {
       switch (true) {
         case `subCategory` in state:
-          return state.subCategory.find(item => item.id == data.id && item.name == data.name)
+          return state.subCategory.find(item => item.id === data.id && item.name === data.name)
         case `productsInCategory` in state:
-          return state.productsInCategory.find(item => item.id == data.id && item.name == data.name)
+          return state.productsInCategory.find(
+            item => item.id === data.id && item.name === data.name,
+          )
         case Array.isArray(state):
-          return state.find(item => item.id == data.id && item.name == data.name)
+          return state.find(item => item.id === data.id && item.name === data.name)
         default:
           return state.defaultState
       }
@@ -83,7 +86,7 @@ awaitProducts.done.watch(({ result }) => {
 
   // * нарушено правило чистой функции, чтобы вычесления производить здесь, а не в презентере
   searchList = sample($productList, eventsForStore.search, (state, data) => {
-    if (data.searchValue == ``) {
+    if (data.searchValue === ``) {
       eventsForStore.deleteLastMenuItem()
       eventsForStore.productListToCurrentView(state)
     } else {

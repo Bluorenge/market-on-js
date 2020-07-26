@@ -67,8 +67,8 @@ $menu
   .on(eventsForStore.createMenuPath, (_, data) =>
     [...entryMenu].concat(menuPath($productList.defaultState, data.id, data.name)),
   )
-  .on(eventsForStore.createSearchMenu, state =>
-    (!whatMenuIsIt(state, `Поиск`) ? state.concat({ name: `Поиск` }) : state),
-  )
+  .on(eventsForStore.createSearchMenu, state => {
+    return !whatMenuIsIt(state, `Поиск`) ? state.concat({ name: `Поиск` }) : state
+  })
   .on(eventsForStore.createCartMenu, () => [...entryMenu].concat({ name: `Корзина` }))
   .on(eventsForStore.deleteLastMenuItem, state => state.splice(0, state.length - 1))

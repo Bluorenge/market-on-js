@@ -1,7 +1,7 @@
 import AbstractComponent from '../../utils/abstarct-component'
 
 const globalSettingTemplate = data => {
-  const id = data ? data.id : 'sdf'
+  const id = data ? data.userId : 'sdf'
   const currency = data ? data.currency : 'sdf'
 
   return `<form class="data-maker__global-setting">

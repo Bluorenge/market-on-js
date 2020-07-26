@@ -9,7 +9,7 @@ import { $cart } from '../../models/cart'
 import { eventsForStore } from '../../models/eventsForStore'
 
 const renderProducts = (container, setting, products) => {
-  return products.map((item) => {
+  return products.map(item => {
     const productController = new CartItemController(container)
     productController.render(setting, item)
     return productController
@@ -34,13 +34,11 @@ export default class CartController {
 
   render() {
     // Обновляем иконку корзины
-    $cart.watch((state) => this._updateIcon(state))
+    $cart.watch(state => this._updateIcon(state))
     // Обновляем страницу корзины при удалении товара
-    $cart.watch(eventsForStore.deleteProductInCart, (state) =>
-      this._renderCartPage(state)
-    )
-    $cart.watch(eventsForStore.updateQuantityOfProductInCart, (state) =>
-      this._changeTotalPrice(state)
+    $cart.watch(eventsForStore.deleteProductInCart, state => this._renderCartPage(state))
+    $cart.watch(eventsForStore.updateQuantityOfProductInCart, state =>
+      this._changeTotalPrice(state),
     )
     eventsForStore.openCartPage.watch(() => {
       eventsForStore.clearSearchInput()
@@ -60,11 +58,7 @@ export default class CartController {
     }
 
     this._cartIconComponent = new CartIconComponent(cartData, this._setting)
-    render(
-      this._header.getElement(),
-      this._cartIconComponent,
-      RenderPosition.BEFOREEND
-    )
+    render(this._header.getElement(), this._cartIconComponent, RenderPosition.BEFOREEND)
     this._cartIconComponent.setProductCount()
 
     this._cartIconComponent.setOpenCartClickHandler(() => {
@@ -78,11 +72,7 @@ export default class CartController {
     }
 
     this._cartPageComponent = new CartPageComponent(cartData, this._setting)
-    render(
-      this._container.getElement(),
-      this._cartPageComponent,
-      RenderPosition.BEFOREEND
-    )
+    render(this._container.getElement(), this._cartPageComponent, RenderPosition.BEFOREEND)
 
     this._cartPageComponent.setToMainBtnOnClickHandler(() => {
       eventsForStore.toMainPageFromCart()
@@ -91,17 +81,15 @@ export default class CartController {
       const newProducts = renderProducts(
         this._cartPageComponent.getElement(),
         this._setting,
-        cartData
+        cartData,
       )
 
-      this._showedCartProductsComponent = this._showedCartProductsComponent.concat(
-        newProducts
-      )
+      this._showedCartProductsComponent = this._showedCartProductsComponent.concat(newProducts)
 
       this._cartPageComponent.setMakeOrderBtnOnClickHandler(() => {
-        const getOrderList = (arr) => {
+        const getOrderList = arr => {
           let order = []
-          arr.map((item) => {
+          arr.map(item => {
             const product = {
               name: item.name,
               count: item.quantity,
@@ -118,7 +106,7 @@ export default class CartController {
         const orderList = getOrderList($cart.getState())
         const totalPrice = orderList.reduce(
           (priceAcc, product) => priceAcc + product.count * product.price,
-          0
+          0,
         )
         // Коллбек на отправку заказа
         eventsForStore.sendOrder({ orderList, totalPrice })
@@ -134,9 +122,7 @@ export default class CartController {
   }
 
   _removeProduct() {
-    this._showedCartProductsComponent.forEach((productController) =>
-      productController.destroy()
-    )
+    this._showedCartProductsComponent.forEach(productController => productController.destroy())
     this._showedCartProductsComponent = []
   }
 

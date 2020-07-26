@@ -100,18 +100,12 @@ const createOption = (id, numberOption, state) => {
         <input class="data-maker__input data-maker__input--option-name data-maker__input--option-${
           state !== undefined ? state : numberOption
         }-product" type="text" name="option-${numberOption}-product-id-${id}" placeholder="Например: M"
-        ${
-          state !== undefined ? `value="${state.map(([key]) => key)[0]}"` : ``
-        } required>
+        ${state !== undefined ? `value="${state.map(([key]) => key)[0]}"` : ``} required>
       </label>
       <label class="data-maker__option-field-wrap">
         <span class="data-maker__name-field">Цена</span>
         <input class="data-maker__input data-maker__input--option-price" type="number" placeholder="Введите цену товара"
-        ${
-          state !== undefined
-            ? `value="${state.map(([, value]) => value)[1]}"`
-            : ``
-        } required>
+        ${state !== undefined ? `value="${state.map(([, value]) => value)[1]}"` : ``} required>
       </label>
       <label class="data-maker__option-field-wrap">
         <input class="data-maker__input data-maker__input--option-active" type="checkbox"
@@ -143,9 +137,7 @@ const createOptionWrap = (id, state) => {
       ${
         state !== undefined
           ? state.optionList
-              .map((item, index) =>
-                createOption(id, index + 1, Object.entries(item))
-              )
+              .map((item, index) => createOption(id, index + 1, Object.entries(item)))
               .join(``)
           : createOption(id, 1)
       }
@@ -160,32 +152,22 @@ const createTree = (arr, firstLevel, secondLevel) => {
   const rootNode = document.querySelector(`.data-maker`)
 
   const newTree = (arr, firstLevel, secondLevel, indexItem) => {
-    arr.map((item) => {
+    arr.map(item => {
       // Если у элемента нет подкатегорий и товаров внутри
       if (firstLevel in item === false && secondLevel in item === false) {
         // Значит это товар
         const newProduct = createFieldsetProduct(item.id, item)
         const desc =
             item.desc !== undefined
-              ? createProductDesc(
-                  item.id,
-                  item.desc.replace(/<br\s*[/]?>/gi, `\n`)
-                )
+              ? createProductDesc(item.id, item.desc.replace(/<br\s*[/]?>/gi, `\n`))
               : ``,
-          option =
-            item.options !== undefined
-              ? createOptionWrap(item.id, item.options)
-              : ``
+          option = item.options !== undefined ? createOptionWrap(item.id, item.options) : ``
 
         // Ищем родительскую категорию
-        const parentCategory = rootNode.querySelector(
-          `#${CSS.escape(indexItem)}`
-        )
+        const parentCategory = rootNode.querySelector(`#${CSS.escape(indexItem)}`)
 
         if (parentCategory !== null) {
-          const btnAddProduct = parentCategory.querySelector(
-            `.data-maker__add--product`
-          )
+          const btnAddProduct = parentCategory.querySelector(`.data-maker__add--product`)
           btnAddProduct.insertAdjacentHTML(`beforebegin`, newProduct)
         } else {
           // То отрисовываем товар на первом уровне
@@ -194,17 +176,13 @@ const createTree = (arr, firstLevel, secondLevel) => {
 
         const productNode = document.getElementById(item.id)
 
-        const productDescBtn = productNode.querySelector(
-          `.data-maker__add--desc`
-        )
+        const productDescBtn = productNode.querySelector(`.data-maker__add--desc`)
         if (productDescBtn !== null) {
           productDescBtn.insertAdjacentHTML(`beforebegin`, desc)
           productDescBtn.remove()
         }
 
-        const productOptionsBtn = productNode.querySelector(
-          `.data-maker__add--option-wrap`
-        )
+        const productOptionsBtn = productNode.querySelector(`.data-maker__add--option-wrap`)
         if (productOptionsBtn !== null) {
           productOptionsBtn.insertAdjacentHTML(`beforebegin`, option)
           productOptionsBtn.remove()
@@ -212,23 +190,12 @@ const createTree = (arr, firstLevel, secondLevel) => {
       }
       // Иначе если есть продукты в категории
       else if (secondLevel in item) {
-        const newCategory = createFieldsetCategory(
-          item.id,
-          `подкатегории`,
-          item
-        )
+        const newCategory = createFieldsetCategory(item.id, `подкатегории`, item)
 
-        const parentCategory = rootNode.querySelector(
-          `#${CSS.escape(indexItem)}`
-        )
+        const parentCategory = rootNode.querySelector(`#${CSS.escape(indexItem)}`)
 
-        const btnAddProduct = parentCategory.querySelectorAll(
-          `.data-maker__add--product`
-        )
-        btnAddProduct[btnAddProduct.length - 1].insertAdjacentHTML(
-          `beforebegin`,
-          newCategory
-        )
+        const btnAddProduct = parentCategory.querySelectorAll(`.data-maker__add--product`)
+        btnAddProduct[btnAddProduct.length - 1].insertAdjacentHTML(`beforebegin`, newCategory)
 
         return newTree(item[secondLevel], firstLevel, secondLevel, item.id)
       }
@@ -237,14 +204,10 @@ const createTree = (arr, firstLevel, secondLevel) => {
         // Создаём категорию
         let newCategory
 
-        const parentCategory = rootNode.querySelector(
-          `#${CSS.escape(indexItem)}`
-        )
+        const parentCategory = rootNode.querySelector(`#${CSS.escape(indexItem)}`)
 
         if (parentCategory !== null) {
-          const btnAddProduct = parentCategory.querySelector(
-            `.data-maker__add--product`
-          )
+          const btnAddProduct = parentCategory.querySelector(`.data-maker__add--product`)
           newCategory = createFieldsetCategory(item.id, `подкатегории`, item)
           btnAddProduct.insertAdjacentHTML(`beforebegin`, newCategory)
         } else {
