@@ -4,6 +4,10 @@ import CategoryComponent from '../components/category'
 import { $idContent, $isFormValidate, $productList, findItem, $currentId } from '../../models/model'
 import { eventsForDataMaker } from '../../models/eventsForDataMaker'
 import ProductController from './product'
+import CategoryEntryStateComponent from '../components/category-entry-state'
+import SubCategoryTabsComponent from '../components/tabs'
+import TabContentController from './tab-content'
+import SubCategoryController from './sub-category'
 
 export default class CategoryController {
   constructor(container) {
@@ -12,21 +16,16 @@ export default class CategoryController {
     this._id = Number(this.container.getElement().id.replace(/[^+\d]/g, ``))
     this._categoryComponent = null
     this._subCategories = []
+    // this._entryState = null
+    this._tabContent = null
   }
 
   render() {
-    // Ищем корневой элемент
     eventsForDataMaker.searchItem({ id: this._id })
-    // Создаём компонент категории
-    this._categoryComponent = new CategoryComponent(`категории`, this._id, findItem)
-    // Отрисовываем его
-    render(this.container.getElement(), this._categoryComponent, RenderPosition.BEFOREEND)
 
-    // Если у элемента есть подкатегории
-    if (findItem?.subCategory) {
-      // this._renderSubCategoryTree(this._categoryComponent, findItem)
-      this._renderSubCategory(this._categoryComponent, findItem)
-    }
+    // if (findItem) {
+    this._categoryComponent = new CategoryComponent(`категории`, this._id, findItem)
+    render(this.container.getElement(), this._categoryComponent, RenderPosition.BEFOREEND)
 
     this._categoryComponent.setRemoveCategoryBtnHandler(() => {
       eventsForDataMaker.changeView({ type: `setting`, id: 0 })
@@ -38,7 +37,12 @@ export default class CategoryController {
       eventsForDataMaker.validateFrom()
 
       if ($isFormValidate.getState()) {
-        this._renderSubCategory(this._categoryComponent)
+        this._tabContent = new TabContentController(this._categoryComponent)
+        this._tabContent.render()
+        // const subCategory = new SubCategoryController()
+        eventsForDataMaker.changeViewTab(`category`)
+        // this._subCategories = this._subCategories.concat(subCategory)
+        this._categoryComponent.hideBtn(`product`)
       }
     })
     this._categoryComponent.setAddProductHandler(() => {
@@ -49,20 +53,24 @@ export default class CategoryController {
         eventsForDataMaker.idContentIncrease()
         const product = new ProductController(this._categoryComponent, $idContent.getState())
         product.render()
+        this._categoryComponent.hideBtn(`category`)
       }
     })
     this._categoryComponent.setInputsHandler(() => this._getData())
+    // } else {
+    //   this._entryState = new CategoryEntryStateComponent()
+    //   render(this.container.getElement(), this._entryState, RenderPosition.BEFOREEND)
+    //   this._entryState.setAddProductBtnHandler(() => )
+    // }
+
+    // Если у элемента есть подкатегории
+    if (findItem?.subCategory) {
+      this._renderSubCategory(this._categoryComponent, findItem)
+    }
   }
 
   remove() {
     remove(this._categoryComponent)
-  }
-
-  _getData() {
-    const categoryData = this._categoryComponent.getData()
-    eventsForDataMaker.makeCategory({ id: this._id, item: categoryData })
-
-    eventsForDataMaker.changeMenuItemName({ id: this._id, name: categoryData.name })
   }
 
   isValidity() {
@@ -74,6 +82,13 @@ export default class CategoryController {
     }
 
     return this._categoryComponent.getElement().checkValidity()
+  }
+
+  _getData() {
+    const categoryData = this._categoryComponent.getData()
+    eventsForDataMaker.makeCategory({ id: this._id, item: categoryData })
+
+    eventsForDataMaker.changeMenuItemName({ id: this._id, name: categoryData.name })
   }
 
   _renderSubCategory(parentLevel, data) {
@@ -120,15 +135,6 @@ export default class CategoryController {
 
       if ($isFormValidate.getState()) {
         this._renderSubCategory(subCategory)
-      }
-    })
-    subCategory.setAddProductHandler(() => {
-      this._getData()
-      eventsForDataMaker.validateFrom()
-
-      if ($isFormValidate.getState()) {
-        const product = new ProductController(subCategory, $idContent.getState())
-        product.render()
       }
     })
     subCategory.setRemoveCategoryBtnHandler(() => {

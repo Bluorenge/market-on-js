@@ -4,6 +4,8 @@ import LeftContentComponent from './common-component/leftContent'
 import MenuListController from './menu/controllers/menu-list'
 import { fetchUserMarketFx } from './models/model'
 
+// По идее хорошо бы менять порядок категорий
+
 class DataMaker {
   constructor(element, data) {
     this.container = document.querySelector(`${element}`)

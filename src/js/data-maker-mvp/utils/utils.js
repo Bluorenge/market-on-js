@@ -428,3 +428,45 @@ export const elementReady = (parent, selector) => {
     })
   })
 }
+
+// Рекурсивный поиск одного элемента по всему массиву
+export const findById = (arr, id) => {
+  return arr.reduce((a, item) => {
+    // При первой итерации этот if пропускается, потому что передаётся null
+    if (a) {
+      return a
+    }
+
+    // Если текущий элемент массива содержит нужное имя, возращаем его. Если нет, то..
+    if (item.id === id) {
+      return item
+    }
+
+    // ..берём элемент с ключом nestingKey и снова ищём в нём нужное имя, либо..
+    if (`subCategory` in item) {
+      return findById(item.subCategory, id)
+    }
+
+    // ..если нужно найти элемент в списке товаров в категории
+    if (`productsInCategory` in item) {
+      return findById(item.productsInCategory, id)
+    }
+  }, null)
+}
+
+export const findLastIndex = arr => {
+  return arr
+    .reduce((idArr, item) => {
+      if (`subCategory` in item) {
+        idArr.push(item.id)
+        return idArr.concat(findLastIndex(item.subCategory))
+      }
+      if (`productsInCategory` in item) {
+        idArr.push(item.id)
+        return idArr.concat(findLastIndex(item.productsInCategory))
+      }
+      return idArr.concat(item.id)
+    }, [])
+    .sort((a, b) => a - b)
+    .reverse()[0]
+}

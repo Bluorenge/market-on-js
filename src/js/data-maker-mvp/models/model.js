@@ -1,49 +1,7 @@
-import { createStore, sample, createEffect } from 'effector'
+import { createStore, createEffect } from 'effector'
 import { eventsForDataMaker } from './eventsForDataMaker'
 import * as findAnd from 'find-and'
-import { findParentId } from '../utils/utils'
-
-// Рекурсивный поиск одного элемента по всему массиву
-const findById = (arr, id) => {
-  return arr.reduce((a, item) => {
-    // При первой итерации этот if пропускается, потому что передаётся null
-    if (a) {
-      return a
-    }
-
-    // Если текущий элемент массива содержит нужное имя, возращаем его. Если нет, то..
-    if (item.id === id) {
-      return item
-    }
-
-    // ..берём элемент с ключом nestingKey и снова ищём в нём нужное имя, либо..
-    if (`subCategory` in item) {
-      return findById(item.subCategory, id)
-    }
-
-    // ..если нужно найти элемент в списке товаров в категории
-    if (`productsInCategory` in item) {
-      return findById(item.productsInCategory, id)
-    }
-  }, null)
-}
-
-const findLastIndex = arr => {
-  return arr
-    .reduce((idArr, item) => {
-      if (`subCategory` in item) {
-        idArr.push(item.id)
-        return idArr.concat(findLastIndex(item.subCategory))
-      }
-      if (`productsInCategory` in item) {
-        idArr.push(item.id)
-        return idArr.concat(findLastIndex(item.productsInCategory))
-      }
-      return idArr.concat(item.id)
-    }, [])
-    .sort((a, b) => a - b)
-    .reverse()[0]
-}
+import { findById, findLastIndex } from '../utils/utils'
 
 export const $typeView = createStore(`setting`)
 $typeView.on(eventsForDataMaker.changeView, (_, type) => type)
@@ -71,7 +29,7 @@ $settingOfMarket
   .on(fetchUserMarketFx.doneData, (_, data) => {
     return data ? data[0] : $settingOfMarket.defaultState
   })
-  .on(eventsForDataMaker.updateSetting, (state, data) => {
+  .on(eventsForDataMaker.updateSetting, (_, data) => {
     return {
       id: data.id,
       currency: data.currency,

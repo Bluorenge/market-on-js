@@ -3,6 +3,10 @@ import AbstractComponent from '../../utils/abstarct-component'
 const categoryTemplate = (typeOfCategory, id, data) => {
   const wrapTag = typeOfCategory === 'категории' ? 'form' : 'div'
   const categoryId = id ? `id="${id}"` : ''
+  const addProductBtn =
+    typeOfCategory === 'категории'
+      ? '<div class="data-maker__add data-maker__add--product" tabindex="0">+ Добавить товар</div>'
+      : ''
 
   let nameCategory = `Добавление <span class="data-maker__fields-title-type">${typeOfCategory}</span>`
   let nameValue = ``
@@ -14,7 +18,8 @@ const categoryTemplate = (typeOfCategory, id, data) => {
     imgValue = data.img ? data.img : ``
   }
 
-  return `<${wrapTag} class="data-maker__fields data-maker__fields--category" ${categoryId}>
+  return `<${wrapTag} ${categoryId}>
+    <div class="data-maker__fields data-maker__fields--category">
       <div class="data-maker__fields-top">
         <h2 class="data-maker__fields-title">
         ${nameCategory}
@@ -36,14 +41,13 @@ const categoryTemplate = (typeOfCategory, id, data) => {
           value="${imgValue}">
         </label>
       </div>
-      <div class="data-maker__add data-maker__add--product" tabindex="0">
-        + Добавить товар
-      </div>
+      ${addProductBtn}
       <div class="data-maker__add data-maker__add--subcategory" tabindex="0">
         + Добавить подкатегорию
       </div>
       <button class="data-maker__btn" style="display: none"></button>
-    </${wrapTag}>`
+    </div>
+  </${wrapTag}>`
 }
 
 export default class CategoryComponent extends AbstractComponent {
@@ -61,6 +65,21 @@ export default class CategoryComponent extends AbstractComponent {
 
   getTemplate() {
     return categoryTemplate(this.type, this.id, this.data)
+  }
+
+  hideBtn(btn) {
+    switch (btn) {
+      case 'category':
+        this.getElement().querySelector(`.data-maker__add--subcategory`).style = 'display: none;'
+        break
+      case 'product':
+        this.getElement().querySelector(`.data-maker__add--product`).style = 'display: none;'
+    }
+  }
+
+  showBtn() {
+    this.getElement().querySelector(`.data-maker__add--subcategory`).style = 'display: block;'
+    this.getElement().querySelector(`.data-maker__add--product`).style = 'display: block;'
   }
 
   setInputsHandler(handler) {

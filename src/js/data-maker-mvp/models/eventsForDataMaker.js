@@ -31,4 +31,6 @@ export const eventsForDataMaker = {
   makeOptions: createEvent(),
   deleteOptions: createEvent(),
   deleteOption: createEvent(),
+
+  changeViewTab: createEvent(),
 }
