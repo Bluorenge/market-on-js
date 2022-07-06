@@ -1,118 +1,124 @@
-const paths = require('./paths')
-const TerserPlugin = require('terser-webpack-plugin')
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const HTMLWebpackPlugin = require('html-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const paths = require("./paths");
+const utils = require("./utils");
+const HTMLWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-const devMode = process.env.NODE_ENV !== 'production'
+const devMode = process.env.NODE_ENV !== "production";
+
+// Обработка стилей
+let styleLoaders = [
+    {
+        loader: MiniCssExtractPlugin.loader,
+        options: { publicPath: "../" },
+    },
+    {
+        loader: "css-loader",
+        options: { sourceMap: devMode },
+    },
+    {
+        loader: "postcss-loader",
+        options: { sourceMap: devMode },
+    },
+    {
+        loader: "sass-loader",
+        options: {
+            sourceMap: devMode,
+            sassOptions: {
+                outputStyle: "expanded",
+            },
+        },
+    },
+];
+
+// Если дев-режим, то убираем лишнюю обработку стилей для ускорения сборки
+if (devMode) {
+    styleLoaders[0] = "style-loader";
+    styleLoaders.splice(2, 1);
+}
 
 module.exports = {
-  entry: {
-    market: paths.src + '/market.js',
-    ['data-maker']: paths.src + '/data-maker.js'
-  },
+    entry: {
+        market: paths.src + "/market.js",
+        ["data-maker"]: paths.src + "/data-maker.js",
+        ["market-mvp"]: paths.src + "/market-mvp.js",
+        ["data-maker-mvp"]: paths.src + "/data-maker-mvp.js",
+    },
 
-  optimization: {
-    minimizer: [
-      new TerserPlugin({
-        terserOptions: {
-          output: {
-            comments: false
-          }
+    output: {
+        assetModuleFilename: pathData => {
+            const filepath = path.dirname(pathData.filename).split("/").slice(1).join("/");
+            return `${filepath}/[name][ext]`;
+            // return "${filepath}/[name].[hash][ext][query]";
         },
-        extractComments: false,
-        cache: true,
-        parallel: true
-      })
-    ]
-  },
+        clean: true,
+    },
 
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader'
-        }
-      },
-      {
-        test: /\.(css|s[ac]ss)$/i,
-        use: [
-          devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: {
-              sourceMap: devMode
-            }
-          },
-          {
-            loader: 'postcss-loader',
-            options: {
-              sourceMap: devMode
-            }
-          },
-          {
-            loader: 'sass-loader',
-            options: {
-              sassOptions: {
-                outputStyle: 'expanded'
-              }
-            }
-          }
-        ]
-      },
-      {
-        test: /\.(ttf|eot|otf|woff2?)$/i,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: 'fonts/[name].[ext]'
-            }
-          }
-        ]
-      },
-      {
-        test: /\.(gif|png|jpe?g|svg)$/i,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[path][name].[ext]',
-              context: 'src'
-            }
-          }
-        ]
-      }
-    ]
-  },
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                exclude: utils.excludeNodeModulesExcept(["effector"]),
+                use: { loader: "babel-loader" },
+            },
+            {
+                test: /\.(css|s[ac]ss)$/i,
+                use: styleLoaders,
+            },
+            {
+                test: /\.(ttf|eot|otf|woff2?)$/i,
+                type: "asset/resource",
+            },
+            {
+                test: /\.(gif|png|jpe?g|svg)$/i,
+                type: "asset/resource",
+            },
+        ],
+    },
 
-  plugins: [
-    new CleanWebpackPlugin({
-      verbose: true
-    }),
-    new HTMLWebpackPlugin({
-      filename: 'market.html',
-      template: paths.src + '/views/market.html',
-      meta: {
-        charset: {
-          charset: 'utf-8'
-        },
-        viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no'
-      },
-      chunks: ['market']
-    }),
-    new HTMLWebpackPlugin({
-      filename: 'data-maker.html',
-      template: paths.src + '/views/data-maker.html',
-      meta: {
-        charset: {
-          charset: 'utf-8'
-        },
-        viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no'
-      },
-      chunks: ['data-maker']
-    })
-  ]
-}
+    plugins: [
+        new HTMLWebpackPlugin({
+            filename: "market.html",
+            template: paths.src + "/views/market.html",
+            meta: {
+                charset: {
+                    charset: "utf-8",
+                },
+                viewport: "width=device-width, initial-scale=1, shrink-to-fit=no",
+            },
+            chunks: ["market"],
+        }),
+        new HTMLWebpackPlugin({
+            filename: "data-maker.html",
+            template: paths.src + "/views/data-maker.html",
+            meta: {
+                charset: {
+                    charset: "utf-8",
+                },
+                viewport: "width=device-width, initial-scale=1, shrink-to-fit=no",
+            },
+            chunks: ["data-maker"],
+        }),
+        new HTMLWebpackPlugin({
+            filename: "market-mvp.html",
+            template: paths.src + "/views/market-mvp.html",
+            meta: {
+                charset: {
+                    charset: "utf-8",
+                },
+                viewport: "width=device-width, initial-scale=1, shrink-to-fit=no",
+            },
+            chunks: ["market-mvp"],
+        }),
+        new HTMLWebpackPlugin({
+            filename: "data-maker-mvp.html",
+            template: paths.src + "/views/data-maker-mvp.html",
+            meta: {
+                charset: {
+                    charset: "utf-8",
+                },
+                viewport: "width=device-width, initial-scale=1, shrink-to-fit=no",
+            },
+            chunks: ["data-maker-mvp"],
+        }),
+    ],
+};

@@ -1,150 +1,143 @@
 .glider-contain {
-  position: relative;
-  width: calc(100% + 8px);
-  margin: 0 auto;
+    position: relative;
+    width: calc(100% + 8px);
+    margin: 0 auto;
 }
 
 .glider {
-  position: relative;
-  margin: 0 auto;
-  transform: translateZ(0);
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  -ms-overflow-style: none;
+    position: relative;
+    margin: 0 auto;
+    transform: translateZ(0);
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: none;
 }
 
 .glider-track {
-  display: flex;
-  z-index: 1;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  transform: translateZ(0);
+    display: flex;
+    z-index: 1;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    transform: translateZ(0);
 }
 
 .glider.draggable {
-  user-select: none;
-  cursor: -webkit-grab;
-  cursor: grab;
+    user-select: none;
+    cursor: grab;
 }
 
 .glider.draggable .glider-slide img {
-  user-select: none;
-  pointer-events: none;
+    user-select: none;
+    pointer-events: none;
 }
 
 .glider.drag {
-  cursor: -webkit-grabbing;
-  cursor: grabbing;
+    cursor: grabbing;
 }
 
 .glider-slide {
-  align-content: center;
-  justify-content: center;
-  width: 100%;
-  user-select: none;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    user-select: none;
+    min-width: 150px;
 }
 
 .glider-slide img {
-  max-width: 100%;
+    max-width: 100%;
 }
 
 .glider::-webkit-scrollbar {
-  opacity: 0;
-  height: 0;
+    opacity: 0;
+    height: 0;
 }
 
 .glider-prev,
 .glider-next {
-  position: absolute;
-  z-index: 2;
-  top: 30%;
-  left: -23px;
-  padding: 0;
-  border: 0;
-  transition: opacity .5s cubic-bezier(.17, .67, .83, .67),
-    color .5s cubic-bezier(.17, .67, .83, .67);
-  user-select: none;
-  outline: none;
-  background: none;
-  font-size: 40px;
-  text-decoration: none;
-  cursor: pointer;
-  color: #666;
-  opacity: 1;
-  line-height: 1;
+    position: absolute;
+    z-index: 2;
+    top: 30%;
+    left: -23px;
+    padding: 0;
+    border: 0;
+    transition: opacity .5s cubic-bezier(.17, .67, .83, .67), color .5s cubic-bezier(.17, .67, .83, .67);
+    user-select: none;
+    outline: none;
+    background: none;
+    font-size: 40px;
+    text-decoration: none;
+    cursor: pointer;
+    color: #666;
+    opacity: 1;
+    line-height: 1;
 }
 
 .glider-prev:hover,
 .glider-next:hover,
 .glider-prev:focus,
 .glider-next:focus {
-  color: #2d9094;
+    color: #2d9094;
 }
 
 .glider-next {
-  right: -23px;
-  left: auto;
+    right: -23px;
+    left: auto;
 }
 
 .glider-next.disabled,
 .glider-prev.disabled {
-  opacity: .25;
-  color: #666;
-  cursor: default;
-}
-
-.glider-slide {
-  min-width: 150px;
+    opacity: .25;
+    color: #666;
+    cursor: default;
 }
 
 .glider-hide {
-  opacity: 0;
+    opacity: 0;
 }
 
 .glider-dots {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  padding: 0;
-  margin: 0 auto;
-  user-select: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0;
+    margin: 0 auto;
+    user-select: none;
 }
 
 .glider-dot {
-  display: block;
-  width: 12px;
-  height: 12px;
-  padding: 0;
-  margin: 7px;
-  border: 0;
-  background: none;
-  user-select: none;
-  outline: none;
-  cursor: pointer;
-  color: #ccc;
-  border-radius: 999px;
-  background: #ccc;
+    display: block;
+    width: 12px;
+    height: 12px;
+    padding: 0;
+    margin: 7px;
+    border: 0;
+    user-select: none;
+    outline: none;
+    cursor: pointer;
+    color: #ccc;
+    border-radius: 999px;
+    background: #ccc;
 }
 
 .glider-dot:hover,
 .glider-dot:focus,
 .glider-dot.active {
-  background: #2d9094;
+    background: #2d9094;
 }
 
-@media(max-width: 36em) {
-  .glider::-webkit-scrollbar {
-    opacity: 1;
-    -webkit-appearance: none;
-    width: 7px;
-    height: 3px;
-  }
+@media (max-width: 36em) {
+    .glider::-webkit-scrollbar {
+        opacity: 1;
+        -webkit-appearance: none;
+        width: 7px;
+        height: 3px;
+    }
 
-  .glider::-webkit-scrollbar-thumb {
-    opacity: 1;
-    border-radius: 99px;
-    background-color: rgba(156, 156, 156, .25);
-    box-shadow: 0 0 1px rgba(255, 255, 255, .25);
-  }
+    .glider::-webkit-scrollbar-thumb {
+        opacity: 1;
+        border-radius: 99px;
+        background-color: rgba(156, 156, 156, .25);
+        box-shadow: 0 0 1px rgba(255, 255, 255, .25);
+    }
 }

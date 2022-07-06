@@ -1,234 +1,275 @@
 @import "helpers/mixins";
 
 .input-message {
-  color: red;
+    color: red;
 }
 
 .message-to-create {
-  display: block;
-  margin-bottom: 5px;
-  color: red;
-  text-align: right;
+    display: block;
+    margin-bottom: 5px;
+    color: red;
+    text-align: right;
+}
+
+.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px);
 }
 
 .data-maker {
-  @keyframes fade-in {
-    0% {
-      opacity: 0;
-    }
-
-    100% {
-      opacity: 1;
-    }
-  }
-
-  padding: 10%;
-  color: #0b4749;
-
-  &__form {
     display: flex;
-    flex-wrap: wrap;
-  }
+    height: 100vh;
 
-  &__global-setting {
-    display: flex;
-    flex-wrap: wrap;
-    margin-bottom: 10px;
-  }
+    padding: 10%;
+    color: #0b4749;
 
-  &__global-setting label {
-    display: block;
-    margin-bottom: 10px;
-
-    &:not(:last-child) {
-      margin-right: 10px;
-    }
-  }
-
-  &__entry-point {
-    display: flex;
-    flex-direction: column;
-    align-content: flex-start;
-    width: 100%;
-  }
-
-  &__fields {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    border: 1px solid #2d9094;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    animation: fade-in .5s ease-out;
-    height: auto;
-    max-height: 9999px;
-    overflow: hidden;
-    transition: max-height 1s ease;
-
-    &--collapse {
-      max-height: 64px;
-    }
-  }
-
-  &__fields--collapse > *:not(:first-child) {
-    display: none;
-  }
-
-  &__fields--collapse &__fields-title {
-    margin: 0;
-    margin-right: auto;
-  }
-
-  &__fields-top {
-    position: relative;
-    display: flex;
-  }
-
-  &__fields-title {
-    font-size: 16px;
-    margin: 0;
-    margin-bottom: 10px;
-    margin-right: auto;
-  }
-
-  &__hide-btn {
-    cursor: pointer;
-    margin-right: 10px;
-
-    &:hover {
-      color: rgba($color: #000000, $alpha: .3);
-    }
-  }
-
-  &__fields--category {
-    border: 2px solid #2d9094;
-    box-shadow: 0 0 12px 0 rgba(45, 144, 148, .5);
-  }
-
-  &__category-wrap {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 10px;
-  }
-
-  &__option-wrap {
-    display: flex;
-    flex-direction: column;
-    margin-top: 15px;
-    padding: 10px;
-    border: 1px solid #F5BD49;
-    border-radius: 5px;
-  }
-
-  &__option {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  &__option-item {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-    margin-right: 10px;
-
-    @include respond-to(tablet) {
-      max-width: calc(100% - 20px);
-      margin-right: 20px;
-    }
-  }
-
-  &__field-wrap {
-    position: relative;
-    display: block;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #3ecacf;
-    margin-bottom: 10px;
-
-    &--desc {
-      padding: 10px;
-      border: 1px solid #F5BD49;
-      border-radius: 5px;
-    }
-  }
-
-  &__option-field-wrap {
-    margin-bottom: 10px;
-  }
-
-  &__name-field {
-    margin-top: 0;
-    margin-bottom: 10px;
-    margin-right: auto;
-    font-size: 14px;
-  }
-
-  &__name-field--new-line span {
-    display: block;
-  }
-
-  &__input--desc-product {
-    width: 98%;
-    height: 100px;
-
-    @include respond-to(tablet) {
-      width: 60%;
-    }
-  }
-
-  &__add {
-    cursor: pointer;
-
-    &:not(:last-child) {
-      margin-bottom: 10px;
+    &__left {
+        width: 22%;
+        padding-right: 15px;
     }
 
-    &:hover {
-      opacity: .7;
-    }
-  }
-
-  &__btn {
-    cursor: pointer;
-    align-self: flex-end;
-  }
-
-  &__delete-btn {
-    color: #B89857;
-    width: 21px;
-    height: 21px;
-    cursor: pointer;
-
-    &:before {
-      content: "";
-      position: absolute;
-      top: 10px;
-      width: 21px;
-      height: 1px;
-      background-color: currentColor;
-      transform: rotate(-45deg);
+    &__right {
+        width: 78%;
+        padding-left: 15px;
     }
 
-    &:after {
-      content: "";
-      position: absolute;
-      top: 10px;
-      width: 21px;
-      height: 1px;
-      background-color: currentColor;
-      transform: rotate(45deg);
+    &__menu {
+        padding: 0;
     }
 
-    &:hover {
-      opacity: .7;
+    &__menu-item {
+        list-style-type: none;
     }
-  }
 
-  &__block-info {
-    margin-bottom: 10px;
-  }
+    &__form {
+        display: flex;
+        flex-wrap: wrap;
+    }
 
-  &__block-info &__block-info-text {
-    margin-bottom: 5px;
-  }
+    &__global-setting {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+    }
+
+    &__global-setting label {
+        display: block;
+        margin-bottom: 10px;
+
+        &:not(:last-child) {
+            margin-right: 10px;
+        }
+    }
+
+    &__entry-point {
+        display: flex;
+        flex-direction: column;
+        align-content: flex-start;
+        width: 100%;
+    }
+
+    &__fields {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        height: auto;
+        max-height: 9999px;
+        padding: 10px;
+        border: 1px solid #2d9094;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        overflow: hidden;
+        transition: max-height 1s ease;
+        animation: fade-in 0.5s ease-out;
+
+        &--collapse {
+            max-height: 64px;
+        }
+    }
+
+    &__fields--collapse > *:not(:first-child) {
+        display: none;
+    }
+
+    &__fields--collapse &__fields-title {
+        margin: 0;
+        margin-right: auto;
+    }
+
+    &__fields-top {
+        display: flex;
+        position: relative;
+    }
+
+    &__fields-title {
+        font-size: 16px;
+        margin: 0;
+        margin-bottom: 10px;
+        margin-right: auto;
+    }
+
+    &__hide-btn {
+        cursor: pointer;
+        margin-right: 10px;
+
+        &:hover {
+            color: rgba($color: #000000, $alpha: 0.3);
+        }
+    }
+
+    &__fields--category {
+        border: 2px solid #2d9094;
+        box-shadow: 0 0 12px 0 rgba(45, 144, 148, 0.5);
+    }
+
+    &__category-wrap {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 10px;
+    }
+
+    &__option-wrap {
+        display: flex;
+        flex-direction: column;
+        margin-top: 15px;
+        padding: 10px;
+        border: 1px solid #f5bd49;
+        border-radius: 5px;
+    }
+
+    &__option {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 0;
+        margin: 0;
+    }
+
+    &__option-item {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        margin-right: 10px;
+        position: relative;
+
+        @include respond-to(tablet) {
+            max-width: calc(100% - 20px);
+            margin-right: 20px;
+        }
+    }
+
+    &__field-wrap {
+        display: block;
+        position: relative;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #3ecacf;
+        margin-bottom: 10px;
+
+        &--desc {
+            padding: 10px;
+            border: 1px solid #f5bd49;
+            border-radius: 5px;
+        }
+    }
+
+    &__option-field-wrap {
+        margin-bottom: 10px;
+    }
+
+    &__name-field {
+        margin-top: 0;
+        margin-bottom: 10px;
+        margin-right: auto;
+        font-size: 14px;
+    }
+
+    &__name-field--new-line span {
+        display: block;
+    }
+
+    &__input--desc-product {
+        width: 98%;
+        height: 100px;
+
+        @include respond-to(tablet) {
+            width: 60%;
+        }
+    }
+
+    &__input--error {
+        border: 2px solid red;
+    }
+
+    &__input-error-message {
+        color: red;
+    }
+
+    &__add {
+        cursor: pointer;
+
+        &:not(:last-child) {
+            margin-bottom: 10px;
+        }
+
+        &:hover {
+            opacity: 0.7;
+        }
+    }
+
+    &__btn {
+        cursor: pointer;
+        align-self: flex-end;
+    }
+
+    &__delete-btn {
+        color: #b89857;
+        width: 21px;
+        height: 21px;
+        cursor: pointer;
+
+        &:before {
+            content: "";
+            position: absolute;
+            top: 10px;
+            width: 21px;
+            height: 1px;
+            background-color: currentcolor;
+            transform: rotate(-45deg);
+        }
+
+        &:after {
+            content: "";
+            position: absolute;
+            top: 10px;
+            width: 21px;
+            height: 1px;
+            background-color: currentcolor;
+            transform: rotate(45deg);
+        }
+
+        &:hover {
+            opacity: 0.7;
+        }
+    }
+
+    &__block-info {
+        margin-bottom: 10px;
+    }
+
+    &__block-info &__block-info-text {
+        margin-bottom: 5px;
+    }
+    @keyframes fade-in {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
 }
