@@ -2,9 +2,13 @@
 
 ## История разработки
 
-Сначала модуль был сделан без дробления на компоненты `./src/js/market/`.
-Потом сделал магазин с помощью MVP-паттерна `./src/js/market/`.
-Так же история с модулем создания товаров.
+Сначала модуль был сделан без дробления на компоненты `./src/js/market/` и `./src/js/data-maker/`.  
+[market](https://bluorenge.github.io/market-on-js/build/market.html)
+[data maker](https://bluorenge.github.io/market-on-js/build/data-maker.html)
+
+Потом перепесал его с помощью MVP-паттерна `./src/js/market-mvp/` и `./src/js/data-maker-mvp/`.  
+[market](https://bluorenge.github.io/market-on-js/build/market-mvp.html)
+[data maker](https://bluorenge.github.io/market-on-js/build/data-maker-mvp.html)
 
 ## Модуль, отображающий товары
 
