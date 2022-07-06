@@ -1,9 +1,9 @@
-const paths = require(`./paths`);
+const paths = require("./paths");
 const utils = require("./utils");
-const HTMLWebpackPlugin = require(`html-webpack-plugin`);
-const MiniCssExtractPlugin = require(`mini-css-extract-plugin`);
+const HTMLWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-const devMode = process.env.NODE_ENV !== `production`;
+const devMode = process.env.NODE_ENV !== "production";
 
 // Обработка стилей
 let styleLoaders = [
@@ -20,11 +20,11 @@ let styleLoaders = [
         options: { sourceMap: devMode },
     },
     {
-        loader: `sass-loader`,
+        loader: "sass-loader",
         options: {
             sourceMap: devMode,
             sassOptions: {
-                outputStyle: `expanded`,
+                outputStyle: "expanded",
             },
         },
     },
@@ -38,17 +38,17 @@ if (devMode) {
 
 module.exports = {
     entry: {
-        market: paths.src + `/market.js`,
-        [`data-maker`]: paths.src + `/data-maker.js`,
-        [`market-mvp`]: paths.src + `/market-mvp.js`,
-        [`data-maker-mvp`]: paths.src + `/data-maker-mvp.js`,
+        market: paths.src + "/market.js",
+        ["data-maker"]: paths.src + "/data-maker.js",
+        ["market-mvp"]: paths.src + "/market-mvp.js",
+        ["data-maker-mvp"]: paths.src + "/data-maker-mvp.js",
     },
 
     output: {
         assetModuleFilename: pathData => {
             const filepath = path.dirname(pathData.filename).split("/").slice(1).join("/");
             return `${filepath}/[name][ext]`;
-            // return `${filepath}/[name].[hash][ext][query]`;
+            // return "${filepath}/[name].[hash][ext][query]";
         },
         clean: true,
     },
@@ -77,48 +77,48 @@ module.exports = {
 
     plugins: [
         new HTMLWebpackPlugin({
-            filename: `market.html`,
-            template: paths.src + `/views/market.html`,
+            filename: "market.html",
+            template: paths.src + "/views/market.html",
             meta: {
                 charset: {
-                    charset: `utf-8`,
+                    charset: "utf-8",
                 },
-                viewport: `width=device-width, initial-scale=1, shrink-to-fit=no`,
+                viewport: "width=device-width, initial-scale=1, shrink-to-fit=no",
             },
-            chunks: [`market`],
+            chunks: ["market"],
         }),
         new HTMLWebpackPlugin({
-            filename: `data-maker.html`,
-            template: paths.src + `/views/data-maker.html`,
+            filename: "data-maker.html",
+            template: paths.src + "/views/data-maker.html",
             meta: {
                 charset: {
-                    charset: `utf-8`,
+                    charset: "utf-8",
                 },
-                viewport: `width=device-width, initial-scale=1, shrink-to-fit=no`,
+                viewport: "width=device-width, initial-scale=1, shrink-to-fit=no",
             },
-            chunks: [`data-maker`],
+            chunks: ["data-maker"],
         }),
         new HTMLWebpackPlugin({
-            filename: `market-mvp.html`,
-            template: paths.src + `/views/market-mvp.html`,
+            filename: "market-mvp.html",
+            template: paths.src + "/views/market-mvp.html",
             meta: {
                 charset: {
-                    charset: `utf-8`,
+                    charset: "utf-8",
                 },
-                viewport: `width=device-width, initial-scale=1, shrink-to-fit=no`,
+                viewport: "width=device-width, initial-scale=1, shrink-to-fit=no",
             },
-            chunks: [`market-mvp`],
+            chunks: ["market-mvp"],
         }),
         new HTMLWebpackPlugin({
-            filename: `data-maker-mvp.html`,
-            template: paths.src + `/views/data-maker-mvp.html`,
+            filename: "data-maker-mvp.html",
+            template: paths.src + "/views/data-maker-mvp.html",
             meta: {
                 charset: {
-                    charset: `utf-8`,
+                    charset: "utf-8",
                 },
-                viewport: `width=device-width, initial-scale=1, shrink-to-fit=no`,
+                viewport: "width=device-width, initial-scale=1, shrink-to-fit=no",
             },
-            chunks: [`data-maker-mvp`],
+            chunks: ["data-maker-mvp"],
         }),
     ],
 };

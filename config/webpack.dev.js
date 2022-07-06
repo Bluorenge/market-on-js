@@ -3,7 +3,6 @@ const { merge } = require("webpack-merge");
 const common = require("./webpack.common.js");
 const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
 
-const devMode = process.env.NODE_ENV !== `production`;
 const smp = new SpeedMeasurePlugin();
 
 const mergedConfig = merge(common, {
@@ -11,7 +10,7 @@ const mergedConfig = merge(common, {
 
     output: {
         path: paths.dist,
-        filename: `js/[name].js`,
+        filename: "js/[name].js",
     },
 
     devServer: {
