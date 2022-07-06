@@ -1,21 +1,21 @@
-import AbstractComponent from '../../utils/abstract-component.js'
+import AbstractComponent from "../../utils/abstract-component.js";
 
-const createMenuItemTemplate = (item) => {
-  return `<li id="menu-${item.id}" class="market-header__nav-item">${item.name}</li>`
-}
+const createMenuItemTemplate = item => {
+    return `<li id="menu-${item.id}" class="market-header__nav-item">${item.name}</li>`;
+};
 
 export default class MenuComponent extends AbstractComponent {
-  constructor(items) {
-    super()
+    constructor(items) {
+        super();
 
-    this._items = items
-  }
+        this._items = items;
+    }
 
-  getTemplate() {
-    return createMenuItemTemplate(this._items)
-  }
+    getTemplate() {
+        return createMenuItemTemplate(this._items);
+    }
 
-  setOpenButtonClickHandler(handler) {
-    this.getElement().addEventListener(`click`, handler)
-  }
+    setOpenButtonClickHandler(handler) {
+        this.getElement().addEventListener(`click`, handler);
+    }
 }

@@ -1,46 +1,46 @@
-import AbstractComponent from '../../utils/abstarct-component'
+import AbstractComponent from "../../utils/abstarct-component";
 
 const menuAddCategoryTemplate = (id, category = true) => {
-  const type = category ? `Новая категория` : `Новый товар`
+    const type = category ? `Новая категория` : `Новый товар`;
 
-  return `<li id=menu-item-${id} class="data-maker__menu-item">
+    return `<li id=menu-item-${id} class="data-maker__menu-item">
     <button class="data-maker__item-btn">${type}</button>
-  </li>`
-}
+  </li>`;
+};
 
 export default class MenuItemComponent extends AbstractComponent {
-  constructor(id, type) {
-    super()
+    constructor(id, type) {
+        super();
 
-    this.id = id
-    this.type = type
-  }
+        this.id = id;
+        this.type = type;
+    }
 
-  getTemplate() {
-    return menuAddCategoryTemplate(this.id, this.type)
-  }
+    getTemplate() {
+        return menuAddCategoryTemplate(this.id, this.type);
+    }
 
-  getIndex() {
-    return this.id
-  }
+    getIndex() {
+        return this.id;
+    }
 
-  getNameMenuItem() {
-    return this.getElement().querySelector(`.data-maker__item-btn`).textContent
-  }
+    getNameMenuItem() {
+        return this.getElement().querySelector(`.data-maker__item-btn`).textContent;
+    }
 
-  setNameMenuItem(name) {
-    this.getElement().querySelector(`.data-maker__item-btn`).textContent = name
-  }
+    setNameMenuItem(name) {
+        this.getElement().querySelector(`.data-maker__item-btn`).textContent = name;
+    }
 
-  setOpenItemHandler(handler) {
-    this.getElement().querySelector(`.data-maker__item-btn`).addEventListener(`click`, handler)
-  }
+    setOpenItemHandler(handler) {
+        this.getElement().querySelector(`.data-maker__item-btn`).addEventListener(`click`, handler);
+    }
 
-  setDisabledBtn() {
-    this.getElement().querySelector(`.data-maker__item-btn`).disabled = true
-  }
+    setDisabledBtn() {
+        this.getElement().querySelector(`.data-maker__item-btn`).disabled = true;
+    }
 
-  setEnabledBtn() {
-    this.getElement().querySelector(`.data-maker__item-btn`).disabled = false
-  }
+    setEnabledBtn() {
+        this.getElement().querySelector(`.data-maker__item-btn`).disabled = false;
+    }
 }

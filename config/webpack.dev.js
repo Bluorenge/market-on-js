@@ -1,34 +1,32 @@
-const paths = require(`./paths`)
-const { merge } = require(`webpack-merge`)
-const common = require(`./webpack.common.js`)
-const MiniCssExtractPlugin = require(`mini-css-extract-plugin`)
+const paths = require("./paths");
+const { merge } = require("webpack-merge");
+const common = require("./webpack.common.js");
+const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
 
-module.exports = merge(common, {
-  mode: `development`,
+const devMode = process.env.NODE_ENV !== `production`;
+const smp = new SpeedMeasurePlugin();
 
-  output: {
-    path: paths.dist,
-    filename: `js/[name].js`,
-  },
+const mergedConfig = merge(common, {
+    mode: "development",
 
-  devtool: `inline-source-map`,
+    output: {
+        path: paths.dist,
+        filename: `js/[name].js`,
+    },
 
-  devServer: {
-    historyApiFallback: true,
-    contentBase: paths.dist,
-    open: true,
-    compress: true,
-    host: `192.168.1.161`,
-    hot: true,
-    watchContentBase: true,
-    clientLogLevel: `silent`,
-    // writeToDisk: true,
-    port: 8080,
-  },
+    devServer: {
+        static: paths.dist,
+        open: true,
+        compress: true,
+        host: "127.0.0.1",
+        hot: false,
+        port: 3003,
+        devMiddleware: {
+            // writeToDisk: true,
+        },
+    },
 
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: `style/[name].css`,
-    }),
-  ],
-})
+    plugins: [],
+});
+
+module.exports = smp.wrap(mergedConfig);

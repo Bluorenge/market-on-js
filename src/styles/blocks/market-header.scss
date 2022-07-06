@@ -1,98 +1,98 @@
 .market-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 10px;
-
-  &__cart {
-    width: 20%;
-  }
-
-  &__search-panel {
-    margin-bottom: 20px;
-  }
-
-  &__search-input {
-    padding: 5px 10px;
-    border: 1px solid #2d9094;
-    margin-right: 10px;
-    border-radius: 5px;
-    color: #1e6769;
-    font-size: 12px;
-
-    @include respond-to(tablet) {
-      font-size: 16px;
-    }
-  }
-
-  &__search-btn {
-    margin: 0;
-
-    @include respond-to(tablet) {
-      padding: 5px 10px;
-    }
-  }
-
-  & &__nav {
     display: flex;
-    order: 3;
-    width: 100%;
-    padding: 6px 0;
-    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 10px;
 
-    @include respond-to(tablet) {
-      order: 2;
-    }
-  }
-
-  &__nav-item {
-    flex-shrink: 0;
-    width: auto !important;
-    // переопределение стилей карусели
-    min-width: auto !important;
-    cursor: default;
-    margin-bottom: 5px;
-    font-size: 12px;
-
-    &:not(:last-child) {
-      margin-right: 20px;
-
-      &:hover {
-        text-decoration: underline;
-        cursor: pointer;
-      }
+    &__cart {
+        width: 20%;
     }
 
-    @include respond-to(tablet) {
-      flex: 0 1 auto;
-      font-size: 14px;
+    &__search-panel {
+        margin-bottom: 20px;
     }
 
-    &--sub {
-      position: relative;
+    &__search-input {
+        padding: 5px 10px;
+        border: 1px solid #2d9094;
+        margin-right: 10px;
+        border-radius: 5px;
+        color: #1e6769;
+        font-size: 12px;
 
-      &::before {
-        content: "→";
-        position: absolute;
-        top: 0;
-        left: -15px;
-        width: 5px;
-        height: 5px;
-      }
+        @include respond-to(tablet) {
+            font-size: 16px;
+        }
     }
 
-    &:nth-child(n + 2) {
-      position: relative;
+    &__search-btn {
+        margin: 0;
 
-      &::before {
-        content: "→";
-        position: absolute;
-        top: 0;
-        left: -15.5px;
-        width: 5px;
-        height: 5px;
-      }
+        @include respond-to(tablet) {
+            padding: 5px 10px;
+        }
     }
-  }
+
+    & &__nav {
+        display: flex;
+        order: 3;
+        width: 100%;
+        padding: 6px 0;
+        margin-bottom: 20px;
+
+        @include respond-to(tablet) {
+            order: 2;
+        }
+    }
+
+    &__nav-item {
+        flex-shrink: 0;
+        width: auto !important;
+        // переопределение стилей карусели
+        min-width: auto !important;
+        cursor: default;
+        margin-bottom: 5px;
+        font-size: 12px;
+
+        &:not(:last-child) {
+            margin-right: 20px;
+
+            &:hover {
+                text-decoration: underline;
+                cursor: pointer;
+            }
+        }
+
+        @include respond-to(tablet) {
+            flex: 0 1 auto;
+            font-size: 14px;
+        }
+
+        &--sub {
+            position: relative;
+
+            &::before {
+                content: "→";
+                position: absolute;
+                top: 0;
+                left: -15px;
+                width: 5px;
+                height: 5px;
+            }
+        }
+
+        &:nth-child(n + 2) {
+            position: relative;
+
+            &::before {
+                content: "→";
+                position: absolute;
+                top: 0;
+                left: -15.5px;
+                width: 5px;
+                height: 5px;
+            }
+        }
+    }
 }

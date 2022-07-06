@@ -1,9 +1,9 @@
-import AbstractComponent from '../../utils/abstract-component'
+import AbstractComponent from "../../utils/abstract-component";
 
-const marketListTemplate = `<div class="market-products__list market-content--fade-in"></div>`
+const marketListTemplate = `<div class="market-products__list market-content--fade-in"></div>`;
 
 export default class MarketListComponent extends AbstractComponent {
-  getTemplate() {
-    return marketListTemplate
-  }
+    getTemplate() {
+        return marketListTemplate;
+    }
 }

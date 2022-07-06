@@ -1,4 +1,2 @@
-import './js/data-maker-mvp/main'
-
-// import 'normalize.css'
-import './styles/data-maker.scss'
+import "./js/data-maker-mvp/main.js";
+import "./styles/data-maker.scss";

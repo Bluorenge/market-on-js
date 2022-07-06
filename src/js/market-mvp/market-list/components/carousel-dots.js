@@ -1,13 +1,13 @@
-import AbstractComponent from '../../utils/abstract-component'
+import AbstractComponent from "../../utils/abstract-component";
 
-const carouselDotsTemplate = `<div role="tablist" class="dots"></div>`
+const carouselDotsTemplate = `<div role="tablist" class="dots"></div>`;
 
 export default class CarouselDotsComponent extends AbstractComponent {
-  getTemplate() {
-    return carouselDotsTemplate
-  }
+    getTemplate() {
+        return carouselDotsTemplate;
+    }
 
-  setPrevBtnHandler(handler) {
-    this.getElement().addEventListener(`click`, handler)
-  }
+    setPrevBtnHandler(handler) {
+        this.getElement().addEventListener(`click`, handler);
+    }
 }

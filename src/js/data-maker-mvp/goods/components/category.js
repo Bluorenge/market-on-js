@@ -1,24 +1,24 @@
-import AbstractComponent from '../../utils/abstarct-component'
+import AbstractComponent from "../../utils/abstarct-component";
 
 const categoryTemplate = (typeOfCategory, id, data) => {
-  const wrapTag = typeOfCategory === 'категории' ? 'form' : 'div'
-  const categoryId = id ? `id="${id}"` : ''
-  const addProductBtn =
-    typeOfCategory === 'категории'
-      ? '<div class="data-maker__add data-maker__add--product" tabindex="0">+ Добавить товар</div>'
-      : ''
+    const wrapTag = typeOfCategory === "категории" ? "form" : "div";
+    const categoryId = id ? `id="${id}"` : "";
+    const addProductBtn =
+        typeOfCategory === "категории"
+            ? '<div class="data-maker__add data-maker__add--product" tabindex="0">+ Добавить товар</div>'
+            : "";
 
-  let nameCategory = `Добавление <span class="data-maker__fields-title-type">${typeOfCategory}</span>`
-  let nameValue = ``
-  let imgValue = ``
+    let nameCategory = `Добавление <span class="data-maker__fields-title-type">${typeOfCategory}</span>`;
+    let nameValue = ``;
+    let imgValue = ``;
 
-  if (data) {
-    nameCategory = data.name
-    nameValue = data.name
-    imgValue = data.img ? data.img : ``
-  }
+    if (data) {
+        nameCategory = data.name;
+        nameValue = data.name;
+        imgValue = data.img ? data.img : ``;
+    }
 
-  return `<${wrapTag} ${categoryId}>
+    return `<${wrapTag} ${categoryId}>
     <div class="data-maker__fields data-maker__fields--category">
       <div class="data-maker__fields-top">
         <h2 class="data-maker__fields-title">
@@ -47,71 +47,69 @@ const categoryTemplate = (typeOfCategory, id, data) => {
       </div>
       <button class="data-maker__btn" style="display: none"></button>
     </div>
-  </${wrapTag}>`
-}
+  </${wrapTag}>`;
+};
 
 export default class CategoryComponent extends AbstractComponent {
-  constructor(type, id, data) {
-    super()
+    constructor(type, id, data) {
+        super();
 
-    this.type = type
-    this.id = id
-    this.data = data
-  }
-
-  getIndex() {
-    return this.id
-  }
-
-  getTemplate() {
-    return categoryTemplate(this.type, this.id, this.data)
-  }
-
-  hideBtn(btn) {
-    switch (btn) {
-      case 'category':
-        this.getElement().querySelector(`.data-maker__add--subcategory`).style = 'display: none;'
-        break
-      case 'product':
-        this.getElement().querySelector(`.data-maker__add--product`).style = 'display: none;'
+        this.type = type;
+        this.id = id;
+        this.data = data;
     }
-  }
 
-  showBtn() {
-    this.getElement().querySelector(`.data-maker__add--subcategory`).style = 'display: block;'
-    this.getElement().querySelector(`.data-maker__add--product`).style = 'display: block;'
-  }
-
-  setInputsHandler(handler) {
-    this.getElement().querySelector('.data-maker__input--name').onchange = handler
-    this.getElement().querySelector(`.data-maker__input--img`).onchange = handler
-  }
-
-  setRemoveCategoryBtnHandler(handler) {
-    this.getElement().querySelector('.data-maker__delete-btn').addEventListener(`click`, handler)
-  }
-
-  setAddCategoryHandler(handler) {
-    this.getElement()
-      .querySelector(`.data-maker__add--subcategory`)
-      .addEventListener(`click`, handler)
-  }
-
-  setAddProductHandler(handler) {
-    this.getElement().querySelector(`.data-maker__add--product`).addEventListener(`click`, handler)
-  }
-
-  getData() {
-    const name = this.getElement().querySelector(`.data-maker__input--name`).value
-    const img = this.getElement().querySelector(`.data-maker__input--img`).value
-
-    return {
-      name,
-      img: img !== `` ? img : undefined,
+    getIndex() {
+        return this.id;
     }
-  }
 
-  clickBtn() {
-    this.getElement().querySelector('.data-maker__btn').click()
-  }
+    getTemplate() {
+        return categoryTemplate(this.type, this.id, this.data);
+    }
+
+    hideBtn(btn) {
+        switch (btn) {
+            case "category":
+                this.getElement().querySelector(`.data-maker__add--subcategory`).style = "display: none;";
+                break;
+            case "product":
+                this.getElement().querySelector(`.data-maker__add--product`).style = "display: none;";
+        }
+    }
+
+    showBtn() {
+        this.getElement().querySelector(`.data-maker__add--subcategory`).style = "display: block;";
+        this.getElement().querySelector(`.data-maker__add--product`).style = "display: block;";
+    }
+
+    setInputsHandler(handler) {
+        this.getElement().querySelector(".data-maker__input--name").onchange = handler;
+        this.getElement().querySelector(`.data-maker__input--img`).onchange = handler;
+    }
+
+    setRemoveCategoryBtnHandler(handler) {
+        this.getElement().querySelector(".data-maker__delete-btn").addEventListener(`click`, handler);
+    }
+
+    setAddCategoryHandler(handler) {
+        this.getElement().querySelector(`.data-maker__add--subcategory`).addEventListener(`click`, handler);
+    }
+
+    setAddProductHandler(handler) {
+        this.getElement().querySelector(`.data-maker__add--product`).addEventListener(`click`, handler);
+    }
+
+    getData() {
+        const name = this.getElement().querySelector(`.data-maker__input--name`).value;
+        const img = this.getElement().querySelector(`.data-maker__input--img`).value;
+
+        return {
+            name,
+            img: img !== `` ? img : undefined,
+        };
+    }
+
+    clickBtn() {
+        this.getElement().querySelector(".data-maker__btn").click();
+    }
 }

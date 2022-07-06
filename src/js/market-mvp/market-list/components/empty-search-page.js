@@ -1,13 +1,13 @@
-import AbstractComponent from '../../utils/abstract-component'
+import AbstractComponent from "../../utils/abstract-component";
 
-const btnPrevTemplate = `<div class="market-content--fade-in market-content__empty">Ничего не найдено</div>`
+const btnPrevTemplate = `<div class="market-content--fade-in market-content__empty">Ничего не найдено</div>`;
 
 export default class EmptyPageComponent extends AbstractComponent {
-  getTemplate() {
-    return btnPrevTemplate
-  }
+    getTemplate() {
+        return btnPrevTemplate;
+    }
 
-  setPrevBtnHandler(handler) {
-    this.getElement().addEventListener(`click`, handler)
-  }
+    setPrevBtnHandler(handler) {
+        this.getElement().addEventListener(`click`, handler);
+    }
 }

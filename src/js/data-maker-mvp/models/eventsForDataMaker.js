@@ -1,36 +1,36 @@
-import { createEvent } from 'effector'
+import { createEvent } from "effector";
 
 export const eventsForDataMaker = {
-  setCurrentIdValue: createEvent(),
+    setCurrentIdValue: createEvent(),
 
-  idContentIncrease: createEvent(),
+    idContentIncrease: createEvent(),
 
-  toggleValidate: createEvent(),
-  validateFrom: createEvent(),
+    toggleValidate: createEvent(),
+    validateFrom: createEvent(),
 
-  changeView: createEvent(),
+    changeView: createEvent(),
 
-  searchItem: createEvent(),
+    searchItem: createEvent(),
 
-  changeMenuItemName: createEvent(),
-  deleteMenuItem: createEvent(),
+    changeMenuItemName: createEvent(),
+    deleteMenuItem: createEvent(),
 
-  updateSetting: createEvent(),
+    updateSetting: createEvent(),
 
-  makeCategory: createEvent(),
-  deleteCategory: createEvent(),
-  makeSubCategory: createEvent(),
+    makeCategory: createEvent(),
+    deleteCategory: createEvent(),
+    makeSubCategory: createEvent(),
 
-  makeProduct: createEvent(),
-  deleteProduct: createEvent(),
-  updateProduct: createEvent(),
+    makeProduct: createEvent(),
+    deleteProduct: createEvent(),
+    updateProduct: createEvent(),
 
-  makeDesc: createEvent(),
-  deleteDesc: createEvent(),
+    makeDesc: createEvent(),
+    deleteDesc: createEvent(),
 
-  makeOptions: createEvent(),
-  deleteOptions: createEvent(),
-  deleteOption: createEvent(),
+    makeOptions: createEvent(),
+    deleteOptions: createEvent(),
+    deleteOption: createEvent(),
 
-  changeViewTab: createEvent(),
-}
+    changeViewTab: createEvent(),
+};
