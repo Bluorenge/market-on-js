@@ -150,31 +150,30 @@ export const animationForAddProductToCart = parentElement => {
 
     const cloneProductPic = productPic.cloneNode(true);
     cloneProductPic.classList.add(`market-product__animate`);
+    
+    const marketWrap = parentElement.closest(".market");
 
     const spaceBetween = distanceBetweenElements(cart, productPic);
     const entryTop = spaceBetween.xToX;
-    const entryLeft = productPic.getBoundingClientRect().left - productPic.offsetWidth;
+    const entryLeft = productPic.getBoundingClientRect().left - marketWrap.getBoundingClientRect().left;
 
     cloneProductPic.style.top = entryTop + "px";
     cloneProductPic.style.left = entryLeft + "px";
 
-    const marketWrap = parentElement.closest(".market");
     marketWrap.append(cloneProductPic);
 
-    animate({
-        duration: 1000,
-        timing(timeFraction) {
-            return timeFraction * (2 - timeFraction);
-        },
-        draw(progress) {
-            const roundedToHundredth = function (number) {
-                return Number(number.toFixed(3));
-            };
-            cloneProductPic.style.top =
-                entryTop + roundedToHundredth(progress) * -spaceBetween.xToX + cart.offsetHeight / 2 + "px";
-            cloneProductPic.style.left =
-                entryLeft + roundedToHundredth(progress) * spaceBetween.yToY + cart.offsetWidth + "px";
-        },
-    });
-    // setTimeout(() => cloneProductPic.remove(), 1000)
+    // animate({
+    //     duration: 1000,
+    //     timing(timeFraction) {
+    //         return timeFraction * (2 - timeFraction);
+    //     },
+    //     draw(progress) {
+    //         const roundedToHundredth = function (number) {
+    //             return Number(number.toFixed(3));
+    //         };
+    //         cloneProductPic.style.top =
+    //             entryTop + roundedToHundredth(progress) * -spaceBetween.xToX + cart.offsetHeight / 2 + "px";
+    //     },
+    // });
+    setTimeout(() => cloneProductPic.remove(), 3000);
 };

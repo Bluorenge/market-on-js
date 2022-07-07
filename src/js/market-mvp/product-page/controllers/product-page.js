@@ -47,7 +47,7 @@ export default class ProductPageController {
         const optionWrap = this._productPageComponent.getOptionWrapElement();
 
         if (optionWrap) {
-            this._productPageComponent.setOptionItemClickHandler(() => {
+            this._productPageComponent.setOptionItemClickHandler((event) => {
                 const target = event.target;
                 this._productPageComponent.deleteActiveClassOption(target);
                 const optionName = target.textContent;
