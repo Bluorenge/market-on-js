@@ -68,6 +68,7 @@ export default class MenuController {
                     const name = element.getElement().textContent;
 
                     eventsForStore.clearSearchInput();
+                    eventsForStore.closeProductPage();
                     eventsForStore.removeMenuItemsTo({ id, name });
                     eventsForStore.findProductsInDefaultProductList({ id, name });
                 });
